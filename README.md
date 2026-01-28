@@ -1,8 +1,173 @@
-# Fullstack NNP Template 🚀
+<div align="center">
 
-**A production-ready fullstack template using NestJS + Next.js + PostgreSQL**
+# 🚀 Fullstack NNP Template
 
-This template provides a solid foundation for building modern fullstack applications with best practices, proper validation, testing, and code standards built-in.
+### *Production-Ready • Type-Safe • Modern Stack*
+
+<p align="center">
+  <strong>Build enterprise-grade applications with NestJS, Next.js 16, and PostgreSQL</strong>
+</p>
+
+<br/>
+
+<!-- Hero Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
+  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/TypeORM-FE0902?style=for-the-badge&logo=typeorm&logoColor=white" alt="TypeORM" />
+</p>
+
+<br/>
+
+<!-- Repository Stats -->
+<p align="center">
+  <a href="https://github.com/k-kaundal/fullstack-nnp-template/stargazers">
+    <img src="https://img.shields.io/github/stars/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41" alt="stars">
+  </a>
+  <a href="https://github.com/k-kaundal/fullstack-nnp-template/network/members">
+    <img src="https://img.shields.io/github/forks/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=git&color=B5E8E0&logoColor=D9E0EE&labelColor=302D41" alt="forks">
+  </a>
+  <a href="https://github.com/k-kaundal/fullstack-nnp-template/issues">
+    <img src="https://img.shields.io/github/issues/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=gitbook&color=F28FAD&logoColor=D9E0EE&labelColor=302D41" alt="issues">
+  </a>
+  <a href="https://github.com/k-kaundal/fullstack-nnp-template/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=opensourceinitiative&color=FAE3B0&logoColor=D9E0EE&labelColor=302D41" alt="license">
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square" alt="Build" />
+  <img src="https://img.shields.io/badge/coverage-80%25-green?style=flat-square" alt="Coverage" />
+  <img src="https://img.shields.io/badge/code_quality-A-brightgreen?style=flat-square" alt="Quality" />
+  <img src="https://img.shields.io/github/last-commit/k-kaundal/fullstack-nnp-template?style=flat-square" alt="Last Commit" />
+  <a href="https://github.com/k-kaundal/fullstack-nnp-template/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" />
+  </a>
+  <img src="https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square" alt="Contributions Welcome" />
+</p>
+
+---
+
+<br/>
+
+## 🌟 **What Makes This Special?**
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🎯 **Production Ready**
+✨ Enterprise-grade architecture
+🔒 Security best practices
+📝 Complete documentation
+🧪 80%+ test coverage
+⚡ Optimized performance
+
+</td>
+<td width="50%" valign="top">
+
+### 💎 **Developer Experience**
+🎨 Beautiful UI components
+🌙 Dark mode support
+🔥 Hot reload & Fast refresh
+🤖 GitHub Copilot optimized
+📦 Pre-configured tooling
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+---
+
+<br/>
+
+## 👨‍💻 **Connect With Me**
+
+<p align="center">
+  <a href="https://kaundal.vip">
+    <img src="https://img.shields.io/badge/🌐_Website-kaundal.vip-4285F4?style=for-the-badge&logoColor=white" alt="Website" />
+  </a>
+  <a href="https://blog.kaundal.vip">
+    <img src="https://img.shields.io/badge/📝_Blog-blog.kaundal.vip-FF5722?style=for-the-badge&logoColor=white" alt="Blog" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://x.com/k_k_kaundal">
+    <img src="https://img.shields.io/badge/𝕏_Twitter-@k__k__kaundal-1DA1F2?style=for-the-badge&logo=x&logoColor=white" alt="Twitter" />
+  </a>
+  <a href="https://www.linkedin.com/in/kaundal/">
+    <img src="https://img.shields.io/badge/LinkedIn-kaundal-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="https://www.instagram.com/k.k.kaundal/">
+    <img src="https://img.shields.io/badge/Instagram-@k.k.kaundal-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
+  </a>
+  <a href="https://www.threads.com/@k.k.kaundal">
+    <img src="https://img.shields.io/badge/Threads-@k.k.kaundal-000000?style=for-the-badge&logo=threads&logoColor=white" alt="Threads" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.facebook.com/me.kaundal">
+    <img src="https://img.shields.io/badge/Facebook_Page-me.kaundal-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook Page" />
+  </a>
+  <a href="https://www.facebook.com/groups/me.software.engineer">
+    <img src="https://img.shields.io/badge/FB_Community-Software_Engineers-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook Community" />
+  </a>
+  <a href="https://x.com/i/communities/1826457685698441668">
+    <img src="https://img.shields.io/badge/𝕏_Community-Tech_Talks-000000?style=for-the-badge&logo=x&logoColor=white" alt="X Community" />
+  </a>
+</p>
+
+<br/>
+
+---
+
+<br/>
+
+## 📊 **GitHub Stats**
+
+<p align="center">
+  <img width="49%" src="https://github-readme-stats.vercel.app/api?username=k-kaundal&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&bg_color=0D1117&title_color=58A6FF&icon_color=58A6FF&text_color=C9D1D9" alt="GitHub Stats" />
+  <img width="49%" src="https://github-readme-streak-stats.herokuapp.com/?user=k-kaundal&theme=tokyonight&hide_border=true&background=0D1117&stroke=58A6FF&ring=58A6FF&fire=FF6B6B&currStreakLabel=C9D1D9" alt="GitHub Streak" />
+</p>
+
+<p align="center">
+  <img width="50%" src="https://github-readme-stats.vercel.app/api/top-langs/?username=k-kaundal&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=58A6FF&text_color=C9D1D9&langs_count=8" alt="Top Languages" />
+</p>
+
+<br/>
+
+---
+
+<br/>
+
+</div>
+
+<div align="left">
+
+## 📖 **About This Template**
+
+This template provides a **solid foundation** for building modern fullstack applications with **best practices**, proper **validation**, **testing**, and **code standards** built-in.
+
+> 💡 **Open Source & Community Driven**: This is a public template open for contributions! Whether you're fixing bugs, adding features, improving documentation, or sharing ideas - all contributions are welcome and appreciated.
+
+### 🎁 **Perfect For:**
+- 🚀 Building production-ready fullstack applications
+- 📚 Learning modern web development best practices
+- 🛠️ Prototyping new ideas quickly
+- 👥 Contributing to open source
+- 🎓 Teaching fullstack development concepts
 
 ## 🎯 Features
 
@@ -649,21 +814,214 @@ Production Docker configurations will be added in future updates.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Write/update tests
-5. Submit a pull request
+**We love contributions!** 🎉 This project is open source and welcomes contributions from developers of all skill levels. Whether you're fixing a typo, adding a feature, or improving documentation - every contribution matters!
+
+### 🌟 **Ways to Contribute**
+
+<table>
+<tr>
+<td width="33%" align="center">
+<img src="https://img.icons8.com/color/96/000000/code.png" width="50" />
+
+**Code Contributions**
+
+Add features, fix bugs, improve performance
+</td>
+<td width="33%" align="center">
+<img src="https://img.icons8.com/color/96/000000/document.png" width="50" />
+
+**Documentation**
+
+Improve docs, write tutorials, add examples
+</td>
+<td width="33%" align="center">
+<img src="https://img.icons8.com/color/96/000000/test-tube.png" width="50" />
+
+**Testing**
+
+Write tests, report bugs, suggest improvements
+</td>
+</tr>
+</table>
+
+### 📋 **Contribution Guidelines**
+
+#### **1️⃣ Getting Started**
+
+```bash
+# Fork the repository on GitHub
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/fullstack-nnp-template.git
+cd fullstack-nnp-template
+
+# Add upstream remote
+git remote add upstream https://github.com/k-kaundal/fullstack-nnp-template.git
+
+# Create a new branch for your feature
+git checkout -b feature/your-feature-name
+```
+
+#### **2️⃣ Making Changes**
+
+- ✅ Follow the existing code style and conventions
+- ✅ Write meaningful commit messages (use [Conventional Commits](https://www.conventionalcommits.org/))
+- ✅ Add tests for new features or bug fixes
+- ✅ Update documentation if needed
+- ✅ Run linting and tests before committing
+- ✅ Keep changes focused - one feature/fix per PR
+
+```bash
+# Run tests
+cd server && yarn test && cd ..
+cd client && yarn lint && cd ..
+
+# Commit your changes
+git add .
+git commit -m "feat: add amazing feature"
+
+# Push to your fork
+git push origin feature/your-feature-name
+```
+
+#### **3️⃣ Submitting a Pull Request**
+
+1. **Push your changes** to your fork
+2. **Open a Pull Request** from your fork to our `main` branch
+3. **Fill out the PR template** with details about your changes
+4. **Wait for review** - we'll review your PR as soon as possible
+5. **Address feedback** if any changes are requested
+6. **Celebrate!** 🎉 Once merged, you're officially a contributor!
+
+### 💻 **Commit Message Format**
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+[optional footer]
+```
+
+**Types:**
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, semicolons, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+**Examples:**
+```bash
+feat(auth): add JWT authentication
+fix(users): resolve email validation issue
+docs(readme): update installation instructions
+test(api): add e2e tests for user endpoints
+```
+
+### 🐛 **Reporting Bugs**
+
+Found a bug? Please [open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new) with:
+
+- **Clear title** describing the issue
+- **Steps to reproduce** the bug
+- **Expected behavior** vs actual behavior
+- **Environment details** (OS, Node version, etc.)
+- **Screenshots** if applicable
+
+### 💡 **Feature Requests**
+
+Have an idea? [Open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new) with:
+
+- **Clear description** of the feature
+- **Use case** - why is this needed?
+- **Proposed solution** if you have one
+- **Alternatives** you've considered
+
+### 📖 **Development Resources**
+
+- [GitHub Copilot Instructions](.github/copilot-instructions.md) - AI-assisted development guide
+- [Contributing Guide](CONTRIBUTING.md) - Detailed contribution guidelines
+- [Testing Guide](TESTING_GUIDE.md) - How to write and run tests
+- [API Documentation](API_ENDPOINTS.md) - Backend API reference
+
+### 🎯 **Good First Issues**
+
+New to the project? Look for issues labeled [`good first issue`](https://github.com/k-kaundal/fullstack-nnp-template/labels/good%20first%20issue) - these are perfect for getting started!
+
+### 🏆 **Contributors**
+
+Thanks to all our amazing contributors! 🙏
+
+<a href="https://github.com/k-kaundal/fullstack-nnp-template/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=k-kaundal/fullstack-nnp-template" />
+</a>
+
+### 📜 **Code of Conduct**
+
+This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcoming environment for everyone. By participating, you agree to abide by its terms.
+
+**Our Pledge:**
+- 🤝 Be respectful and inclusive
+- 💬 Use welcoming and inclusive language
+- 🎯 Focus on what's best for the community
+- 👥 Show empathy towards others
+- 🚫 Zero tolerance for harassment
+
+### 💬 **Need Help?**
+
+- 📧 **Email**: Create an issue and we'll respond
+- 💬 **Discussions**: Use [GitHub Discussions](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
+- 🐦 **Twitter**: [@k_k_kaundal](https://x.com/k_k_kaundal)
+- 👥 **Community**: Join our [Facebook Community](https://www.facebook.com/groups/me.software.engineer)
+
+---
 
 ## 📄 License
 
-[MIT License](LICENSE)
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License - Free to use, modify, and distribute
+✅ Commercial use    ✅ Modification    ✅ Distribution    ✅ Private use
+```
 
 ## 🆘 Support
 
-- Create an issue for bug reports
-- Start a discussion for feature requests
-- Check [GitHub Copilot Instructions](.github/copilot-instructions.md) for AI-assisted development
+### **Need Help?**
+
+<table>
+<tr>
+<td width="50%">
+
+**📚 Documentation & Guides**
+- [Quick Start Guide](QUICK_START.md)
+- [API Endpoints](API_ENDPOINTS.md)
+- [Testing Guide](TESTING_GUIDE.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
+</td>
+<td width="50%">
+
+**🐛 Issues & Questions**
+- [Report a Bug](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=bug)
+- [Request a Feature](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=enhancement)
+- [Ask a Question](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
+- [GitHub Copilot Guide](.github/copilot-instructions.md)
+
+</td>
+</tr>
+</table>
+
+### **⭐ Show Your Support**
+
+If you find this project helpful:
+- ⭐ **Star this repository** on GitHub
+- 🔄 **Share it** with your network
+- 🤝 **Contribute** to make it better
+- 📝 **Write about it** on your blog
+- 💬 **Spread the word** on social media
 
 ## 🎓 Learn More
 
@@ -674,6 +1032,23 @@ Production Docker configurations will be added in future updates.
 
 ---
 
+<div align="center">
+
+## 🌟 **Show Your Support**
+
+If this project helped you, please consider:
+
+[![Star on GitHub](https://img.shields.io/github/stars/k-kaundal/fullstack-nnp-template?style=social)](https://github.com/k-kaundal/fullstack-nnp-template)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/k_k_kaundal?style=social)](https://x.com/k_k_kaundal)
+
+**Thank you for being part of our community!** 🙏
+
+---
+
 **Happy Coding! 🎉**
 
-*Built with ❤️ using NestJS, Next.js, and PostgreSQL*
+*Built with ❤️ by [Kaundal](https://kaundal.vip) using NestJS, Next.js, and PostgreSQL*
+
+**Open Source • Community Driven • Production Ready**
+
+</div>
