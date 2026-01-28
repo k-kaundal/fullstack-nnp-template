@@ -125,6 +125,9 @@ export class UsersService {
 
       this.logger.log(`User created successfully with ID: ${savedUser.id}`);
 
+      // Remove password from response (security best practice)
+      delete savedUser.password;
+
       // Return success response with user data and metadata
       return ApiResponse.success(res, {
         statusCode: HttpStatus.CREATED,
@@ -171,6 +174,9 @@ export class UsersService {
         take: limit,
         skip: skip,
       });
+
+      // Remove password from all users (security best practice)
+      users.forEach((user) => delete user.password);
 
       // Calculate pagination metadata
       const totalPages = Math.ceil(total / limit);
@@ -228,9 +234,9 @@ export class UsersService {
           data: cachedUser,
           message: 'User fetched successfully (cached)',
           meta: {
-            userId: cachedUser.id,
+            user_id: cachedUser.id,
             cached: true,
-            fetchedAt: new Date().toISOString(),
+            fetched_at: new Date().toISOString(),
           },
         });
       }
@@ -246,6 +252,9 @@ export class UsersService {
         });
       }
 
+      // Remove password from response (security best practice)
+      delete user.password;
+
       // Store user in cache for future requests
       await this.cacheManager.set(cacheKey, user, this.CACHE_TTL);
       this.logger.log(`User ${id} cached successfully`);
@@ -256,9 +265,9 @@ export class UsersService {
         data: user,
         message: 'User fetched successfully',
         meta: {
-          userId: user.id,
+          user_id: user.id,
           cached: false,
-          fetchedAt: new Date().toISOString(),
+          fetched_at: new Date().toISOString(),
         },
       });
     } catch (error) {
@@ -329,15 +338,18 @@ export class UsersService {
 
       this.logger.log(`User updated successfully with ID: ${id}`);
 
+      // Remove password from response (security best practice)
+      delete updatedUser.password;
+
       // Return success response with updated user data
       return ApiResponse.success(res, {
         statusCode: HttpStatus.OK,
         data: updatedUser,
         message: 'User updated successfully',
         meta: {
-          userId: updatedUser.id,
-          updatedAt: updatedUser.updatedAt,
-          updatedFields: Object.keys(updateUserDto),
+          user_id: updatedUser.id,
+          updated_at: updatedUser.updatedAt,
+          updated_fields: Object.keys(updateUserDto),
         },
       });
     } catch (error) {
@@ -392,8 +404,8 @@ export class UsersService {
         data: null,
         message: 'User deleted successfully',
         meta: {
-          deletedUserId: id,
-          deletedAt: new Date().toISOString(),
+          user_id: id,
+          deleted_at: new Date().toISOString(),
         },
       });
     } catch (error) {

@@ -1127,27 +1127,326 @@ export function useUsers(): UseUsersReturn {
 - Avoid N+1 queries - use eager loading or joins
 - Add indexes for frequently queried fields
 
-### Testing Standards
+### Testing Standards - MANDATORY
 
-**Unit Tests:**
-- Test all services and utilities
-- Mock external dependencies
-- Use descriptive test names
+**CRITICAL: Write tests for EVERY controller and service**
+- Test files must be co-located with source files (`.spec.ts` extension)
+- Every controller MUST have a corresponding `.controller.spec.ts` file
+- Every service MUST have a corresponding `.service.spec.ts` file
+- Tests must be written BEFORE or IMMEDIATELY AFTER implementation
+- Never commit code without accompanying tests
+- **ALWAYS update test files when modifying services or controllers**
+- **Run tests after every change to verify nothing is broken**
+
+**Test Setup and Configuration:**
+
+**E2E Tests Setup:**
+E2E tests run against a real test database with the following setup:
+1. Creates PostgreSQL database: `test_db`
+2. Applies global prefix: `app.setGlobalPrefix('api/v1', { exclude: ['/'] })`
+3. Enables database synchronization for test environment
+4. Uses same validation pipes and filters as production
+5. Runs full application flow including database operations
+
+**Setup Script:**
+```bash
+cd server
+./test/setup-test-db.sh  # Creates test_db
+yarn test:e2e:setup       # Setup database and run E2E tests
+```
+
+**Environment Configuration:**
+Test environment variables in `test/setup-e2e.ts`:
+- `NODE_ENV=test`
+- `DATABASE_NAME=test_db`
+- `DATABASE_HOST=localhost`
+- Auto-synchronization enabled for test database
+- Mail service configured with test credentials
+
+**When Modifying Existing Code:**
+1. **Before making changes**: Run `yarn test` to ensure all tests pass
+2. **Make your changes** to controllers, services, DTOs, or entities
+3. **Immediately update** corresponding test files to reflect changes:
+   - Add new test cases for new methods
+   - Update mock data if DTOs/entities changed
+   - Update assertions if response format changed
+   - Update method signatures if parameters changed
+4. **Run tests again**: `yarn test` to verify all tests still pass
+5. **Check coverage**: `yarn test:cov` to ensure coverage remains >80%
+
+**Common Test Updates Needed:**
+- **DTO changes**: Update mock data in tests with new required fields
+- **Response format changes**: Update assertions to match new meta fields (use snake_case)
+- **Method signature changes**: Update function calls with new parameters
+- **New validations**: Add test cases for new validation rules
+- **Pagination changes**: Update findAll tests with page/limit parameters
+- **Repository methods**: Add new mocked methods (e.g., `findAndCount`)
+
+**Unit Test Requirements:**
+- Test all public methods in services and controllers
+- Mock external dependencies (repositories, other services, HTTP requests)
+- Test both success and error cases
+- Test edge cases and boundary conditions
+- Use descriptive test names that explain what is being tested
 - Aim for >80% code coverage
+- Use Jest testing framework
 
+**Controller Test Pattern:**
 ```typescript
-describe('UsersService', () => {
-  it('should create a new user', async () => {
-    const createUserDto = { email: 'test@example.com', name: 'Test' };
-    const result = await service.create(createUserDto);
-    expect(result).toHaveProperty('id');
+import { Test, TestingModule } from '@nestjs/testing';
+import { Response } from 'express';
+import { HttpStatus } from '@nestjs/common';
+
+describe('UsersController', () => {
+  let controller: UsersController;
+  let service: UsersService;
+  let mockResponse: Partial<Response>;
+
+  beforeEach(async () => {
+    // Mock Response object
+    mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      req: { url: '/users' } as any,
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [UsersController],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    controller = module.get<UsersController>(UsersController);
+    service = module.get<UsersService>(UsersService);
+  });
+
+  describe('create', () => {
+    it('should call service.create with correct parameters', async () => {
+      const createDto = { email: 'test@example.com', firstName: 'John', lastName: 'Doe' };
+
+      await controller.create(createDto, mockResponse as Response);
+
+      expect(service.create).toHaveBeenCalledWith(createDto, mockResponse);
+    });
   });
 });
 ```
 
-**E2E Tests:**
-- Test critical user flows
-- Use realistic data
+**Service Test Pattern:**
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Response } from 'express';
+import { HttpStatus } from '@nestjs/common';
+
+describe('UsersService', () => {
+  let service: UsersService;
+  let repository: Repository<User>;
+  let mockResponse: Partial<Response>;
+
+  beforeEach(async () => {
+    // Mock Response object
+    mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      req: { url: '/users' } as any,
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
+            findAndCount: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<UsersService>(UsersService);
+    repository = module.get<Repository<User>>(getRepositoryToken(User));
+  });
+
+  describe('create', () => {
+    it('should create user successfully', async () => {
+      const createDto = { email: 'test@example.com', firstName: 'John', lastName: 'Doe' };
+      const mockUser = { id: '123', ...createDto, isActive: true, createdAt: new Date(), updatedAt: new Date() };
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(repository, 'create').mockReturnValue(mockUser as any);
+      jest.spyOn(repository, 'save').mockResolvedValue(mockUser as any);
+
+      await service.create(createDto, mockResponse as Response);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CREATED);
+      expect(mockResponse.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'success',
+          data: expect.not.objectContaining({ password: expect.anything() }),
+        }),
+      );
+    });
+
+    it('should return error if email already exists', async () => {
+      const createDto = { email: 'test@example.com', firstName: 'John', lastName: 'Doe' };
+      const existingUser = { id: '123', ...createDto };
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(existingUser as any);
+
+      await service.create(createDto, mockResponse as Response);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CONFLICT);
+      expect(mockResponse.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'error',
+          message: expect.stringContaining('already exists'),
+        }),
+      );
+    });
+  });
+});
+```
+
+**E2E Test Requirements:**
+- Test critical user flows end-to-end
+- Use realistic test data
+- Test error cases and validation
+- Clean up test data after each test
+- E2E tests go in `test/` directory at root
+
+**E2E Test Pattern:**
+```typescript
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from './../src/app.module';
+
+describe('API E2E Tests', () => {
+  let app: INestApplication;
+  let createdUserId: string;
+
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+
+    // Apply same configuration as main.ts
+    app.setGlobalPrefix('api/v1', { exclude: ['/'] });
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
+
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe('POST /api/v1/users', () => {
+    it('should create a new user successfully', () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/users')
+        .send({
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          password: 'SecurePass123!',
+        })
+        .expect(201)
+        .expect((res) => {
+          expect(res.body).toHaveProperty('status', 'success');
+          expect(res.body.data).toHaveProperty('id');
+          expect(res.body.data).not.toHaveProperty('password');
+          expect(res.body.meta).toHaveProperty('user_id');
+          expect(res.body.meta).toHaveProperty('created_at');
+          createdUserId = res.body.data.id;
+        });
+    });
+  });
+});
+```
+
+**API Response Testing Standards:**
+```typescript
+// Success Response Structure to Test
+{
+  status: 'success',
+  statusCode: 200,
+  message: 'Operation successful',
+  data: { /* your data */ },
+  meta: {
+    user_id: 'uuid',           // ✅ snake_case for ALL meta fields
+    created_at: '2026-01-28',
+    updated_at: '2026-01-28',
+    total_pages: 5,
+    has_next: true,
+    has_previous: false
+  },
+  timestamp: '2026-01-28T10:00:00.000Z',
+  path: '/api/v1/users'
+}
+
+// Error Response Structure to Test
+{
+  status: 'error',
+  statusCode: 400,
+  message: 'Validation failed',
+  errors: ['Email is required'],
+  timestamp: '2026-01-28T10:00:00.000Z',
+  path: '/api/v1/users'
+}
+```
+
+**Running Tests:**
+```bash
+yarn test              # Run all unit tests
+yarn test:watch        # Run tests in watch mode
+yarn test:cov          # Run tests with coverage report
+yarn test:e2e          # Run end-to-end tests (requires test_db)
+yarn test:e2e:setup    # Setup test database and run E2E tests
+```
+
+**Test Best Practices:**
+1. **Mock External Dependencies** - Database, HTTP, file system
+2. **Test Both Success and Error Cases** - Cover all code paths
+3. **Use Descriptive Test Names** - Clear what is being tested
+4. **Keep Tests Isolated** - No shared state between tests
+5. **Test Edge Cases** - Boundary conditions, null values, empty arrays
+6. **Use Test Setup/Teardown** - beforeEach, afterEach, beforeAll, afterAll
+7. **Verify Security** - Password never in responses, proper error handling
+8. **Check Meta Fields** - All use snake_case convention
+
+**Critical Test Checks:**
+- ✅ Password field NEVER returned in responses
+- ✅ All meta fields use snake_case (user_id, created_at, total_pages)
+- ✅ Proper HTTP status codes (201 Created, 409 Conflict, 404 Not Found)
+- ✅ Error messages are user-friendly and descriptive
+- ✅ Validation errors properly caught and returned
+- ✅ Global prefix `/api/v1` applied in E2E tests
 - Test error cases
 
 ### Environment Variables

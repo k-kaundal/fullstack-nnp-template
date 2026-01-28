@@ -18,6 +18,11 @@ describe('API E2E Tests', () => {
 
     app = moduleFixture.createNestApplication();
 
+    // Apply the same global prefix as in main.ts
+    app.setGlobalPrefix('api/v1', {
+      exclude: ['/'],
+    });
+
     // Apply the same global pipes as in main.ts
     app.useGlobalPipes(
       new ValidationPipe({

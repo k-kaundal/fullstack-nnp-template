@@ -276,42 +276,287 @@ Once the backend is running, visit:
 ## 🧪 Testing
 
 ### Backend Testing
+
+#### Test Types
+The backend includes two types of tests:
+1. **Unit Tests** - Test individual services and controllers in isolation
+2. **E2E Tests** - Test the full application flow including database operations
+
+#### Running Tests
 ```bash
 cd server
 
-# Unit tests
-yarn test
+# Unit tests (fast, isolated)
+yarn test                    # Run all unit tests
+yarn test:watch              # Run in watch mode
+yarn test:cov                # Generate coverage report
 
-# E2E tests
-yarn test:e2e
-
-# Coverage report
-yarn test:cov
+# E2E tests (full application testing)
+yarn test:e2e                # Run E2E tests (requires test_db)
+yarn test:e2e:setup          # Setup test database and run E2E tests
 ```
 
-### Writing Tests
+#### Test Setup and Configuration
+
+**E2E Test Setup:**
+The E2E tests require a test database. The setup process:
+1. Creates a PostgreSQL database named `test_db`
+2. Configures test environment variables
+3. Applies global prefix `/api/v1` to match production
+4. Enables database synchronization for test environment
+5. Runs all tests against real database
+
+**Setup Script:**
+```bash
+# Setup test database (one-time setup)
+cd server
+./test/setup-test-db.sh
+```
+
+**Environment Variables for Testing:**
+Test environment variables are configured in `test/setup-e2e.ts`:
+- `NODE_ENV=test`
+- `DATABASE_NAME=test_db`
+- Database auto-synchronization enabled
+- Mail service configured with test credentials
+
+#### Writing Unit Tests
+
+**Service Test Example:**
 ```typescript
-// Example service test
+// src/users/users.service.spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Response } from 'express';
+
 describe('UsersService', () => {
   let service: UsersService;
   let repository: Repository<User>;
+  let mockResponse: Partial<Response>;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
+    // Mock Response object
+    mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      req: { url: '/users' } as any,
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        { provide: getRepositoryToken(User), useValue: mockRepository },
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            findOne: jest.fn(),
+            findAndCount: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+    repository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
-  it('should create a user', async () => {
-    // Test implementation
+  describe('create', () => {
+    it('should create user successfully', async () => {
+      const createDto = {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        password: 'SecurePass123!'
+      };
+      const mockUser = {
+        id: '123',
+        ...createDto,
+        isActive: true
+      };
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(repository, 'create').mockReturnValue(mockUser as any);
+      jest.spyOn(repository, 'save').mockResolvedValue(mockUser as any);
+
+      await service.create(createDto, mockResponse as Response);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'success',
+          data: expect.objectContaining({ id: '123' }),
+        }),
+      );
+    });
+
+    it('should return error if email already exists', async () => {
+      const createDto = { email: 'test@example.com' };
+      const existingUser = { id: '123', ...createDto };
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(existingUser as any);
+
+      await service.create(createDto as any, mockResponse as Response);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(409);
+    });
   });
 });
 ```
+
+**Controller Test Example:**
+```typescript
+// src/users/users.controller.spec.ts
+describe('UsersController', () => {
+  let controller: UsersController;
+  let service: UsersService;
+  let mockResponse: Partial<Response>;
+
+  beforeEach(async () => {
+    mockResponse = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn().mockReturnThis(),
+      req: { url: '/users' } as any,
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [UsersController],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    controller = module.get<UsersController>(UsersController);
+    service = module.get<UsersService>(UsersService);
+  });
+
+  it('should call service.create with correct parameters', async () => {
+    const createDto = { email: 'test@example.com' };
+    await controller.create(createDto as any, mockResponse as Response);
+    expect(service.create).toHaveBeenCalledWith(createDto, mockResponse);
+  });
+});
+```
+
+#### Writing E2E Tests
+
+**E2E Test Example:**
+```typescript
+// test/app.e2e-spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from './../src/app.module';
+
+describe('API E2E Tests', () => {
+  let app: INestApplication;
+  let createdUserId: string;
+
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+
+    // Apply same configuration as main.ts
+    app.setGlobalPrefix('api/v1', { exclude: ['/'] });
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
+
+    await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  describe('POST /api/v1/users', () => {
+    it('should create a new user successfully', () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/users')
+        .send({
+          email: 'test@example.com',
+          firstName: 'John',
+          lastName: 'Doe',
+          password: 'SecurePass123!',
+        })
+        .expect(201)
+        .expect((res) => {
+          expect(res.body).toHaveProperty('status', 'success');
+          expect(res.body.data).toHaveProperty('id');
+          expect(res.body.data).not.toHaveProperty('password');
+          createdUserId = res.body.data.id;
+        });
+    });
+  });
+});
+```
+
+#### Test Standards and Best Practices
+
+**Mandatory Requirements:**
+- ✅ Every controller MUST have a `.controller.spec.ts` file
+- ✅ Every service MUST have a `.service.spec.ts` file
+- ✅ Test coverage should be >80%
+- ✅ All tests must pass before committing
+- ✅ Update tests when modifying services/controllers
+
+**Best Practices:**
+1. **Mock External Dependencies** - Database, HTTP requests, file system
+2. **Test Both Success and Error Cases** - Cover all code paths
+3. **Use Descriptive Test Names** - Clear what is being tested
+4. **Keep Tests Isolated** - No shared state between tests
+5. **Test Edge Cases** - Boundary conditions, null values, empty arrays
+6. **Use Test Setup/Teardown** - beforeEach, afterEach, beforeAll, afterAll
+
+**API Response Format to Test:**
+```typescript
+// Success Response Structure
+{
+  status: 'success',
+  statusCode: 200,
+  message: 'Operation successful',
+  data: { /* your data */ },
+  meta: {
+    user_id: 'uuid',           // snake_case for meta fields
+    created_at: '2026-01-28',
+    total_pages: 5,
+    has_next: true
+  },
+  timestamp: '2026-01-28T10:00:00.000Z',
+  path: '/api/v1/users'
+}
+
+// Error Response Structure
+{
+  status: 'error',
+  statusCode: 400,
+  message: 'Validation failed',
+  errors: ['Email is required'],
+  timestamp: '2026-01-28T10:00:00.000Z',
+  path: '/api/v1/users'
+}
+```
+
+**Important Notes:**
+- ⚠️ Password field must NEVER be returned in responses
+- ⚠️ All meta fields use snake_case (user_id, created_at, total_pages)
+- ⚠️ E2E tests use real database (test_db)
+- ⚠️ Unit tests mock all external dependencies
+- ⚠️ Mail service errors in tests are expected (SMTP not configured)
 
 ## 🎨 Code Style Guide
 
