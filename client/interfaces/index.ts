@@ -1,0 +1,16 @@
+/**
+ * Barrel export for all interfaces
+ * Simplifies imports across the application
+ */
+
+export * from './user.interface';
+export * from './auth.interface';
+export * from './theme.interface';
+export * from './sidebar.interface';
+export * from './header.interface';
+export * from './table.interface';
+export * from './modal.interface';
+export * from './view-dialog.interface';
+export * from './edit-dialog.interface';
+export * from './ui-components.interface';
+export * from './layout.interface';

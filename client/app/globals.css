@@ -1,0 +1,388 @@
+@import "tailwindcss";
+
+/* ============================================
+   DARK MODE CONFIGURATION
+   ============================================ */
+@variant dark (&:is(.dark *));
+
+/* ============================================
+   THEME SYSTEM - Tailwind v4
+   Professional Color Palette & Design Tokens
+   ============================================ */
+@theme {
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* ============================================
+     BASE COLORS - Foundation
+     ============================================ */
+  --color-background: theme(colors.white);
+  --color-background-dark: theme(colors.gray.950);
+  --color-foreground: theme(colors.gray.900);
+  --color-foreground-dark: theme(colors.gray.50);
+  --color-muted: theme(colors.gray.100);
+  --color-muted-dark: theme(colors.gray.800);
+  --color-border: theme(colors.gray.200);
+  --color-border-dark: theme(colors.gray.700);
+
+  /* ============================================
+     SEMANTIC COLORS
+     ============================================ */
+  /* Primary Brand Color */
+  --color-primary: theme(colors.blue.600);
+  --color-primary-hover: theme(colors.blue.700);
+  --color-primary-dark: theme(colors.blue.500);
+  --color-primary-dark-hover: theme(colors.blue.400);
+
+  /* Success */
+  --color-success: theme(colors.green.600);
+  --color-success-hover: theme(colors.green.700);
+  --color-success-dark: theme(colors.green.500);
+  --color-success-dark-hover: theme(colors.green.400);
+
+  /* Warning */
+  --color-warning: theme(colors.yellow.600);
+  --color-warning-hover: theme(colors.yellow.700);
+  --color-warning-dark: theme(colors.yellow.500);
+  --color-warning-dark-hover: theme(colors.yellow.400);
+
+  /* Danger/Error */
+  --color-danger: theme(colors.red.600);
+  --color-danger-hover: theme(colors.red.700);
+  --color-danger-dark: theme(colors.red.500);
+  --color-danger-dark-hover: theme(colors.red.400);
+
+  /* Info */
+  --color-info: theme(colors.sky.600);
+  --color-info-hover: theme(colors.sky.700);
+  --color-info-dark: theme(colors.sky.500);
+  --color-info-dark-hover: theme(colors.sky.400);
+
+  /* Info */
+  --color-info: theme(colors.sky.600);
+  --color-info-hover: theme(colors.sky.700);
+  --color-info-dark: theme(colors.sky.500);
+  --color-info-dark-hover: theme(colors.sky.400);
+
+  /* ============================================
+     COMPONENT COLORS - Sidebar
+     ============================================ */
+  --color-sidebar-bg: theme(colors.white);
+  --color-sidebar-bg-dark: theme(colors.gray.900);
+  --color-sidebar-border: theme(colors.gray.200);
+  --color-sidebar-border-dark: theme(colors.gray.800);
+  --color-sidebar-text: theme(colors.gray.700);
+  --color-sidebar-text-dark: theme(colors.gray.300);
+  --color-sidebar-text-hover: theme(colors.gray.900);
+  --color-sidebar-text-hover-dark: theme(colors.white);
+  --color-sidebar-hover-bg: theme(colors.gray.100);
+  --color-sidebar-hover-bg-dark: theme(colors.gray.800);
+  --color-sidebar-active-bg: theme(colors.blue.50);
+  --color-sidebar-active-bg-dark: rgb(30 64 175 / 0.2);
+  --color-sidebar-active-text: theme(colors.blue.600);
+  --color-sidebar-active-text-dark: theme(colors.blue.400);
+
+  /* ============================================
+     COMPONENT COLORS - Header
+     ============================================ */
+  --color-header-bg: theme(colors.white);
+  --color-header-bg-dark: theme(colors.gray.800);
+  --color-header-border: theme(colors.gray.200);
+  --color-header-border-dark: theme(colors.gray.700);
+
+  /* ============================================
+     COMPONENT COLORS - Badge
+     ============================================ */
+  --color-badge-primary-bg: theme(colors.blue.100);
+  --color-badge-primary-bg-dark: rgb(30 64 175 / 0.3);
+  --color-badge-primary-text: theme(colors.blue.700);
+  --color-badge-primary-text-dark: theme(colors.blue.400);
+
+  --color-badge-success-bg: theme(colors.green.100);
+  --color-badge-success-bg-dark: rgb(22 101 52 / 0.3);
+  --color-badge-success-text: theme(colors.green.700);
+  --color-badge-success-text-dark: theme(colors.green.400);
+
+  --color-badge-warning-bg: theme(colors.yellow.100);
+  --color-badge-warning-bg-dark: rgb(161 98 7 / 0.3);
+  --color-badge-warning-text: theme(colors.yellow.700);
+  --color-badge-warning-text-dark: theme(colors.yellow.400);
+
+  --color-badge-danger-bg: theme(colors.red.100);
+  --color-badge-danger-bg-dark: rgb(153 27 27 / 0.3);
+  --color-badge-danger-text: theme(colors.red.700);
+  --color-badge-danger-text-dark: theme(colors.red.400);
+
+  /* ============================================
+     COMPONENT COLORS - ViewDialog Base
+     ============================================ */
+  /* ============================================
+     COMPONENT COLORS - ViewDialog Base
+     ============================================ */
+  --color-dialog-overlay: rgb(0 0 0 / 0.5);
+  --color-dialog-overlay-dark: rgb(0 0 0 / 0.75);
+  --color-dialog-bg: theme(colors.white);
+  --color-dialog-bg-dark: theme(colors.gray.900);
+  --color-dialog-border: theme(colors.gray.200);
+  --color-dialog-border-dark: theme(colors.gray.700);
+
+  /* ViewDialog - Header */
+  --color-dialog-header-gradient-from: rgb(59 130 246 / 0.1);
+  --color-dialog-header-gradient-from-dark: rgb(37 99 235 / 0.2);
+  --color-dialog-header-gradient-via: rgb(168 85 247 / 0.05);
+  --color-dialog-header-gradient-via-dark: rgb(147 51 234 / 0.1);
+  --color-dialog-header-gradient-to: rgb(236 72 153 / 0.1);
+  --color-dialog-header-gradient-to-dark: rgb(219 39 119 / 0.2);
+
+  /* ViewDialog - Icon */
+  --color-dialog-icon-gradient-from: theme(colors.blue.500);
+  --color-dialog-icon-gradient-from-dark: theme(colors.blue.600);
+  --color-dialog-icon-gradient-to: theme(colors.purple.600);
+  --color-dialog-icon-gradient-to-dark: theme(colors.purple.700);
+
+  /* ViewDialog - Title */
+  --color-dialog-title-gradient-from: theme(colors.gray.900);
+  --color-dialog-title-gradient-from-dark: theme(colors.white);
+  --color-dialog-title-gradient-via: theme(colors.gray.800);
+  --color-dialog-title-gradient-via-dark: theme(colors.gray.100);
+  --color-dialog-title-gradient-to: theme(colors.gray.900);
+  --color-dialog-title-gradient-to-dark: theme(colors.white);
+
+  /* ViewDialog - Section */
+  --color-dialog-section-bg: theme(colors.white);
+  --color-dialog-section-bg-dark: rgb(31 41 55 / 0.5);
+  --color-dialog-section-gradient-from: theme(colors.gray.50);
+  --color-dialog-section-gradient-from-dark: rgb(31 41 55 / 0.5);
+  --color-dialog-section-gradient-to: transparent;
+  --color-dialog-section-gradient-to-dark: transparent;
+  --color-dialog-section-icon-bg-from: rgb(59 130 246 / 0.1);
+  --color-dialog-section-icon-bg-from-dark: rgb(37 99 235 / 0.2);
+  --color-dialog-section-icon-bg-to: rgb(168 85 247 / 0.1);
+  --color-dialog-section-icon-bg-to-dark: rgb(147 51 234 / 0.2);
+  --color-dialog-section-icon-text: theme(colors.blue.600);
+  --color-dialog-section-icon-text-dark: theme(colors.blue.400);
+
+  /* ViewDialog - Fields */
+  --color-dialog-field-label: theme(colors.gray.500);
+  --color-dialog-field-label-dark: theme(colors.gray.400);
+  --color-dialog-field-bullet: theme(colors.blue.500);
+  --color-dialog-field-value: theme(colors.gray.900);
+  --color-dialog-field-value-dark: theme(colors.gray.100);
+
+  /* ViewDialog - Status Badges */
+  --color-dialog-status-active-from: theme(colors.green.500);
+  --color-dialog-status-active-to: theme(colors.green.600);
+  --color-dialog-status-inactive-from: theme(colors.red.500);
+  --color-dialog-status-inactive-to: theme(colors.red.600);
+
+  /* ViewDialog - Buttons */
+  --color-dialog-btn-primary-from: theme(colors.blue.600);
+  --color-dialog-btn-primary-to: theme(colors.blue.700);
+  --color-dialog-btn-primary-hover-from: theme(colors.blue.700);
+  --color-dialog-btn-primary-hover-to: theme(colors.blue.800);
+  --color-dialog-btn-primary-shadow: rgb(59 130 246 / 0.3);
+
+  --color-dialog-btn-success-from: theme(colors.green.600);
+  --color-dialog-btn-success-to: theme(colors.green.700);
+  --color-dialog-btn-success-hover-from: theme(colors.green.700);
+  --color-dialog-btn-success-hover-to: theme(colors.green.800);
+  --color-dialog-btn-success-shadow: rgb(34 197 94 / 0.3);
+
+  --color-dialog-btn-danger-from: theme(colors.red.600);
+  --color-dialog-btn-danger-to: theme(colors.red.700);
+  --color-dialog-btn-danger-hover-from: theme(colors.red.700);
+  --color-dialog-btn-danger-hover-to: theme(colors.red.800);
+  --color-dialog-btn-danger-shadow: rgb(239 68 68 / 0.3);
+
+  --color-dialog-btn-warning-from: theme(colors.yellow.600);
+  --color-dialog-btn-warning-to: theme(colors.yellow.700);
+  --color-dialog-btn-warning-hover-from: theme(colors.yellow.700);
+  --color-dialog-btn-warning-hover-to: theme(colors.yellow.800);
+  --color-dialog-btn-warning-shadow: rgb(234 179 8 / 0.3);
+
+  --color-dialog-btn-secondary-bg: theme(colors.gray.200);
+  --color-dialog-btn-secondary-bg-dark: theme(colors.gray.700);
+  --color-dialog-btn-secondary-bg-hover: theme(colors.gray.300);
+  --color-dialog-btn-secondary-bg-hover-dark: theme(colors.gray.600);
+  --color-dialog-btn-secondary-text: theme(colors.gray.900);
+  --color-dialog-btn-secondary-text-dark: theme(colors.white);
+
+  /* ViewDialog - Footer */
+  --color-dialog-footer-gradient-from: theme(colors.gray.50);
+  --color-dialog-footer-gradient-from-dark: rgb(31 41 55 / 0.5);
+  --color-dialog-footer-gradient-via: theme(colors.white);
+  --color-dialog-footer-gradient-via-dark: rgb(17 24 39 / 0.3);
+  --color-dialog-footer-gradient-to: theme(colors.gray.50);
+  --color-dialog-footer-gradient-to-dark: rgb(31 41 55 / 0.5);
+
+  /* ViewDialog - Field Cards */
+  --color-dialog-card-gradient-from: theme(colors.gray.50);
+  --color-dialog-card-gradient-from-dark: rgb(31 41 55 / 0.5);
+  --color-dialog-card-gradient-to: rgb(243 244 246 / 0.5);
+  --color-dialog-card-gradient-to-dark: rgb(17 24 39 / 0.3);
+
+  /* ViewDialog - Links */
+  --color-dialog-link: theme(colors.blue.600);
+  --color-dialog-link-dark: theme(colors.blue.400);
+  --color-dialog-link-hover: theme(colors.blue.700);
+  --color-dialog-link-hover-dark: theme(colors.blue.300);
+
+  /* ViewDialog - Copy Button */
+  --color-dialog-copy-bg: theme(colors.gray.100);
+  --color-dialog-copy-bg-dark: theme(colors.gray.800);
+  --color-dialog-copy-bg-hover: theme(colors.gray.200);
+  --color-dialog-copy-bg-hover-dark: theme(colors.gray.700);
+  --color-dialog-copy-text: theme(colors.gray.400);
+  --color-dialog-copy-text-dark: theme(colors.gray.400);
+  --color-dialog-copy-text-hover: theme(colors.gray.600);
+  --color-dialog-copy-text-hover-dark: theme(colors.gray.300);
+
+  /* ViewDialog - Close Button */
+  --color-dialog-close-bg: theme(colors.gray.100);
+  --color-dialog-close-bg-dark: theme(colors.gray.800);
+  --color-dialog-close-bg-hover: theme(colors.gray.200);
+  --color-dialog-close-bg-hover-dark: theme(colors.gray.700);
+  --color-dialog-close-text: theme(colors.gray.500);
+  --color-dialog-close-text-dark: theme(colors.gray.400);
+  --color-dialog-close-text-hover: theme(colors.gray.700);
+  --color-dialog-close-text-hover-dark: theme(colors.gray.200);
+}
+
+/* ============================================
+   GLOBAL STYLES
+   ============================================ */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark mode body styles */
+.dark body {
+  background-color: var(--color-background-dark);
+  color: var(--color-foreground-dark);
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-track-transparent {
+  scrollbar-color: rgb(209 213 219) transparent;
+}
+
+.dark .scrollbar-track-transparent {
+  scrollbar-color: rgb(55 65 81) transparent;
+}
+
+/* Webkit scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(209 213 219);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(156 163 175);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgb(55 65 81);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgb(75 85 99);
+}
+
+/* ============================================
+   TOAST CUSTOM STYLING
+   ============================================ */
+[data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+
+[data-sonner-toast] {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+}
+
+.dark [data-sonner-toast] {
+  background: var(--color-background-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-foreground-dark);
+}
+
+[data-sonner-toast][data-type="success"] {
+  background: rgb(240 253 244);
+  border-color: rgb(187 247 208);
+  color: rgb(20 83 45);
+}
+
+.dark [data-sonner-toast][data-type="success"] {
+  background: rgb(22 101 52 / 0.2);
+  border-color: rgb(22 101 52);
+  color: rgb(220 252 231);
+}
+
+[data-sonner-toast][data-type="error"] {
+  background: rgb(254 242 242);
+  border-color: rgb(254 202 202);
+  color: rgb(127 29 29);
+}
+
+.dark [data-sonner-toast][data-type="error"] {
+  background: rgb(153 27 27 / 0.2);
+  border-color: rgb(153 27 27);
+  color: rgb(254 226 226);
+}
+
+[data-sonner-toast][data-type="warning"] {
+  background: rgb(254 252 232);
+  border-color: rgb(254 240 138);
+  color: rgb(113 63 18);
+}
+
+.dark [data-sonner-toast][data-type="warning"] {
+  background: rgb(161 98 7 / 0.2);
+  border-color: rgb(133 77 14);
+  color: rgb(254 249 195);
+}
+
+[data-sonner-toast][data-type="info"] {
+  background: rgb(240 249 255);
+  border-color: rgb(186 230 253);
+  color: rgb(12 74 110);
+}
+
+.dark [data-sonner-toast][data-type="info"] {
+  background: rgb(7 89 133 / 0.2);
+  border-color: rgb(7 89 133);
+  color: rgb(224 242 254);
+}

@@ -1,0 +1,76 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug NestJS Backend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "start:debug"
+      ],
+      "cwd": "${workspaceFolder}/server",
+      "console": "integratedTerminal",
+      "restart": true,
+      "sourceMaps": true,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Next.js Frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "cwd": "${workspaceFolder}/client",
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest: Current File",
+      "program": "${workspaceFolder}/server/node_modules/.bin/jest",
+      "args": [
+        "${fileBasenameNoExtension}",
+        "--config",
+        "${workspaceFolder}/server/test/jest-e2e.json"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/server"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest: All Tests",
+      "program": "${workspaceFolder}/server/node_modules/.bin/jest",
+      "args": [
+        "--runInBand",
+        "--coverage"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "cwd": "${workspaceFolder}/server"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack Debug",
+      "configurations": [
+        "Debug NestJS Backend",
+        "Debug Next.js Frontend"
+      ],
+      "stopAll": true
+    }
+  ]
+}

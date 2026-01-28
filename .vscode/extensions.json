@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next",
+    "github.copilot",
+    "github.copilot-chat",
+    "bradlc.vscode-tailwindcss",
+    "prisma.prisma",
+    "firsttris.vscode-jest-runner",
+    "orta.vscode-jest",
+    "formulahendry.auto-rename-tag",
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "yzhang.markdown-all-in-one",
+    "christian-kohler.path-intellisense",
+    "visualstudioexptteam.vscodeintellicode",
+    "ms-azuretools.vscode-docker"
+  ]
+}

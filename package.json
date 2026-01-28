@@ -1,0 +1,36 @@
+{
+  "name": "fullstack-nnp-template",
+  "version": "1.0.0",
+  "description": "Production-ready fullstack template with NestJS, Next.js, and PostgreSQL",
+  "scripts": {
+    "setup": "./setup.sh",
+    "install:all": "cd server && yarn install && cd ../client && yarn install",
+    "dev:server": "cd server && yarn start:dev",
+    "dev:client": "cd client && yarn dev",
+    "build:server": "cd server && yarn build",
+    "build:client": "cd client && yarn build",
+    "test:server": "cd server && yarn test",
+    "lint:server": "cd server && yarn lint",
+    "lint:client": "cd client && yarn lint",
+    "format:server": "cd server && yarn format",
+    "format:client": "cd client && yarn format",
+    "format:all": "yarn format:server && yarn format:client",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down",
+    "db:reset": "docker-compose down -v && docker-compose up -d"
+  },
+  "keywords": [
+    "nestjs",
+    "nextjs",
+    "postgresql",
+    "typescript",
+    "fullstack",
+    "template"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template.git"
+  }
+}
