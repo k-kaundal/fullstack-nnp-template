@@ -126,6 +126,7 @@ jobs:
         with:
           node-version: "20"
           cache: "yarn"
+          cache-dependency-path: server/yarn.lock
 
       - name: Install backend dependencies
         working-directory: ./server
@@ -158,6 +159,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "yarn"
+          cache-dependency-path: |
+            server/yarn.lock
+            client/yarn.lock
 
       - name: Audit backend
         working-directory: ./server
@@ -181,6 +186,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "yarn"
+          cache-dependency-path: |
+            server/yarn.lock
+            client/yarn.lock
 
       - name: Install backend dependencies
         working-directory: ./server
