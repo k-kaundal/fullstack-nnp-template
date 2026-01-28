@@ -38,7 +38,8 @@ export class UsersService {
    */
   private generateTemporaryPassword(): string {
     const length = 12;
-    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    const charset =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
     let password = '';
 
     // Ensure password has at least one of each required character type
@@ -54,7 +55,10 @@ export class UsersService {
     }
 
     // Shuffle the password
-    return password.split('').sort(() => Math.random() - 0.5).join('');
+    return password
+      .split('')
+      .sort(() => Math.random() - 0.5)
+      .join('');
   }
 
   /**
@@ -92,7 +96,8 @@ export class UsersService {
       }
 
       // Generate temporary password if not provided
-      const tempPassword = createUserDto.password || this.generateTemporaryPassword();
+      const tempPassword =
+        createUserDto.password || this.generateTemporaryPassword();
 
       // Create user with temporary password
       const user = this.usersRepository.create({
@@ -124,7 +129,8 @@ export class UsersService {
       return ApiResponse.success(res, {
         statusCode: HttpStatus.CREATED,
         data: savedUser,
-        message: 'User created successfully. Welcome email sent with temporary password.',
+        message:
+          'User created successfully. Welcome email sent with temporary password.',
         meta: {
           user_id: savedUser.id,
           created_at: savedUser.createdAt,

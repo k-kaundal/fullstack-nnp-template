@@ -9,6 +9,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailService } from '../mail/mail.service';
 
 /**
  * Test suite for UsersService
@@ -18,6 +19,7 @@ describe('UsersService', () => {
   let service: UsersService;
   let repository: Repository<User>;
   let cacheManager: Cache;
+  let mailService: MailService;
   let mockResponse: Partial<Response>;
 
   const mockUser: User = {
@@ -64,12 +66,19 @@ describe('UsersService', () => {
             del: jest.fn(),
           },
         },
+        {
+          provide: MailService,
+          useValue: {
+            sendWelcomeEmail: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<UsersService>(UsersService);
     repository = module.get<Repository<User>>(getRepositoryToken(User));
     cacheManager = module.get<Cache>(CACHE_MANAGER);
+    mailService = module.get<MailService>(MailService);
   });
 
   afterEach(() => {
@@ -93,20 +102,29 @@ describe('UsersService', () => {
       jest.spyOn(repository, 'create').mockReturnValue(mockUser as any);
       jest.spyOn(repository, 'save').mockResolvedValue(mockUser as any);
       jest.spyOn(cacheManager, 'del').mockResolvedValue(undefined);
+      jest.spyOn(mailService, 'sendWelcomeEmail').mockResolvedValue(undefined);
 
       await service.create(createUserDto, mockResponse as Response);
 
       expect(cacheManager.del).toHaveBeenCalledWith('user_list');
+      expect(mailService.sendWelcomeEmail).toHaveBeenCalledWith(
+        mockUser.email,
+        mockUser.firstName,
+        mockUser.email,
+        expect.any(String), // temporary password
+      );
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CREATED);
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
           status: 'success',
           statusCode: HttpStatus.CREATED,
           data: mockUser,
-          message: 'User created successfully',
+          message:
+            'User created successfully. Welcome email sent with temporary password.',
           meta: expect.objectContaining({
             user_id: expect.any(String),
             created_at: expect.any(Date),
+            email_sent: true,
           }),
         }),
       );
