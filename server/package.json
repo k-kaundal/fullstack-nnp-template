@@ -1,10 +1,40 @@
 {
   "name": "server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "Production-ready NestJS backend with PostgreSQL, TypeORM, and comprehensive API features",
+  "author": "K K Kaundal <kk@kaundal.vip>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template.git",
+    "directory": "server"
+  },
+  "bugs": {
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template/issues"
+  },
+  "homepage": "https://github.com/k-kaundal/fullstack-nnp-template#readme",
+  "keywords": [
+    "nestjs",
+    "typescript",
+    "postgresql",
+    "typeorm",
+    "rest-api",
+    "swagger",
+    "jwt",
+    "authentication",
+    "crud",
+    "backend",
+    "nodejs",
+    "express",
+    "api",
+    "fullstack-template",
+    "production-ready"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

@@ -20,17 +20,37 @@
     "db:reset": "docker-compose down -v && docker-compose up -d"
   },
   "keywords": [
+    "fullstack",
     "nestjs",
     "nextjs",
     "postgresql",
+    "typeorm",
     "typescript",
-    "fullstack",
-    "template"
+    "tailwindcss",
+    "rest-api",
+    "swagger",
+    "react",
+    "nodejs",
+    "template",
+    "boilerplate",
+    "production-ready",
+    "crud",
+    "authentication",
+    "dark-mode",
+    "monorepo"
   ],
-  "author": "",
+  "author": "K K Kaundal <kk@kaundal.vip>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/k-kaundal/fullstack-nnp-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template/issues"
+  },
+  "homepage": "https://github.com/k-kaundal/fullstack-nnp-template#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
   }
 }

@@ -1,7 +1,38 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Modern Next.js 16 frontend with React 19, TypeScript, Tailwind CSS, and dark mode support",
+  "author": "K K Kaundal <kk@kaundal.vip>",
   "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template.git",
+    "directory": "client"
+  },
+  "bugs": {
+    "url": "https://github.com/k-kaundal/fullstack-nnp-template/issues"
+  },
+  "homepage": "https://github.com/k-kaundal/fullstack-nnp-template#readme",
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwindcss",
+    "dark-mode",
+    "frontend",
+    "ssr",
+    "app-router",
+    "react-19",
+    "next-16",
+    "ui-components",
+    "fullstack-template",
+    "production-ready"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
