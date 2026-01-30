@@ -3,9 +3,15 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { INestApplication } from '@nestjs/common';
 
-async function bootstrap() {
-  const logger = new Logger('Bootstrap');
+/**
+ * Creates and configures the NestJS application
+ * Used for both local development and serverless deployment
+ *
+ * @returns Configured NestJS application instance
+ */
+async function createApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule);
 
   // Global prefix (exclude root health check)
@@ -46,11 +52,40 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
+  return app;
+}
+
+/**
+ * Bootstrap function for local development
+ * Starts the application on specified port
+ */
+async function bootstrap() {
+  const logger = new Logger('Bootstrap');
+  const app = await createApp();
+
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
 
   logger.log(`🚀 Application is running on: http://localhost:${port}`);
   logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
 }
+
+// For Vercel serverless deployment
+let cachedApp: INestApplication;
+
+/**
+ * Serverless handler for Vercel deployment
+ * Creates a single cached NestJS app instance and exports it
+ *
+ * @returns Express app handler for Vercel
+ */
+export default async (req: unknown, res: unknown) => {
+  if (!cachedApp) {
+    cachedApp = await createApp();
+    await cachedApp.init();
+  }
+
+  return cachedApp.getHttpAdapter().getInstance()(req, res);
+};
 
 bootstrap();
