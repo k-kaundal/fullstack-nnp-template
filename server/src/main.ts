@@ -4,6 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
+/**
+ * Bootstrap function to create and configure NestJS application
+ * Supports both traditional deployment and serverless (Vercel)
+ */
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
@@ -49,8 +53,9 @@ async function bootstrap() {
   const port = process.env.PORT || 3001;
   await app.listen(port);
 
-  logger.log(`🚀 Application is running on: http://localhost:${port}`);
-  logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
+  logger.log(`Application is running on: http://localhost:${port}`);
+  logger.log(`Swagger documentation: http://localhost:${port}/api/docs`);
 }
 
+// Start the application (not used in Vercel serverless)
 bootstrap();

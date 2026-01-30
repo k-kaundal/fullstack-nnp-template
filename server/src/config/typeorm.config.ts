@@ -17,4 +17,9 @@ export default new DataSource({
   migrations: ['src/migrations/*.ts'],
   synchronize: false,
   logging: configService.get('NODE_ENV') === 'development',
+  // SSL configuration for production databases (Aiven, Neon, etc.)
+  ssl:
+    configService.get('NODE_ENV') === 'production'
+      ? { rejectUnauthorized: false }
+      : false,
 });

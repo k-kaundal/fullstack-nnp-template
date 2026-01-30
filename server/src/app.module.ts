@@ -38,6 +38,11 @@ import { mailConfig } from './config/mail.config';
           configService.get('NODE_ENV') === 'development' ||
           configService.get('NODE_ENV') === 'test',
         logging: configService.get('NODE_ENV') === 'development',
+        // SSL configuration for production databases (Aiven, Neon, etc.)
+        ssl:
+          configService.get('NODE_ENV') === 'production'
+            ? { rejectUnauthorized: false }
+            : false,
       }),
     }),
     // Cache configuration

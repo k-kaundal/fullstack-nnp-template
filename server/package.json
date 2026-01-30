@@ -52,7 +52,10 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "yarn typeorm -- migration:generate -d src/config/typeorm.config.ts",
     "migration:run": "yarn typeorm -- migration:run -d src/config/typeorm.config.ts",
-    "migration:revert": "yarn typeorm -- migration:revert -d src/config/typeorm.config.ts"
+    "migration:revert": "yarn typeorm -- migration:revert -d src/config/typeorm.config.ts",
+    "vercel:build": "nest build",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel --prod"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^3.1.0",
