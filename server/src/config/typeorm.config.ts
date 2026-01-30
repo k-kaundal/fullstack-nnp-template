@@ -15,7 +15,7 @@ export default new DataSource({
   database: configService.get('DATABASE_NAME'),
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
-  synchronize: false,
+  synchronize: true,
   logging: configService.get('NODE_ENV') === 'development',
   // SSL configuration for production databases (Aiven, Neon, etc.)
   ssl:

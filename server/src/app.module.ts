@@ -26,20 +26,44 @@ import { mailConfig } from './config/mail.config';
     // Database configuration
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('DATABASE_HOST'),
-        port: configService.get('DATABASE_PORT'),
-        username: configService.get('DATABASE_USERNAME'),
-        password: configService.get('DATABASE_PASSWORD'),
-        database: configService.get('DATABASE_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
-        ssl:
-          configService.get('NODE_ENV') === 'production'
-            ? { rejectUnauthorized: false }
+      useFactory: (configService: ConfigService) => {
+        const isProduction = configService.get('NODE_ENV') === 'production';
+        const databaseUrl = configService.get('DATABASE_URL');
+
+        // If DATABASE_URL is provided (common in production), use it
+        if (databaseUrl) {
+          return {
+            type: 'postgres',
+            url: databaseUrl,
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: configService.get('DATABASE_SYNC') === 'true',
+            logging: !isProduction,
+            ssl: isProduction
+              ? {
+                  rejectUnauthorized: false, // Required for most cloud providers
+                }
+              : false,
+          };
+        }
+
+        // Otherwise, use individual connection parameters
+        return {
+          type: 'postgres',
+          host: configService.get('DATABASE_HOST'),
+          port: configService.get('DATABASE_PORT'),
+          username: configService.get('DATABASE_USERNAME'),
+          password: configService.get('DATABASE_PASSWORD'),
+          database: configService.get('DATABASE_NAME'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: configService.get('DATABASE_SYNC') === 'true',
+          logging: !isProduction,
+          ssl: isProduction
+            ? {
+                rejectUnauthorized: false, // Required for most cloud providers
+              }
             : false,
-      }),
+        };
+      },
     }),
     // Cache configuration
     CacheModule.registerAsync({
