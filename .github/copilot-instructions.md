@@ -169,6 +169,81 @@ export class UsersService {
 
 ### Backend (NestJS) Standards
 
+#### Reusable API Response Decorators - MANDATORY
+
+**ALWAYS use reusable Swagger response decorators for consistency across all controllers.**
+
+**File:** `server/src/common/decorators/api-responses.decorator.ts`
+
+**Available Decorators:**
+
+1. **@ApiUnauthorizedResponse(path)** - Use for all protected endpoints
+2. **@ApiBadRequestResponse(path)** - Use for validation errors
+3. **@ApiConflictResponse(message, path)** - Use for duplicate resources
+4. **@ApiNotFoundResponse(resourceName, path)** - Use for GET/PATCH/DELETE by ID
+5. **@ApiForbiddenResponse(path)** - Use for permission errors
+6. **@ApiInternalServerErrorResponse(path)** - Use as fallback for errors
+7. **@ApiStandardProtectedResponses(path)** - Combined (401, 403, 500)
+8. **@ApiStandardCrudResponses(resourceName, path)** - Combined (401, 404, 500)
+
+**Import Pattern:**
+```typescript
+import {
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+} from '../common/decorators';
+```
+
+**Usage Examples:**
+
+```typescript
+// Protected endpoint with validation and conflict check
+@Post()
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@ApiOperation({ summary: 'Create a new user' })
+@ApiResponseDecorator({
+  status: HttpStatus.CREATED,
+  description: 'User created successfully',
+  schema: { example: { /* success response */ } }
+})
+@ApiBadRequestResponse('/api/v1/users')
+@ApiConflictResponse('User with this email already exists', '/api/v1/users')
+@ApiUnauthorizedResponse('/api/v1/users')
+async create(@Body() createDto: CreateDto, @Res() res: Response) {
+  return this.service.create(createDto, res);
+}
+
+// GET by ID with standard CRUD responses
+@Get(':id')
+@UseGuards(JwtAuthGuard)
+@ApiOperation({ summary: 'Get user by ID' })
+@ApiResponseDecorator({
+  status: HttpStatus.OK,
+  description: 'User found',
+  schema: { example: { /* success response */ } }
+})
+@ApiStandardCrudResponses('User', '/api/v1/users/:id')
+async findOne(@Param('id') id: string, @Res() res: Response) {
+  return this.service.findOne(id, res);
+}
+```
+
+**Benefits:**
+- ✅ DRY principle - no repetitive Swagger code
+- ✅ Consistent error responses across all endpoints
+- ✅ Easy to maintain and update
+- ✅ Automatic 401/403/404/500 documentation
+- ✅ Professional API documentation
+
+**Rules:**
+- **NEVER write inline @ApiResponseDecorator for standard error codes (400, 401, 404, 409, 500)**
+- **ALWAYS use reusable decorators for error responses**
+- **ONLY write custom @ApiResponseDecorator for success responses (200, 201) with examples**
+- **Apply decorators in this order:** Success → BadRequest → Conflict → Unauthorized → NotFound
+
+---
 
 #### NestJS Code Patterns
 
@@ -345,6 +420,85 @@ if (existingUser) {
     statusCode: HttpStatus.CONFLICT,
     message: 'Email already exists',
   });
+}
+```
+
+### JWT Authentication & Route Protection - MANDATORY
+
+**All API routes must be secured with JWT authentication except public auth endpoints.**
+
+#### Protected Routes (Default)
+- **ALWAYS apply `@UseGuards(JwtAuthGuard)` at controller level for protected resources**
+- **Add `@ApiBearerAuth()` for Swagger documentation**
+- **Use `@ApiUnauthorizedResponse()` decorator for all protected endpoints**
+
+```typescript
+import { UseGuards } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiUnauthorizedResponse } from '../common/decorators';
+
+@ApiTags('users')
+@ApiBearerAuth()  // Swagger: Show lock icon
+@UseGuards(JwtAuthGuard)  // Protect entire controller
+@Controller('users')
+export class UsersController {
+  // All endpoints automatically protected
+
+  @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiUnauthorizedResponse('/api/v1/users')
+  async findAll(@Res() res: Response) {
+    return this.service.findAll(res);
+  }
+}
+```
+
+#### Public Endpoints (Exceptions)
+- **Login, Register, Password Reset, Email Verification - NO GUARD**
+- **Health check endpoint - NO GUARD**
+
+```typescript
+@ApiTags('auth')
+@Controller('auth')
+export class AuthController {
+  // Public endpoints - no guard
+  @Post('login')
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    return this.authService.login(dto, res);
+  }
+
+  // Protected endpoints - add guard
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse('/api/v1/auth/logout')
+  async logout(@Res() res: Response) {
+    return this.authService.logout(res);
+  }
+}
+```
+
+#### JWT Authentication Rules
+1. ✅ **All CRUD endpoints require authentication** (Create, Read, Update, Delete)
+2. ✅ **Apply guard at controller level** - protects all routes by default
+3. ✅ **Add @ApiBearerAuth()** - shows lock icon in Swagger UI
+4. ✅ **Use @ApiUnauthorizedResponse()** - documents 401 responses
+5. ✅ **Access token expires in 15 minutes** - refresh via /auth/refresh
+6. ✅ **Refresh token expires in 7 days** - must re-login after expiry
+7. ✅ **Tokens blacklisted on logout** - prevents reuse
+
+#### Token Usage in Controllers
+```typescript
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtPayload } from '../auth/interfaces/auth.interface';
+
+@Get('profile')
+@UseGuards(JwtAuthGuard)
+async getProfile(@CurrentUser() user: JwtPayload) {
+  // user.sub contains user ID
+  // user.email contains user email
+  return { userId: user.sub, email: user.email };
 }
 ```
 
@@ -577,6 +731,213 @@ export class UsersService {
 - Always invalidate cache after DELETE operations
 - Invalidate both individual item and list caches
 - Log cache operations for debugging
+
+### Database Standards - COMPREHENSIVE
+
+**Complete guide**: See `server/docs/DATABASE_FEATURES.md` for comprehensive documentation.
+
+#### Migrations - ALWAYS USE FOR SCHEMA CHANGES
+
+**Migration Scripts** (`server/scripts/`):
+- `generate-migration.sh` - Auto-detect entity changes and generate migration
+- `create-migration.sh` - Create empty migration template for custom SQL
+- `run-migrations.sh` - Interactive migration runner with confirmation
+- `rollback-migration.sh` - Rollback last migration (use with caution)
+
+**Migration Best Practices:**
+```bash
+# Generate migration from entity changes
+cd server
+./scripts/generate-migration.sh AddUserRoles
+
+# Create empty migration for custom changes
+./scripts/create-migration.sh AddCustomIndexes
+
+# Run pending migrations
+./scripts/run-migrations.sh
+
+# Rollback last migration (data loss possible)
+./scripts/rollback-migration.sh
+```
+
+**Migration Rules:**
+1. ✅ **ALWAYS create migrations for schema changes** - Never modify database manually
+2. ✅ **Test rollback before deploying** - Ensure DOWN method works
+3. ✅ **Keep migrations small** - One logical change per migration
+4. ✅ **Never modify old migrations** - Create new ones to fix issues
+5. ✅ **Backup before rollback** - Rollback can cause data loss
+6. ❌ **NEVER use synchronize: true in production**
+
+#### Database Seeding - FOR DEVELOPMENT/TESTING
+
+**Seeder System** (`server/src/database/seeders/`):
+- Complete seeding framework with interface, service, module, CLI
+- Users seeder included - adds 4 test users (1 admin, 2 active, 1 inactive)
+- CLI commands: `yarn seed`, `yarn seed:rollback`, `yarn seed:clear`
+
+**Creating Custom Seeders:**
+```typescript
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from '../posts/entities/post.entity';
+import { Seeder } from './seeder.interface';
+
+@Injectable()
+export class PostsSeeder implements Seeder {
+  private readonly logger = new Logger(PostsSeeder.name);
+
+  constructor(
+    @InjectRepository(Post)
+    private readonly postsRepository: Repository<Post>,
+  ) {}
+
+  async run(): Promise<void> {
+    this.logger.log('Seeding posts...');
+
+    const posts = [
+      { title: 'First Post', content: 'Content here' },
+      { title: 'Second Post', content: 'More content' },
+    ];
+
+    for (const postData of posts) {
+      // Check if already exists to prevent duplicates
+      const existing = await this.postsRepository.findOne({
+        where: { title: postData.title },
+      });
+
+      if (!existing) {
+        await this.postsRepository.save(postData);
+        this.logger.log(`Created post: ${postData.title}`);
+      }
+    }
+
+    this.logger.log('Posts seeded successfully');
+  }
+
+  async rollback(): Promise<void> {
+    this.logger.log('Rolling back posts...');
+    await this.postsRepository.delete({});
+    this.logger.log('Posts rolled back successfully');
+  }
+}
+```
+
+**Seeder Rules:**
+1. ✅ **Check for existing data** - Don't create duplicates
+2. ✅ **Handle dependencies** - Run dependent seeders in correct order
+3. ✅ **Make idempotent** - Can run multiple times safely
+4. ✅ **Use transactions** - Rollback on error
+5. ❌ **NEVER run seeders in production**
+
+#### Query Performance & Logging
+
+**Custom Database Logger** (`server/src/config/database-logger.config.ts`):
+- Automatically detects slow queries (>100ms threshold)
+- Provides optimization suggestions (add WHERE, avoid SELECT *, add LIMIT)
+- Colorized console output in development
+- Integrated in `app.module.ts` for non-production environments
+
+**Query Optimization Best Practices:**
+```typescript
+// ❌ BAD - N+1 query problem
+const users = await userRepository.find();
+for (const user of users) {
+  const posts = await postRepository.find({ where: { userId: user.id } });
+}
+
+// ✅ GOOD - Single query with eager loading
+const users = await userRepository.find({ relations: ['posts'] });
+
+// ❌ BAD - Fetches all columns
+const users = await userRepository.find();
+
+// ✅ GOOD - Select only needed columns
+const users = await userRepository.find({
+  select: ['id', 'email', 'firstName'],
+});
+
+// ✅ ALWAYS use pagination for large datasets
+const [users, total] = await userRepository.findAndCount({
+  skip: (page - 1) * limit,
+  take: limit,
+});
+
+// ✅ ALWAYS add indexes for frequently queried columns
+@Entity('users')
+export class User {
+  @Index()
+  @Column()
+  email: string;
+
+  @Index()
+  @Column()
+  firstName: string;
+}
+```
+
+#### Data Sanitization & Security - AUTOMATIC
+
+**Sanitization Middleware** (`server/src/common/middleware/sanitization.middleware.ts`):
+- Applied globally in `main.ts` - sanitizes all incoming requests
+- XSS prevention: Removes `<script>`, `<iframe>`, event handlers
+- SQL injection prevention: Removes SQL keywords (`SELECT`, `INSERT`, `DROP`, etc.)
+- JavaScript protocol removal: Removes `javascript:`, `data:` protocols
+- Recursive sanitization: Handles nested objects and arrays
+
+**Custom Validation Decorators** (`server/src/common/decorators/validation.decorators.ts`):
+
+```typescript
+import {
+  IsStrongPassword,
+  NoSqlInjection,
+  NoXss,
+  SafeString,
+  IsValidUUID,
+  IsAlphanumericWithSpaces,
+} from '../common/decorators/validation.decorators';
+
+export class CreateUserDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @IsStrongPassword() // 8+ chars, uppercase, lowercase, number, special char
+  @IsNotEmpty()
+  password: string;
+
+  @SafeString() // Combines NoSqlInjection + NoXss
+  @MinLength(2)
+  @MaxLength(50)
+  firstName: string;
+
+  @NoXss() // Prevents XSS attacks
+  @IsOptional()
+  @MaxLength(500)
+  bio?: string;
+}
+
+export class FindUserDto {
+  @IsValidUUID() // Validates UUID v4 format
+  id: string;
+}
+```
+
+**Validation Decorator Library:**
+- `@IsStrongPassword()` - 8+ chars, uppercase, lowercase, number, special char
+- `@NoSqlInjection()` - Prevents SQL injection patterns
+- `@NoXss()` - Prevents XSS attack patterns
+- `@SafeString()` - Combines NoSqlInjection + NoXss
+- `@IsValidUUID()` - Validates UUID v4 format
+- `@IsAlphanumericWithSpaces()` - Only alphanumeric + spaces
+
+**Security Rules:**
+1. ✅ **Always use parameterized queries** - TypeORM handles escaping
+2. ✅ **Validate at DTO level** - Use class-validator decorators
+3. ✅ **Sanitization is automatic** - Middleware handles all requests
+4. ✅ **Never trust user input** - Always validate and sanitize
+5. ✅ **Use HTTPS in production** - Protect data in transit
+6. ✅ **Hash passwords with bcrypt** - Never store plain text passwords
 
 ### Frontend (Next.js) Standards
 
@@ -895,21 +1256,24 @@ client/
 
   lib/                          # Core library code
     api/                        # API client and services
-      client.ts                 # Axios wrapper with interceptors
+      client.ts                 # Axios wrapper with interceptors and token refresh
       users.service.ts          # Feature API services
+      auth.service.ts           # Authentication service
+      session.service.ts        # Session management service
       index.ts
     providers/                  # Context providers
+      auth-provider.tsx         # Auth provider with session management
       theme-provider.tsx        # Theme provider using next-themes
       index.ts
     utils/                      # Utility functions
       api-response.ts
-      storage.ts
+      storage.ts                  # Storage utility (ALWAYS use, never localStorage directly)
       validation.ts
+      toast.ts                    # Toast utilities
       index.ts
 
   hooks/                        # Custom React hooks
     useUsers.ts
-    useAuth.ts
     index.ts
 
   interfaces/                   # TypeScript interfaces
@@ -933,6 +1297,11 @@ client/
 
   docs/                         # Documentation
     CLIENT_ARCHITECTURE.md
+    CODE_QUALITY.md
+    MODAL_COMPONENTS.md
+    SESSION_MANAGEMENT.md       # Client-side session management guide
+    TOAST_SYSTEM.md
+    REFRESH_TROUBLESHOOTING.md  # Page refresh troubleshooting guide
 ```
 
 #### Layout Architecture
@@ -1012,6 +1381,202 @@ export class UsersService {
 }
 
 export const usersService = new UsersService();
+```
+
+**Client-Side Authentication & Session Management:**
+- **AuthProvider**: Wrap app with `<AuthProvider>` for global auth state
+- **useAuthContext Hook**: Use `useAuthContext()` to access auth context (login, logout, user, etc.)
+- **Protected Routes**: Wrap admin pages with `<ProtectedRoute>` component
+- **Token Storage**: Use `storage.ts` utility (handles strings and objects correctly)
+- **Automatic Token Refresh**: Proactive refresh every 13 minutes (tokens expire in 15 min)
+- **Session Validation**: Background validation every 5 minutes
+- **Page Refresh Persistence**: NO logout on page refresh - tokens restored from localStorage
+- **Request Queue**: Prevents duplicate refresh requests during concurrent API calls
+- **Multi-Device Sessions**: Backend tracks sessions per device with IP, user agent
+- **Logout**: Blacklists token on server and clears client state
+
+```typescript
+// Using auth in components
+'use client';
+
+import { useAuthContext } from '@/lib/providers/auth-provider';
+import { toast } from '@/lib/utils';
+
+export function LoginForm() {
+  const { login, isLoading } = useAuthContext();
+
+  const handleSubmit = async (data: LoginDto) => {
+    const result = await login(data.email, data.password);
+    if (result.success) {
+      toast.success('Login successful!');
+      router.push('/admin');
+    } else {
+      toast.error(result.error || 'Login failed');
+    }
+  };
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+**Storage Utility - CRITICAL:**
+- **ALWAYS use storage utility functions** from `@/lib/utils/storage`
+- **NEVER use localStorage directly** - use `getStorageItem`, `setStorageItem`, `removeStorageItem`
+- Utility handles both strings (tokens) and objects (user data) correctly
+- Prevents JSON wrapping issues with JWT tokens
+
+```typescript
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/utils/storage';
+import { StorageKey } from '@/enums';
+
+// Get token (returns string without extra quotes)
+const token = getStorageItem<string>(StorageKey.ACCESS_TOKEN);
+
+// Get user object (returns parsed object)
+const user = getStorageItem<User>(StorageKey.USER_DATA);
+
+// Set token (stores as plain string)
+setStorageItem(StorageKey.ACCESS_TOKEN, 'eyJhbGc...');
+
+// Set user (stores as JSON)
+setStorageItem(StorageKey.USER_DATA, { id: '123', email: 'user@example.com' });
+
+// Remove item
+removeStorageItem(StorageKey.ACCESS_TOKEN);
+```
+
+**Protected Route Pattern:**
+```typescript
+// app/admin/layout.tsx
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+
+export default function AdminLayout({ children }) {
+  return (
+    <ProtectedRoute requireEmailVerification={false}>
+      {children}
+    </ProtectedRoute>
+  );
+}
+```
+
+**Auth Service Pattern:**
+```typescript
+// lib/api/auth.service.ts
+import { apiClient } from './client';
+import { LoginDto, RegisterDto } from '@/interfaces';
+
+export class AuthService {
+  async login(dto: LoginDto) {
+    return apiClient.post('/auth/login', dto);
+  }
+
+  async register(dto: RegisterDto) {
+    return apiClient.post('/auth/register', dto);
+  }
+
+  async logout() {
+    return apiClient.post('/auth/logout', {});
+  }
+
+  async refreshToken(refreshToken: string) {
+    return apiClient.post('/auth/refresh', { refreshToken });
+  }
+
+  async getCurrentUser() {
+    return apiClient.get('/auth/me');
+  }
+}
+
+export const authService = new AuthService();
+```
+
+### Session Management & Token Refresh - PRODUCTION READY
+
+**Backend Session Management:**
+- Session entity tracks userId, refreshToken, deviceInfo, IP, userAgent, expiration
+- SessionService handles session CRUD, validation, and automatic cleanup
+- Cron jobs clean up expired (2 AM) and inactive sessions (3 AM, >30 days)
+- Multi-device tracking with device name, type, IP address
+- Force logout all sessions endpoint for security
+
+**Client-Side Session Management:**
+- Professional request queue management in API client
+- Prevents duplicate token refresh requests during concurrent API calls
+- Token expiration detection with 2-minute buffer before expiry
+- Automatic token refresh every 13 minutes (tokens expire in 15 minutes)
+- Session validation every 5 minutes to catch invalidated sessions
+- Page refresh persistence - NO logout when user presses F5
+- Event-driven auth:logout synchronization for multi-tab support
+
+**Token Lifecycle:**
+```
+Access Token: 15 minutes expiry
+Refresh Token: 7 days expiry
+Refresh Interval: 13 minutes (2 min buffer)
+Session Validation: Every 5 minutes
+```
+
+**Page Refresh Flow:**
+1. Load tokens and user from localStorage
+2. Check if access token is expired/expiring
+3. If expired → automatic refresh using stored refresh token
+4. If valid → restore auth state
+5. Setup automatic refresh interval (13 min)
+6. Setup session validation interval (5 min)
+7. User stays logged in ✅
+
+**API Client Token Management:**
+```typescript
+// lib/api/client.ts
+// Automatic token injection in request interceptor
+private setupInterceptors(): void {
+  this.client.interceptors.request.use(async (config) => {
+    const token = getStorageItem<string>(StorageKey.ACCESS_TOKEN);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+
+  // Automatic token refresh on 401 with request queue
+  this.client.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        // Request queue prevents duplicate refreshes
+        if (isRefreshing) {
+          return new Promise((resolve) => {
+            subscribeTokenRefresh((token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(this.client(originalRequest));
+            });
+          });
+        }
+        // Refresh token and retry
+      }
+    }
+  );
+}
+```
+
+**Session Service Usage:**
+```typescript
+import { sessionService } from '@/lib/api';
+
+// Get all user sessions
+const sessions = await sessionService.getUserSessions();
+
+// Revoke specific session
+await sessionService.revokeSession('session-uuid');
+
+// Revoke all except current
+await sessionService.revokeOtherSessions();
+
+// Force logout all devices
+await sessionService.logoutAllSessions();
+```
+
+export const authService = new AuthService();
 ```
 
 **Server Components:**

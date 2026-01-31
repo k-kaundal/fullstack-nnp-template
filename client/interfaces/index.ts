@@ -5,6 +5,7 @@
 
 export * from './user.interface';
 export * from './auth.interface';
+export * from './session.interface';
 export * from './theme.interface';
 export * from './sidebar.interface';
 export * from './header.interface';

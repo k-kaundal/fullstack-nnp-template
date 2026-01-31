@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { INestApplication } from '@nestjs/common';
+import { SanitizationMiddleware } from './common/middleware/sanitization.middleware';
 
 /**
  * Creates and configures the NestJS application
@@ -24,6 +25,10 @@ async function createApp(): Promise<INestApplication> {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true,
   });
+
+  // Global sanitization middleware
+  const sanitizationMiddleware = new SanitizationMiddleware();
+  app.use(sanitizationMiddleware.use.bind(sanitizationMiddleware));
 
   // Global validation pipe
   app.useGlobalPipes(

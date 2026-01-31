@@ -21,7 +21,16 @@ export function getStorageItem<T>(key: StorageKey | string): T | null {
 
   try {
     const item = localStorage.getItem(key);
-    return item ? (JSON.parse(item) as T) : null;
+    if (!item) return null;
+
+    // For simple strings (like tokens), return as-is
+    // For objects/arrays, parse as JSON
+    try {
+      return JSON.parse(item) as T;
+    } catch {
+      // If JSON parse fails, return as string (for tokens)
+      return item as T;
+    }
   } catch {
     return null;
   }
@@ -42,7 +51,10 @@ export function setStorageItem<T>(key: StorageKey | string, value: T): void {
   if (typeof window === 'undefined') return;
 
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    // For strings (like tokens), store as-is
+    // For objects/arrays, stringify as JSON
+    const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+    localStorage.setItem(key, stringValue);
   } catch {
     // Silently fail - storage might be full or unavailable
   }

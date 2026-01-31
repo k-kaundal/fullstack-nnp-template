@@ -1,7 +1,13 @@
+'use client';
+
 import Image from 'next/image';
+import Link from 'next/link';
 import { ThemeSwitcher } from '@/components/ui';
+import { useAuthContext } from '@/lib/providers/auth-provider';
 
 export default function Home() {
+  const { isAuthenticated, user, isLoading } = useAuthContext();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 font-sans">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-gray-950 border-x border-gray-200 dark:border-gray-800 sm:items-start">
@@ -18,9 +24,18 @@ export default function Home() {
             Fullstack NestJS + Next.js + PostgreSQL Template
           </h1>
           <p className="max-w-md text-lg leading-8 text-gray-600 dark:text-gray-400">
-            A production-ready fullstack template with authentication, database integration, and
-            best practices.
+            A production-ready fullstack template with authentication, session management, and best
+            practices.
           </p>
+
+          {/* User Status */}
+          {!isLoading && isAuthenticated && user && (
+            <div className="mt-2 px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <p className="text-sm text-green-800 dark:text-green-200">
+                ✓ Logged in as <span className="font-semibold">{user.email}</span>
+              </p>
+            </div>
+          )}
 
           {/* Theme Switcher */}
           <div className="mt-4 w-full">
@@ -30,21 +45,40 @@ export default function Home() {
             <ThemeSwitcher />
           </div>
         </div>
+
+        {/* Action Buttons */}
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row w-full">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-gray-900 dark:bg-white px-5 text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 md:w-[158px]"
-            href="/admin"
-            rel="noopener noreferrer"
-          >
-            Admin Panel
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border-2 border-gray-900 dark:border-white px-5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 md:w-[158px]"
-            href="/admin/users"
-            rel="noopener noreferrer"
-          >
-            Users
-          </a>
+          {!isLoading && isAuthenticated ? (
+            <>
+              <Link
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-gray-900 dark:bg-white px-5 text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors md:w-[158px]"
+                href="/admin"
+              >
+                Admin Panel
+              </Link>
+              <Link
+                className="flex h-12 w-full items-center justify-center rounded-full border-2 border-gray-900 dark:border-white px-5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors md:w-[158px]"
+                href="/admin/users"
+              >
+                Users
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-gray-900 dark:bg-white px-5 text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 transition-colors md:w-[158px]"
+                href="/auth/login"
+              >
+                Login
+              </Link>
+              <Link
+                className="flex h-12 w-full items-center justify-center rounded-full border-2 border-gray-900 dark:border-white px-5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors md:w-[158px]"
+                href="/auth/register"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </main>
     </div>

@@ -41,8 +41,10 @@ export enum Theme {
  * Centralized storage key management
  */
 export enum StorageKey {
-  AUTH_TOKEN = 'authToken',
+  ACCESS_TOKEN = 'accessToken',
+  REFRESH_TOKEN = 'refreshToken',
   USER_DATA = 'userData',
+  SESSION_ID = 'sessionId',
   THEME = 'theme',
   LANGUAGE = 'language',
 }

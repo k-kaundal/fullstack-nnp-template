@@ -8,6 +8,7 @@ export interface User {
   firstName: string;
   lastName: string;
   isActive: boolean;
+  isEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }

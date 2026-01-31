@@ -6,15 +6,30 @@
 
 - ✅ **TypeScript** - Full TypeScript support with strict type checking
 - ✅ **TypeORM** - Database ORM with PostgreSQL integration
+- ✅ **JWT Authentication** - Complete auth system with email verification, password reset, refresh tokens
 - ✅ **Swagger/OpenAPI** - Automatic API documentation
 - ✅ **Validation** - Request validation with class-validator
 - ✅ **Cache System** - In-memory caching with @nestjs/cache-manager (cache-aside pattern)
+- ✅ **Rate Limiting** - Protect auth endpoints from brute force attacks
 - ✅ **Error Handling** - Standardized error responses with custom exceptions
 - ✅ **Response Formatting** - Consistent API response structure
+- ✅ **Email Service** - Nodemailer integration for transactional emails
 - ✅ **Logging** - Built-in logging with NestJS Logger
-- ✅ **Testing** - Jest unit tests and E2E tests
+- ✅ **Testing** - Jest unit tests and E2E tests (25 auth tests passing)
 - ✅ **Code Quality** - ESLint and Prettier configured
 - ✅ **Professional Documentation** - JSDoc comments throughout codebase
+
+## Authentication System
+
+Complete JWT-based authentication with:
+- User registration with email verification
+- Login/logout with access & refresh tokens
+- Token blacklist for secure logout
+- Password reset flow with email
+- Email verification with expiring tokens
+- Rate limiting on all auth endpoints
+- Comprehensive test coverage (25 tests)
+
 
 ## Cache Implementation
 
