@@ -43,7 +43,7 @@ async function createApp(): Promise<INestApplication> {
 
   // CORS configuration
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: '*',
     credentials: true,
     exposedHeaders: [
       'X-Correlation-Id', // For request tracking
