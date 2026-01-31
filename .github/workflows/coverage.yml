@@ -61,8 +61,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
 
       - name: Install server dependencies
         working-directory: ./server
@@ -118,7 +118,7 @@ jobs:
         with:
           lcov-file: ./server/coverage/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Code Coverage Report"
+          title: 'Code Coverage Report'
 
       - name: Coverage threshold check
         working-directory: ./server

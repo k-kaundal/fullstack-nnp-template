@@ -9,9 +9,11 @@ All API routes are now secured with JWT token-based authentication. Only public 
 ## 🛡️ Security Overview
 
 ### Protected Resources
+
 All the following endpoints now require JWT authentication:
 
 #### Users API (`/api/v1/users`)
+
 - ✅ **POST** `/users` - Create user (requires token)
 - ✅ **GET** `/users` - Get all users with pagination (requires token)
 - ✅ **GET** `/users/:id` - Get user by ID (requires token)
@@ -29,6 +31,7 @@ All the following endpoints now require JWT authentication:
 ### Public Endpoints (No Authentication Required)
 
 #### Authentication API (`/api/v1/auth`)
+
 - ✅ **POST** `/auth/register` - User registration (public)
 - ✅ **POST** `/auth/login` - User login (public)
 - ✅ **POST** `/auth/refresh` - Refresh access token (public, requires refresh token)
@@ -37,11 +40,13 @@ All the following endpoints now require JWT authentication:
 - ✅ **POST** `/auth/verify-email` - Verify email with token (public)
 
 #### Health Check
+
 - ✅ **GET** `/` - API health check (public)
 
 ---
 
 ### Protected Auth Endpoints (Require JWT Token)
+
 - ✅ **POST** `/auth/logout` - Logout and blacklist token (requires token)
 - ✅ **POST** `/auth/resend-verification` - Resend verification email (requires token)
 - ✅ **GET** `/auth/me` - Get current user profile (requires token)
@@ -51,6 +56,7 @@ All the following endpoints now require JWT authentication:
 ## 🔑 How Authentication Works
 
 ### 1. Login Flow
+
 ```bash
 # Step 1: Login to get tokens
 curl -X POST http://localhost:3001/api/v1/auth/login \
@@ -71,6 +77,7 @@ curl -X POST http://localhost:3001/api/v1/auth/login \
 ```
 
 ### 2. Accessing Protected Routes
+
 ```bash
 # Use accessToken in Authorization header
 curl -X GET http://localhost:3001/api/v1/users \
@@ -78,6 +85,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 ```
 
 ### 3. Token Refresh (When Access Token Expires)
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/refresh \
   -H "Content-Type: application/json" \
@@ -107,6 +115,7 @@ Attempting to access protected routes without a token returns:
 ## 🔧 Implementation Details
 
 ### JWT Authentication Guard
+
 **File:** `server/src/auth/guards/jwt-auth.guard.ts`
 
 ```typescript
@@ -118,6 +127,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {}
 ```
 
 ### JWT Strategy
+
 **File:** `server/src/auth/strategies/jwt.strategy.ts`
 
 - Validates JWT tokens from `Authorization: Bearer <token>` header
@@ -126,6 +136,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {}
 - Returns user object to request context
 
 ### Controller Protection
+
 **File:** `server/src/users/users.controller.ts`
 
 ```typescript
@@ -145,11 +156,13 @@ export class UsersController {
 All protected endpoints now display a 🔒 lock icon in Swagger UI and include:
 
 ### Authentication Header
+
 ```
 Authorization: Bearer <access_token>
 ```
 
 ### 401 Unauthorized Response
+
 All protected endpoints document the 401 response:
 
 ```typescript
@@ -157,6 +170,7 @@ All protected endpoints document the 401 response:
 ```
 
 Example Swagger response:
+
 ```json
 {
   "status": "error",
@@ -178,6 +192,7 @@ Created custom decorators for consistent API documentation:
 ### Available Decorators
 
 #### 1. `@ApiUnauthorizedResponse(path)`
+
 Documents 401 Unauthorized response for protected endpoints
 
 ```typescript
@@ -188,24 +203,31 @@ findAll() { ... }
 ```
 
 #### 2. `@ApiBadRequestResponse(path)`
+
 Documents 400 Bad Request for validation errors
 
 #### 3. `@ApiConflictResponse(message, path)`
+
 Documents 409 Conflict for duplicate resources
 
 #### 4. `@ApiNotFoundResponse(resourceName, path)`
+
 Documents 404 Not Found for missing resources
 
 #### 5. `@ApiForbiddenResponse(path)`
+
 Documents 403 Forbidden for permission errors
 
 #### 6. `@ApiInternalServerErrorResponse(path)`
+
 Documents 500 Internal Server Error
 
 #### 7. `@ApiStandardProtectedResponses(path)`
+
 Combined decorator for common protected endpoint responses (401, 403, 500)
 
 #### 8. `@ApiStandardCrudResponses(resourceName, path)`
+
 Combined decorator for CRUD operations (401, 404, 500)
 
 ---
@@ -247,12 +269,14 @@ curl -X GET http://localhost:3001/api/v1/users \
 ## 🔐 Token Security Features
 
 ### Access Token
+
 - **Expiration**: 15 minutes
 - **Purpose**: Short-lived for API access
 - **Storage**: Memory only (never localStorage)
 - **Validation**: JWT signature + expiration + blacklist check
 
 ### Refresh Token
+
 - **Expiration**: 7 days
 - **Purpose**: Obtain new access tokens
 - **Storage**: Secure HttpOnly cookie (recommended) or secure storage
@@ -260,6 +284,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 - **Revocation**: Old token invalidated on refresh
 
 ### Token Blacklist
+
 - Tokens added to blacklist on logout
 - Blacklisted tokens rejected even if valid JWT
 - Automatic cleanup of expired blacklist entries
@@ -290,26 +315,31 @@ curl -X GET http://localhost:3001/api/v1/users \
 ## 🎯 Best Practices Implemented
 
 ### 1. **Defense in Depth**
+
 - Controller-level guards protect entire controllers
 - Strategy validates tokens and checks blacklist
 - Database validation ensures user exists and is active
 
 ### 2. **Fail-Safe Defaults**
+
 - All endpoints require authentication by default
 - Public endpoints explicitly use no guard
 - Invalid tokens always rejected
 
 ### 3. **Least Privilege**
+
 - Access tokens expire quickly (15 min)
 - Users only access their own resources
 - Admin routes (future) will require role checks
 
 ### 4. **Complete Mediation**
+
 - Every request validated
 - No cached authorization decisions
 - Token checked on every API call
 
 ### 5. **Secure Communication**
+
 - Tokens in Authorization header (not URL)
 - HTTPS required in production (configure in deployment)
 - Credentials never logged
@@ -318,18 +348,19 @@ curl -X GET http://localhost:3001/api/v1/users \
 
 ## 📊 API Security Status
 
-| Endpoint Group | Total Routes | Protected | Public | Status |
-|----------------|--------------|-----------|--------|--------|
-| Users API | 9 | 9 (100%) | 0 | ✅ Secured |
-| Auth API | 9 | 3 (33%) | 6 (67%) | ✅ Correct |
-| Health Check | 1 | 0 | 1 (100%) | ✅ Public |
-| **TOTAL** | **19** | **12 (63%)** | **7 (37%)** | ✅ **Secure** |
+| Endpoint Group | Total Routes | Protected    | Public      | Status        |
+| -------------- | ------------ | ------------ | ----------- | ------------- |
+| Users API      | 9            | 9 (100%)     | 0           | ✅ Secured    |
+| Auth API       | 9            | 3 (33%)      | 6 (67%)     | ✅ Correct    |
+| Health Check   | 1            | 0            | 1 (100%)    | ✅ Public     |
+| **TOTAL**      | **19**       | **12 (63%)** | **7 (37%)** | ✅ **Secure** |
 
 ---
 
 ## 🚀 Testing Results
 
 ### Unit Tests
+
 ```bash
 ✅ Test Suites: 6 passed, 6 total
 ✅ Tests: 50 passed, 50 total
@@ -337,11 +368,13 @@ curl -X GET http://localhost:3001/api/v1/users \
 ```
 
 ### ESLint
+
 ```bash
 ✅ 0 errors, 0 warnings
 ```
 
 ### TypeScript Compilation
+
 ```bash
 ✅ No errors found
 ```
@@ -362,6 +395,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 **Your API is now fully secured with JWT token-based authentication!**
 
 ### Security Improvements
+
 ✅ All user operations require authentication
 ✅ Token validation on every protected request
 ✅ Token blacklist prevents use after logout
@@ -371,6 +405,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 ✅ Production-ready security implementation
 
 ### Security Level
+
 🔒🔒🔒🔒🔒 **Enterprise-Grade (Level 5/5)**
 
 **Your fullstack application now has professional, production-ready API security!** 🚀

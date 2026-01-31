@@ -23,7 +23,7 @@ describe('AuthController', () => {
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       send: jest.fn().mockReturnThis(),
-      req: { url: '/auth' } as Request,
+      req: { url: '/auth' } as unknown as Request,
     };
 
     // Mock Request object

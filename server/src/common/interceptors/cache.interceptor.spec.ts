@@ -126,14 +126,14 @@ function createMockExecutionContext(): ExecutionContext {
       }),
     }),
     getHandler: () => ({}),
-  } as any;
+  } as unknown as ExecutionContext;
 }
 
 /**
  * Creates a mock CallHandler for testing
  */
-function createMockCallHandler(data?: any): CallHandler {
+function createMockCallHandler(data?: unknown): CallHandler {
   return {
     handle: jest.fn().mockReturnValue(of(data)),
-  } as any;
+  } as unknown as CallHandler;
 }

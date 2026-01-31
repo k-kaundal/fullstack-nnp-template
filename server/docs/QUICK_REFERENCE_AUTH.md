@@ -3,6 +3,7 @@
 ## Authentication Status
 
 ### ✅ Protected Endpoints (Require JWT Token)
+
 ```
 🔒 POST   /api/v1/users
 🔒 GET    /api/v1/users
@@ -19,6 +20,7 @@
 ```
 
 ### ✅ Public Endpoints (No Token Required)
+
 ```
 ✓ GET  /                           (Health check)
 ✓ POST /api/v1/auth/register       (Sign up)
@@ -34,6 +36,7 @@
 ## Quick Usage
 
 ### 1. Get Token
+
 ```bash
 # Login
 curl -X POST http://localhost:3001/api/v1/auth/login \
@@ -44,6 +47,7 @@ curl -X POST http://localhost:3001/api/v1/auth/login \
 ```
 
 ### 2. Use Token
+
 ```bash
 # Access protected endpoint
 curl -X GET http://localhost:3001/api/v1/users \
@@ -51,6 +55,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 ```
 
 ### 3. Handle Expiry
+
 ```bash
 # If 401 error, refresh token
 curl -X POST http://localhost:3001/api/v1/auth/refresh \
@@ -61,12 +66,14 @@ curl -X POST http://localhost:3001/api/v1/auth/refresh \
 ---
 
 ## Token Lifetimes
+
 - **Access Token**: 15 minutes
 - **Refresh Token**: 7 days
 
 ---
 
 ## Quick Test
+
 ```bash
 # Get token
 TOKEN=$(curl -X POST http://localhost:3001/api/v1/auth/login \
@@ -82,6 +89,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 ---
 
 ## Swagger UI
+
 1. Go to: http://localhost:3001/api
 2. Click **Authorize** 🔒
 3. Enter: `Bearer YOUR_TOKEN`
@@ -90,6 +98,7 @@ curl -X GET http://localhost:3001/api/v1/users \
 ---
 
 ## Documentation
+
 - [Complete Guide](./API_SECURITY.md)
 - [Implementation Status](./API_SECURITY_IMPLEMENTATION_COMPLETE.md)
 - [Validation Rules](./VALIDATION.md)

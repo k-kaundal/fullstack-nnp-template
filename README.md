@@ -630,25 +630,30 @@ This template includes **comprehensive documentation** for every feature:
 4. **CONTRIBUTING.md** - Contribution guidelines
 5. **API_ENDPOINTS.md** - Complete API reference
 
-
 ## 🎭 **GraphQL Support (Alongside REST)**
 
-This template provides **both REST and GraphQL APIs** running simultaneously for maximum flexibility.
+This template provides **both REST and GraphQL APIs** running simultaneously for
+maximum flexibility.
 
 ### ⚡ **Features**
+
 - ✅ **Apollo Server v4** - Latest GraphQL server
-- ✅ **Schema-First Design** - Write `.graphql` schemas, auto-generate TypeScript types
+- ✅ **Schema-First Design** - Write `.graphql` schemas, auto-generate
+  TypeScript types
 - ✅ **GraphQL Playground** - Interactive query interface (development)
 - ✅ **Coexists with REST** - Both APIs work together
 - ✅ **JWT Authentication** - GqlAuthGuard for protected queries/mutations
-- ✅ **Reuses Services** - GraphQL resolvers use existing NestJS services (no code duplication)
+- ✅ **Reuses Services** - GraphQL resolvers use existing NestJS services (no
+  code duplication)
 
 ### 🔗 **API Endpoints**
+
 - **REST API**: `http://localhost:3001/api/v1/*`
 - **GraphQL API**: `http://localhost:3001/graphql`
 - **GraphQL Playground**: `http://localhost:3001/graphql` (dev only)
 
 ### 📝 **Example GraphQL Query**
+
 ```graphql
 query GetUsers {
   users(page: 1, limit: 10) {
@@ -669,6 +674,7 @@ query GetUsers {
 ```
 
 ### 📝 **Example GraphQL Mutation**
+
 ```graphql
 mutation CreateUser {
   createUser(
@@ -686,7 +692,9 @@ mutation CreateUser {
 ```
 
 ### 🔐 **Authentication**
+
 Add JWT token in HTTP Headers:
+
 ```json
 {
   "Authorization": "Bearer YOUR_JWT_TOKEN"
@@ -694,26 +702,31 @@ Add JWT token in HTTP Headers:
 ```
 
 ### 🎯 **Use REST for:**
+
 - ✅ Simple CRUD operations
 - ✅ File uploads
 - ✅ Standard HTTP caching
 - ✅ Public APIs
 
 ### 🎯 **Use GraphQL for:**
+
 - ✅ Complex data relationships
 - ✅ Flexible data fetching (avoid over-fetching)
 - ✅ Real-time subscriptions
 - ✅ Mobile/frontend apps with varying data needs
 
-**Documentation**: See `docs/GRAPHQL_AND_RATE_LIMITING.md` for comprehensive guide
+**Documentation**: See `docs/GRAPHQL_AND_RATE_LIMITING.md` for comprehensive
+guide
 
 ## 🛡️ **Advanced Rate Limiting**
 
-Protect your API from abuse with intelligent, environment-configurable rate limiting.
+Protect your API from abuse with intelligent, environment-configurable rate
+limiting.
 
 ### ⚙️ **Configuration**
 
 **Environment Variables:**
+
 ```env
 # Rate Limiting Configuration
 RATE_LIMIT_ENABLED=true                # Enable/disable rate limiting
@@ -727,12 +740,12 @@ RATE_LIMIT_AUTH_MAX=5                  # Auth max attempts
 
 ### 🎯 **Rate Limit Tiers**
 
-| Tier | TTL | Limit | Usage |
-|------|-----|-------|-------|
-| **Default** | 1 minute | 100 requests | General API endpoints |
-| **Strict** | 1 minute | 10 requests | Sensitive operations (delete, bulk) |
-| **Auth** | 15 minutes | 5 attempts | Login, register, password reset |
-| **Custom** | Configurable | Configurable | Per-route custom limits |
+| Tier        | TTL          | Limit        | Usage                               |
+| ----------- | ------------ | ------------ | ----------------------------------- |
+| **Default** | 1 minute     | 100 requests | General API endpoints               |
+| **Strict**  | 1 minute     | 10 requests  | Sensitive operations (delete, bulk) |
+| **Auth**    | 15 minutes   | 5 attempts   | Login, register, password reset     |
+| **Custom**  | Configurable | Configurable | Per-route custom limits             |
 
 ### 🏷️ **Usage with Decorators**
 
@@ -741,7 +754,7 @@ import {
   AuthRateLimit,
   StrictRateLimit,
   PublicRateLimit,
-  RateLimit
+  RateLimit,
 } from '../common/decorators';
 
 @Controller('auth')
@@ -749,12 +762,12 @@ export class AuthController {
   // Login: 5 attempts per 15 minutes
   @Post('login')
   @AuthRateLimit()
-  async login() { }
+  async login() {}
 
   // Password reset: Custom limit
   @Post('reset-password')
   @RateLimit(300000, 3, 'Too many password reset attempts')
-  async resetPassword() { }
+  async resetPassword() {}
 }
 
 @Controller('users')
@@ -762,18 +775,19 @@ export class UsersController {
   // Public endpoint: 100 requests/minute
   @Get()
   @PublicRateLimit()
-  async findAll() { }
+  async findAll() {}
 
   // Sensitive operation: 10 requests/minute
   @Delete(':id')
   @StrictRateLimit()
-  async remove() { }
+  async remove() {}
 }
 ```
 
 ### 📊 **Response Headers**
 
 **Success Response (within limit):**
+
 ```
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 95
@@ -781,6 +795,7 @@ X-RateLimit-Reset: 1706371200
 ```
 
 **Error Response (limit exceeded):**
+
 ```
 HTTP/1.1 429 Too Many Requests
 X-RateLimit-Limit: 100
@@ -790,12 +805,14 @@ Retry-After: 45
 ```
 
 ### 🎯 **Smart Tracking**
+
 - **Authenticated Users**: Rate limited by user ID (more accurate)
 - **Unauthenticated Users**: Rate limited by IP address
 - **RFC 6585 Compliant**: Standard rate limit headers
 - **Retry-After Header**: Tells clients when to retry
 
 **Documentation**: See `docs/GRAPHQL_AND_RATE_LIMITING.md` for complete guide
+
 ## �🚀 Quick Start
 
 ### Prerequisites

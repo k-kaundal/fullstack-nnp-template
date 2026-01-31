@@ -25,7 +25,7 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
+    it('should return API health status with running message', () => {
       appController.getHello(mockResponse as Response);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
@@ -35,11 +35,19 @@ describe('AppController', () => {
           statusCode: HttpStatus.OK,
           message: 'API is running successfully',
           data: expect.objectContaining({
-            message: 'Fullstack NNP API is running',
+            message: 'Fullstack NNP API is running!',
             version: '1.0.0',
+            status: 'healthy',
+            timestamp: expect.any(String),
+            endpoints: expect.objectContaining({
+              docs: '/api/docs',
+              v1: '/api/v1',
+              v2: '/api/v2',
+            }),
           }),
           meta: expect.objectContaining({
             environment: expect.any(String),
+            uptime: expect.any(Number),
           }),
         }),
       );

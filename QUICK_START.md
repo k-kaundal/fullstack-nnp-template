@@ -18,17 +18,18 @@ yarn dev
 
 ## 📍 Service URLs
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Frontend | http://localhost:3000 | - |
-| Backend API | http://localhost:3001 | - |
-| Swagger Docs | http://localhost:3001/api/docs | - |
-| PostgreSQL | localhost:5432 | postgres / postgres |
-| pgAdmin | http://localhost:5050 | admin@admin.com / admin |
+| Service      | URL                            | Credentials             |
+| ------------ | ------------------------------ | ----------------------- |
+| Frontend     | http://localhost:3000          | -                       |
+| Backend API  | http://localhost:3001          | -                       |
+| Swagger Docs | http://localhost:3001/api/docs | -                       |
+| PostgreSQL   | localhost:5432                 | postgres / postgres     |
+| pgAdmin      | http://localhost:5050          | admin@admin.com / admin |
 
 ## 🛠️ Common Commands
 
 ### Root Level
+
 ```bash
 yarn install:all        # Install all dependencies
 yarn db:start           # Start database
@@ -41,6 +42,7 @@ yarn lint:client        # Lint frontend
 ```
 
 ### Backend (server/)
+
 ```bash
 yarn start:dev          # Development mode
 yarn build              # Build for production
@@ -55,6 +57,7 @@ yarn migration:revert   # Revert migration
 ```
 
 ### Frontend (client/)
+
 ```bash
 yarn dev                # Development mode
 yarn build              # Build for production
@@ -89,6 +92,7 @@ fullstack-nnp-template/
 ## 🔧 Creating a New Feature
 
 ### Backend Module
+
 ```bash
 # Generate files
 cd server
@@ -105,6 +109,7 @@ nest g service modules/posts
 ```
 
 ### Frontend Page
+
 ```bash
 # 1. Create page (app/posts/page.tsx)
 # 2. Add API methods (lib/api.ts)
@@ -115,6 +120,7 @@ nest g service modules/posts
 ## 📝 Code Examples
 
 ### Backend Controller
+
 ```typescript
 @Controller('posts')
 @ApiTags('posts')
@@ -128,6 +134,7 @@ export class PostsController {
 ```
 
 ### Backend Service
+
 ```typescript
 @Injectable()
 export class PostsService {
@@ -144,6 +151,7 @@ export class PostsService {
 ```
 
 ### DTO with Validation
+
 ```typescript
 export class CreatePostDto {
   @ApiProperty()
@@ -159,6 +167,7 @@ export class CreatePostDto {
 ```
 
 ### Frontend Server Component
+
 ```typescript
 export default async function PostsPage() {
   const posts = await apiClient.getPosts();
@@ -167,6 +176,7 @@ export default async function PostsPage() {
 ```
 
 ### Frontend Client Component
+
 ```typescript
 'use client';
 
@@ -185,6 +195,7 @@ export function PostForm() {
 ## 🧪 Testing
 
 ### Backend Unit Test
+
 ```typescript
 describe('PostsService', () => {
   it('should create a post', async () => {
@@ -196,6 +207,7 @@ describe('PostsService', () => {
 ```
 
 ### Run Tests
+
 ```bash
 cd server
 yarn test              # Unit tests
@@ -207,6 +219,7 @@ yarn test:e2e          # E2E tests
 ## 🔐 Environment Variables
 
 ### Backend (.env)
+
 ```env
 NODE_ENV=development
 PORT=3001
@@ -221,6 +234,7 @@ CORS_ORIGIN=http://localhost:3000
 ```
 
 ### Frontend (.env.local)
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
@@ -228,6 +242,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ## 📊 Database
 
 ### Start/Stop
+
 ```bash
 docker-compose up -d       # Start
 docker-compose down        # Stop
@@ -235,6 +250,7 @@ docker-compose down -v     # Stop and remove data
 ```
 
 ### Migrations
+
 ```bash
 cd server
 yarn migration:generate -- -n CreatePosts
@@ -245,12 +261,14 @@ yarn migration:revert
 ## 🎨 Code Standards
 
 ### Naming Conventions
+
 - Variables/Functions: `camelCase`
 - Classes/Interfaces: `PascalCase`
 - Constants: `UPPER_SNAKE_CASE`
 - Files: `kebab-case.ts` or `PascalCase.tsx`
 
 ### Commit Messages
+
 ```
 feat(users): add email verification
 fix(auth): resolve token issue
@@ -262,6 +280,7 @@ refactor(api): improve error handling
 ## 🚨 Troubleshooting
 
 ### Database Connection Failed
+
 ```bash
 # Restart Docker containers
 docker-compose down
@@ -269,6 +288,7 @@ docker-compose up -d
 ```
 
 ### Port Already in Use
+
 ```bash
 # Change PORT in .env (backend)
 PORT=3002
@@ -278,6 +298,7 @@ lsof -ti:3001 | xargs kill -9
 ```
 
 ### Module Not Found
+
 ```bash
 # Reinstall dependencies
 cd server && yarn install
@@ -285,6 +306,7 @@ cd client && yarn install
 ```
 
 ### TypeScript Errors
+
 ```bash
 # Clean build
 rm -rf dist node_modules
@@ -304,7 +326,8 @@ yarn build
 
 1. Check the main [README.md](README.md)
 2. Review [CONTRIBUTING.md](CONTRIBUTING.md)
-3. Check [GitHub Issues](https://github.com/k-kaundal/fullstack-nnp-template/issues)
+3. Check
+   [GitHub Issues](https://github.com/k-kaundal/fullstack-nnp-template/issues)
 4. Read [Copilot Instructions](.github/copilot-instructions.md)
 
 ## ✅ Pre-commit Checklist

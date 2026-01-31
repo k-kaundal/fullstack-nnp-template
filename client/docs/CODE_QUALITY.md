@@ -1,6 +1,7 @@
 # Code Quality Standards
 
 ## Overview
+
 This document outlines the code quality standards and ESLint rules for the frontend application.
 
 ## ESLint Configuration
@@ -8,6 +9,7 @@ This document outlines the code quality standards and ESLint rules for the front
 ### Mandatory Rules (All set to ERROR)
 
 #### 1. No Unused Variables/Imports
+
 ```javascript
 '@typescript-eslint/no-unused-vars': 'error'
 ```
@@ -15,10 +17,11 @@ This document outlines the code quality standards and ESLint rules for the front
 **Rule**: All variables and imports must be used, or prefixed with underscore if intentionally unused.
 
 **Examples:**
+
 ```typescript
 // ❌ BAD - unused import
-import { User, Post } from '@/interfaces';  // Post not used
-const name = 'John';  // name not used
+import { User, Post } from '@/interfaces'; // Post not used
+const name = 'John'; // name not used
 
 // ✅ GOOD - all imports used
 import { User } from '@/interfaces';
@@ -30,6 +33,7 @@ function handleClick(_event: React.MouseEvent) {
 ```
 
 #### 2. No Explicit Any Types
+
 ```javascript
 '@typescript-eslint/no-explicit-any': 'error'
 ```
@@ -37,6 +41,7 @@ function handleClick(_event: React.MouseEvent) {
 **Rule**: Never use `any` type. Use proper types, `unknown`, generics, or union types.
 
 **Examples:**
+
 ```typescript
 // ❌ BAD - using any
 function process(data: any) { ... }
@@ -53,6 +58,7 @@ function handle(data: unknown) {
 ```
 
 #### 3. No Console Statements
+
 ```javascript
 'no-console': 'error'
 ```
@@ -60,6 +66,7 @@ function handle(data: unknown) {
 **Rule**: No `console.log`, `console.error`, `console.warn` in production code.
 
 **Examples:**
+
 ```typescript
 // ❌ BAD - console statements
 console.log('Debug:', user);
@@ -79,6 +86,7 @@ this.logger.error('Error occurred', error.stack);
 ```
 
 #### 4. No Debugger Statements
+
 ```javascript
 'no-debugger': 'error'
 ```
@@ -86,6 +94,7 @@ this.logger.error('Error occurred', error.stack);
 **Rule**: No `debugger` statements allowed.
 
 #### 5. React Hooks Rules
+
 ```javascript
 'react-hooks/rules-of-hooks': 'error'
 'react-hooks/exhaustive-deps': 'error'
@@ -98,6 +107,7 @@ this.logger.error('Error occurred', error.stack);
 ### Strict Requirements
 
 #### Interfaces
+
 - **Location**: `interfaces/` folder
 - **Extension**: `.interface.ts`
 - **Rule**: ALL interfaces MUST be in this folder
@@ -114,6 +124,7 @@ import { UserCardProps } from '@/interfaces';
 ```
 
 #### Types
+
 - **Location**: `types/` folder
 - **Extension**: `.types.ts`
 - **Rule**: ALL type definitions MUST be in this folder
@@ -128,6 +139,7 @@ import { ResponseType } from '@/types';
 ```
 
 #### Enums
+
 - **Location**: `enums/` folder
 - **Extension**: `.enum.ts`
 - **Rule**: ALL enums MUST be in this folder
@@ -137,7 +149,7 @@ import { ResponseType } from '@/types';
 // ❌ BAD - inline enum
 enum UserStatus {
   Active = 'active',
-  Inactive = 'inactive'
+  Inactive = 'inactive',
 }
 
 // ✅ GOOD - import from enums
@@ -147,6 +159,7 @@ import { UserStatus } from '@/enums';
 ## Running ESLint
 
 ### Commands
+
 ```bash
 # Check for errors
 yarn lint
@@ -156,17 +169,20 @@ yarn lint --fix
 ```
 
 ### Before Every Commit
+
 Run `yarn lint` and fix ALL errors. Zero tolerance policy.
 
 ### Common Fixes
 
 #### Fix 1: Remove Unused Imports
+
 ```bash
 # ESLint can auto-fix most unused imports
 yarn lint --fix
 ```
 
 #### Fix 2: Prefix Unused Parameters
+
 ```typescript
 // If parameter is required by interface but not used
 function handleSubmit(_event: React.FormEvent) {
@@ -175,13 +191,14 @@ function handleSubmit(_event: React.FormEvent) {
 ```
 
 #### Fix 3: Add Explicit Types
+
 ```typescript
 // Add type annotations to callbacks
-users.map((user: User) => user.name)
+users.map((user: User) => user.name);
 
 // Or use typed arrays
 const users: User[] = [];
-users.map(user => user.name) // TypeScript infers type
+users.map((user) => user.name); // TypeScript infers type
 ```
 
 ## Pre-Commit Checklist

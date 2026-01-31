@@ -188,8 +188,8 @@ import { ConfigurableHttpCacheInterceptor } from '../common/interceptors/http-ca
 @UseInterceptors(
   new ConfigurableHttpCacheInterceptor(
     300, // 5 minutes max-age
-    false // public cache (CDN can cache)
-  )
+    false, // public cache (CDN can cache)
+  ),
 )
 export class PublicPostsController {
   @Get()
@@ -202,10 +202,12 @@ export class PublicPostsController {
 ### 304 Not Modified
 
 The interceptor automatically returns `304 Not Modified` when:
+
 - Client sends `If-None-Match` header matching the ETag
 - Client sends `If-Modified-Since` header with recent timestamp
 
 **Client Example:**
+
 ```bash
 # First request
 curl -i http://localhost:3001/api/v1/users
@@ -312,9 +314,7 @@ import { CacheWarmingService } from '../common/services/cache-warming.service';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
-  constructor(
-    private readonly cacheWarmingService: CacheWarmingService,
-  ) {}
+  constructor(private readonly cacheWarmingService: CacheWarmingService) {}
 
   async onModuleInit() {
     // Register cache warming for active users
@@ -373,15 +373,15 @@ this.cacheWarmingService.register({
 
 ```typescript
 // ✅ GOOD - Descriptive and hierarchical
-'user:123'
-'user:list:active'
-'user:count:total'
-'post:123:comments'
+'user:123';
+'user:list:active';
+'user:count:total';
+'post:123:comments';
 
 // ❌ BAD - Unclear and flat
-'u123'
-'list'
-'data'
+'u123';
+'list';
+'data';
 ```
 
 ### 2. TTL Strategy
@@ -540,7 +540,7 @@ describe('CacheService', () => {
 
   it('should return null for expired key', async () => {
     await cacheService.set('test_key', 'test_value', 100);
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     const value = await cacheService.get('test_key');
     expect(value).toBeNull();
   });

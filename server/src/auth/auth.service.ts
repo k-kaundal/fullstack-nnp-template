@@ -104,7 +104,7 @@ export class AuthService {
       );
 
       // Remove password from response
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const { password: _password, ...userWithoutPassword } = savedUser;
 
       this.logger.log(`User registered successfully: ${savedUser.id}`);
@@ -197,7 +197,7 @@ export class AuthService {
       );
 
       // Remove password from response
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       const { password: _password, ...userWithoutPassword } = user;
 
       this.logger.log(`User logged in successfully: ${user.id}`);

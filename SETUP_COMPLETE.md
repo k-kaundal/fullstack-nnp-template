@@ -3,6 +3,7 @@
 ## ✅ What's Been Created
 
 ### 📁 Project Structure
+
 ```
 fullstack-nnp-template/
 ├── .github/
@@ -70,6 +71,7 @@ fullstack-nnp-template/
 ## 🚀 Features Implemented
 
 ### Backend (NestJS)
+
 - ✅ TypeScript with strict configuration
 - ✅ NestJS framework with modular architecture
 - ✅ PostgreSQL database integration
@@ -86,6 +88,7 @@ fullstack-nnp-template/
 - ✅ Database migration scripts
 
 ### Frontend (Next.js)
+
 - ✅ Next.js 16 with App Router
 - ✅ React 19
 - ✅ TypeScript configuration
@@ -96,6 +99,7 @@ fullstack-nnp-template/
 - ✅ Prettier formatting
 
 ### Infrastructure
+
 - ✅ Docker Compose for PostgreSQL
 - ✅ pgAdmin for database management
 - ✅ Automated setup script
@@ -107,6 +111,7 @@ fullstack-nnp-template/
 - ✅ EditorConfig
 
 ### Documentation
+
 - ✅ Comprehensive README
 - ✅ Quick Start guide
 - ✅ Contributing guidelines
@@ -116,6 +121,7 @@ fullstack-nnp-template/
 ## 🎯 Next Steps
 
 ### 1. Initial Setup
+
 ```bash
 # Run the automated setup
 chmod +x setup.sh
@@ -123,6 +129,7 @@ chmod +x setup.sh
 ```
 
 ### 2. Verify Installation
+
 ```bash
 # Check backend
 cd server
@@ -136,6 +143,7 @@ yarn build
 ```
 
 ### 3. Start Development
+
 ```bash
 # Terminal 1: Backend
 cd server
@@ -147,6 +155,7 @@ yarn dev
 ```
 
 ### 4. Access Services
+
 - Frontend: http://localhost:3000
 - Backend: http://localhost:3001
 - Swagger: http://localhost:3001/api/docs
@@ -155,6 +164,7 @@ yarn dev
 ## 📋 Verification Checklist
 
 ### Backend
+
 - [ ] Dependencies installed (`yarn install` in server/)
 - [ ] Environment file created (`.env` from `.env.example`)
 - [ ] Database running (`docker-compose up -d`)
@@ -164,6 +174,7 @@ yarn dev
 - [ ] Swagger accessible (http://localhost:3001/api/docs)
 
 ### Frontend
+
 - [ ] Dependencies installed (`yarn install` in client/)
 - [ ] Environment file created (`.env.local` from `.env.example`)
 - [ ] Linting passing (`yarn lint`)
@@ -172,6 +183,7 @@ yarn dev
 - [ ] Frontend accessible (http://localhost:3000)
 
 ### Database
+
 - [ ] PostgreSQL container running
 - [ ] pgAdmin accessible (http://localhost:5050)
 - [ ] Can connect to database from pgAdmin
@@ -179,6 +191,7 @@ yarn dev
 ## 🛠️ Customization Guide
 
 ### 1. Update Project Name
+
 ```bash
 # Update package.json files
 # Update docker-compose.yml container names
@@ -186,12 +199,14 @@ yarn dev
 ```
 
 ### 2. Configure Database
+
 ```bash
 # Edit docker-compose.yml for custom credentials
 # Update server/.env with matching credentials
 ```
 
 ### 3. Add Authentication (Future)
+
 ```bash
 cd server
 nest g module modules/auth
@@ -201,6 +216,7 @@ nest g controller modules/auth
 ```
 
 ### 4. Add More Modules
+
 ```bash
 # Generate new feature module
 cd server
@@ -215,6 +231,7 @@ nest g service modules/posts
 ## 📊 Code Quality Standards
 
 ### Enforced Standards
+
 - TypeScript strict mode
 - ESLint rules
 - Prettier formatting
@@ -224,6 +241,7 @@ nest g service modules/posts
 - Test coverage (aim for 80%+)
 
 ### Best Practices
+
 - Use dependency injection
 - Write descriptive commit messages
 - Add JSDoc for complex functions
@@ -243,6 +261,7 @@ nest g service modules/posts
 ## 🚀 Deployment Ready
 
 ### What's Included
+
 - Production build scripts
 - Environment configuration
 - Database migrations
@@ -252,6 +271,7 @@ nest g service modules/posts
 - API documentation
 
 ### Before Production
+
 - [ ] Update JWT_SECRET
 - [ ] Configure production database
 - [ ] Set up proper logging
@@ -272,12 +292,14 @@ nest g service modules/posts
 ### Common Issues
 
 **Port Already in Use:**
+
 ```bash
 # Kill process on port
 lsof -ti:3001 | xargs kill -9
 ```
 
 **Database Connection Failed:**
+
 ```bash
 # Restart Docker
 docker-compose down
@@ -285,6 +307,7 @@ docker-compose up -d
 ```
 
 **Module Not Found:**
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules yarn.lock
@@ -293,9 +316,11 @@ yarn install
 
 ## 🎉 You're All Set!
 
-Your fullstack template is now ready for development. Fork this repository to start your new project!
+Your fullstack template is now ready for development. Fork this repository to
+start your new project!
 
 ### Quick Commands Reminder
+
 ```bash
 # Root level
 yarn db:start           # Start database
@@ -315,7 +340,8 @@ yarn lint               # Lint
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for
+guidelines.
 
 ## 📝 License
 
@@ -325,4 +351,4 @@ MIT License - See [LICENSE](LICENSE) for details.
 
 **Built with ❤️ using NestJS, Next.js, and PostgreSQL**
 
-*Happy Coding! 🚀*
+_Happy Coding! 🚀_

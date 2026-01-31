@@ -9,11 +9,13 @@ Reusable Swagger API response decorators have been created and are now being use
 ## 📚 What Was Implemented
 
 ### 1. **Reusable API Response Decorators**
+
 **File:** `server/src/common/decorators/api-responses.decorator.ts`
 
 **8 Powerful Decorators Created:**
 
 #### Standard Error Response Decorators
+
 1. ✅ **@ApiUnauthorizedResponse(path)** - 401 Unauthorized
 2. ✅ **@ApiBadRequestResponse(path)** - 400 Bad Request / Validation
 3. ✅ **@ApiConflictResponse(message, path)** - 409 Conflict / Duplicate
@@ -22,12 +24,14 @@ Reusable Swagger API response decorators have been created and are now being use
 6. ✅ **@ApiInternalServerErrorResponse(path)** - 500 Server Error
 
 #### Combined Decorators
+
 7. ✅ **@ApiStandardProtectedResponses(path)** - Combined (401, 403, 500)
 8. ✅ **@ApiStandardCrudResponses(resourceName, path)** - Combined (401, 404, 500)
 
 ---
 
 ### 2. **Barrel Export Created**
+
 **File:** `server/src/common/decorators/index.ts`
 
 ```typescript
@@ -36,11 +40,12 @@ export * from './cache-key.decorator';
 ```
 
 **Easy Import Pattern:**
+
 ```typescript
 import {
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
-  ApiConflictResponse
+  ApiConflictResponse,
 } from '../common/decorators';
 ```
 
@@ -49,6 +54,7 @@ import {
 ### 3. **Controllers Updated to Use Decorators**
 
 #### Users Controller
+
 **File:** `server/src/users/users.controller.ts`
 
 - ✅ Applied `@ApiUnauthorizedResponse()` to create endpoint
@@ -57,6 +63,7 @@ import {
 - ✅ All endpoints now use reusable decorators
 
 #### Auth Controller
+
 **File:** `server/src/auth/auth.controller.ts`
 
 - ✅ Updated register endpoint with reusable decorators
@@ -67,23 +74,27 @@ import {
 ---
 
 ### 4. **Copilot Instructions Updated**
+
 **File:** `.github/copilot-instructions.md`
 
 **New Sections Added:**
 
 #### A. Reusable API Response Decorators (Line 172)
+
 - Complete documentation of all 8 decorators
 - Import patterns and usage examples
 - Benefits and best practices
 - Mandatory usage rules
 
 #### B. JWT Authentication & Route Protection (Line 228)
+
 - Protected route patterns with decorators
 - Public endpoint exceptions
 - JWT authentication rules
 - Token usage in controllers
 
 #### C. Client-Side Authentication (Line 1219)
+
 - AuthProvider and useAuth hook
 - Protected route patterns
 - Auth service implementation
@@ -94,7 +105,9 @@ import {
 ## 🎯 Benefits of Reusable Decorators
 
 ### 1. **DRY Principle (Don't Repeat Yourself)**
+
 **Before:**
+
 ```typescript
 // Repeated in every controller endpoint
 @ApiResponseDecorator({
@@ -113,6 +126,7 @@ import {
 ```
 
 **After:**
+
 ```typescript
 // Simple one-liner
 @ApiUnauthorizedResponse('/api/v1/users')
@@ -123,6 +137,7 @@ import {
 ---
 
 ### 2. **Consistency Across All Endpoints**
+
 - ✅ Same error format everywhere
 - ✅ Consistent status codes
 - ✅ Standardized error messages
@@ -131,6 +146,7 @@ import {
 ---
 
 ### 3. **Easy Maintenance**
+
 - ✅ Update error format in one place
 - ✅ Changes apply to all endpoints automatically
 - ✅ No need to hunt down duplicate code
@@ -139,6 +155,7 @@ import {
 ---
 
 ### 4. **Professional API Documentation**
+
 - ✅ Complete Swagger documentation
 - ✅ All error codes documented
 - ✅ Clear error examples
@@ -147,6 +164,7 @@ import {
 ---
 
 ### 5. **Developer Experience**
+
 - ✅ Auto-completion in IDE
 - ✅ Less typing required
 - ✅ Fewer mistakes
@@ -186,6 +204,7 @@ async create(@Body() createDto: CreateUserDto, @Res() res: Response) {
 ```
 
 **What this gives you:**
+
 - ✅ Swagger shows success response (201)
 - ✅ Swagger shows validation errors (400)
 - ✅ Swagger shows duplicate email error (409)
@@ -212,6 +231,7 @@ async register(@Body() registerDto: RegisterDto, @Res() res: Response) {
 ```
 
 **What this gives you:**
+
 - ✅ Swagger shows success response (201)
 - ✅ Swagger shows validation errors (400)
 - ✅ Swagger shows duplicate email error (409)
@@ -237,6 +257,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ```
 
 **@ApiStandardCrudResponses includes:**
+
 - ✅ 401 Unauthorized
 - ✅ 404 User not found
 - ✅ 500 Internal Server Error
@@ -246,12 +267,15 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ## 🔧 Decorator Reference
 
 ### @ApiUnauthorizedResponse(path)
+
 **Use for:** All protected endpoints requiring JWT
+
 ```typescript
 @ApiUnauthorizedResponse('/api/v1/users')
 ```
 
 **Generated Response:**
+
 ```json
 {
   "status": "error",
@@ -265,12 +289,15 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ---
 
 ### @ApiBadRequestResponse(path)
+
 **Use for:** Endpoints with input validation
+
 ```typescript
 @ApiBadRequestResponse('/api/v1/users')
 ```
 
 **Generated Response:**
+
 ```json
 {
   "status": "error",
@@ -285,12 +312,15 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ---
 
 ### @ApiConflictResponse(message, path)
+
 **Use for:** Duplicate resource errors
+
 ```typescript
 @ApiConflictResponse('User with this email already exists', '/api/v1/users')
 ```
 
 **Generated Response:**
+
 ```json
 {
   "status": "error",
@@ -304,12 +334,15 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ---
 
 ### @ApiNotFoundResponse(resourceName, path)
+
 **Use for:** GET/PATCH/DELETE by ID endpoints
+
 ```typescript
 @ApiNotFoundResponse('User', '/api/v1/users/:id')
 ```
 
 **Generated Response:**
+
 ```json
 {
   "status": "error",
@@ -324,11 +357,11 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 
 ## 📊 Implementation Status
 
-| Controller | Decorators Applied | Status | Endpoints Updated |
-|------------|-------------------|--------|-------------------|
-| Users Controller | ✅ Yes | Complete | 1/9 (more coming) |
-| Auth Controller | ✅ Yes | Partial | 3/9 |
-| App Controller | N/A | N/A | Health check (public) |
+| Controller       | Decorators Applied | Status   | Endpoints Updated     |
+| ---------------- | ------------------ | -------- | --------------------- |
+| Users Controller | ✅ Yes             | Complete | 1/9 (more coming)     |
+| Auth Controller  | ✅ Yes             | Partial  | 3/9                   |
+| App Controller   | N/A                | N/A      | Health check (public) |
 
 **Next Steps:** Apply decorators to remaining endpoints in auth controller.
 
@@ -337,6 +370,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ## 🧪 Testing Results
 
 ### Unit Tests
+
 ```bash
 ✅ Test Suites: 6 passed, 6 total
 ✅ Tests: 50 passed, 50 total
@@ -345,6 +379,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ```
 
 ### ESLint
+
 ```bash
 ✅ 0 errors
 ✅ 0 warnings
@@ -352,6 +387,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ```
 
 ### TypeScript
+
 ```bash
 ✅ Strict mode enabled
 ✅ No compilation errors
@@ -363,11 +399,13 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ## 📚 Documentation Files
 
 ### Created
+
 1. ✅ `server/src/common/decorators/api-responses.decorator.ts` - Decorator implementations
 2. ✅ `server/src/common/decorators/index.ts` - Barrel export
 3. ✅ `server/docs/API_RESPONSE_DECORATORS.md` - This file
 
 ### Updated
+
 1. ✅ `.github/copilot-instructions.md` - Added decorator usage guidelines
 2. ✅ `server/src/users/users.controller.ts` - Using decorators
 3. ✅ `server/src/auth/auth.controller.ts` - Using decorators
@@ -377,6 +415,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ## 🎯 Mandatory Rules
 
 ### DO ✅
+
 1. **ALWAYS use reusable decorators** for standard error responses
 2. **ONLY write custom @ApiResponseDecorator** for success responses (200, 201)
 3. **Import from barrel export**: `import { ... } from '../common/decorators';`
@@ -384,6 +423,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 5. **Use combined decorators** when appropriate (ApiStandardCrudResponses)
 
 ### DON'T ❌
+
 1. **NEVER write inline @ApiResponseDecorator** for error codes (400, 401, 404, 409, 500)
 2. **NEVER duplicate Swagger error response code** across controllers
 3. **NEVER skip error response documentation** on endpoints
@@ -395,11 +435,13 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ## 🚀 Next Steps
 
 ### Immediate
+
 - [ ] Apply decorators to remaining auth controller endpoints
 - [ ] Apply decorators to future new controllers
 - [ ] Update all existing controllers gradually
 
 ### Future Enhancements
+
 - [ ] Add more combined decorators for common patterns
 - [ ] Create decorators for rate limiting responses (429)
 - [ ] Create decorators for service unavailable (503)
@@ -412,6 +454,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 **Reusable API response decorators have been successfully implemented!**
 
 ### Key Achievements
+
 ✅ 8 reusable decorators created
 ✅ Controllers updated to use decorators
 ✅ Copilot instructions updated
@@ -422,6 +465,7 @@ async findOne(@Param('id') id: string, @Res() res: Response) {
 ✅ API documentation is consistent
 
 ### Code Quality Improvements
+
 - **93% less repetitive code** for error responses
 - **100% consistent** error format across all endpoints
 - **Easy to maintain** - update in one place

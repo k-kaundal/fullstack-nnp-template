@@ -31,9 +31,9 @@ describe('UsersService', () => {
     isActive: true,
     isEmailVerified: false,
     emailVerificationToken: '',
-    emailVerificationExpires: undefined as any,
+    emailVerificationExpires: undefined,
     passwordResetToken: '',
-    passwordResetExpires: undefined as any,
+    passwordResetExpires: undefined,
     createdAt: new Date(),
     updatedAt: new Date(),
     hashPasswordBeforeInsert: async () => {},
@@ -104,8 +104,8 @@ describe('UsersService', () => {
       };
 
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
-      jest.spyOn(repository, 'create').mockReturnValue(mockUser as any);
-      jest.spyOn(repository, 'save').mockResolvedValue(mockUser as any);
+      jest.spyOn(repository, 'create').mockReturnValue(mockUser);
+      jest.spyOn(repository, 'save').mockResolvedValue(mockUser);
       jest.spyOn(cacheManager, 'del').mockResolvedValue(undefined);
       jest.spyOn(mailService, 'sendWelcomeEmail').mockResolvedValue();
 
@@ -143,7 +143,7 @@ describe('UsersService', () => {
         password: 'SecurePass123!',
       };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser as any);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
 
       await service.create(createUserDto, mockResponse as Response);
 
@@ -228,7 +228,7 @@ describe('UsersService', () => {
     it('should return user by ID successfully', async () => {
       // Mock cache miss scenario
       jest.spyOn(cacheManager, 'get').mockResolvedValue(null);
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser as any);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
       jest.spyOn(cacheManager, 'set').mockResolvedValue(undefined);
 
       await service.findOne(mockUser.id, mockResponse as Response);
@@ -295,7 +295,7 @@ describe('UsersService', () => {
 
       const updatedUser = { ...mockUser, ...updateUserDto };
 
-      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(mockUser as any);
+      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(mockUser);
       jest.spyOn(repository, 'save').mockResolvedValue(updatedUser as any);
       jest.spyOn(cacheManager, 'del').mockResolvedValue(undefined);
 
@@ -342,7 +342,7 @@ describe('UsersService', () => {
 
       jest
         .spyOn(repository, 'findOne')
-        .mockResolvedValueOnce(mockUser as any)
+        .mockResolvedValueOnce(mockUser)
         .mockResolvedValueOnce(existingUser as any);
 
       await service.update(
@@ -364,8 +364,8 @@ describe('UsersService', () => {
 
   describe('remove', () => {
     it('should remove user successfully', async () => {
-      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser as any);
-      jest.spyOn(repository, 'remove').mockResolvedValue(mockUser as any);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(mockUser);
+      jest.spyOn(repository, 'remove').mockResolvedValue(mockUser);
       jest.spyOn(cacheManager, 'del').mockResolvedValue(undefined);
 
       await service.remove(mockUser.id, mockResponse as Response);

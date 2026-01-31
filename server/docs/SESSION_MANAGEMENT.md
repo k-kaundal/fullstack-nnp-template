@@ -16,6 +16,7 @@ The session management system tracks user logins across multiple devices and pro
 ## 🗄️ Database Schema
 
 ### Sessions Table
+
 ```sql
 CREATE TABLE "sessions" (
   "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -40,6 +41,7 @@ CREATE INDEX "IDX_refresh_token" ON "sessions" ("refreshToken");
 ## 🔧 Backend Implementation
 
 ### 1. Session Entity (`server/src/auth/entities/session.entity.ts`)
+
 ```typescript
 @Entity('sessions')
 export class Session {
@@ -130,6 +132,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -177,6 +180,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -200,6 +204,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -221,6 +226,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -355,17 +361,20 @@ export function SessionManagement() {
 ### Postman/Insomnia
 
 **1. Login to get access token**
+
 ```http
 POST http://localhost:3001/api/v1/auth/login
 ```
 
 **2. View sessions**
+
 ```http
 GET http://localhost:3001/api/v1/auth/sessions
 Authorization: Bearer <access_token>
 ```
 
 **3. Test from multiple devices/browsers**
+
 - Login from Chrome
 - Login from Safari
 - Login from mobile
@@ -373,6 +382,7 @@ Authorization: Bearer <access_token>
 - Revoke specific session
 
 **4. Force logout**
+
 ```http
 DELETE http://localhost:3001/api/v1/auth/sessions/logout-all
 Authorization: Bearer <access_token>

@@ -9,12 +9,14 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### RegisterDto (User Registration)
 
 **Email Validation:**
+
 - ✅ Required field
 - ✅ Valid email format
 - ✅ **No disposable email providers** (tempmail.com, guerrillamail.com, etc.)
 - ✅ Prevents spam/fake registrations
 
 **First Name Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 2 characters
@@ -24,6 +26,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 - ✅ Examples: "John", "Mary-Jane", "O'Brien"
 
 **Last Name Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 2 characters
@@ -32,6 +35,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 - ✅ Must start with a letter
 
 **Password Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 8 characters
@@ -40,7 +44,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
   - At least one uppercase letter (A-Z)
   - At least one lowercase letter (a-z)
   - At least one number (0-9)
-  - At least one special character (@$!%*?&)
+  - At least one special character (@$!%\*?&)
 - ✅ **Rejects common weak passwords:**
   - "password", "12345678", "qwerty", "abc123", "password123"
   - "admin123", "letmein", "welcome", "monkey123", "dragon123"
@@ -50,10 +54,12 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### LoginDto (User Login)
 
 **Email Validation:**
+
 - ✅ Required field
 - ✅ Valid email format
 
 **Password Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 8 characters
@@ -64,6 +70,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### RefreshTokenDto (Token Refresh)
 
 **Refresh Token Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 10 characters (JWT format check)
@@ -73,6 +80,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### ForgotPasswordDto (Password Reset Request)
 
 **Email Validation:**
+
 - ✅ Required field
 - ✅ Valid email format
 - ✅ **No disposable email providers**
@@ -82,6 +90,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### ResetPasswordDto (Password Reset)
 
 **Token Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Length: 32-128 characters
@@ -89,6 +98,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 - ✅ Validates crypto.randomBytes() token format
 
 **New Password Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Min length: 8 characters
@@ -101,6 +111,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 ### VerifyEmailDto (Email Verification)
 
 **Token Validation:**
+
 - ✅ Required field
 - ✅ String type
 - ✅ Length: 32-128 characters
@@ -116,6 +127,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 **Purpose:** Prevents registration with temporary/disposable email providers
 
 **Blocked Domains:**
+
 - tempmail.com
 - throwaway.email
 - guerrillamail.com
@@ -126,6 +138,7 @@ Enhanced authentication DTOs with strict validation rules and custom validators 
 - temp-mail.org
 
 **Usage:**
+
 ```typescript
 @IsNotDisposableEmail()
 email: string;
@@ -140,21 +153,23 @@ email: string;
 **Purpose:** Ensures password meets security requirements and rejects common weak passwords
 
 **Validation Rules:**
+
 - Minimum 8 characters
 - Maximum 100 characters
 - At least one lowercase letter
 - At least one uppercase letter
 - At least one number
-- At least one special character (@$!%*?&)
+- At least one special character (@$!%\*?&)
 - Not in common weak passwords list
 
 **Usage:**
+
 ```typescript
 @IsStrongPassword()
 password: string;
 ```
 
-**Error Message:** "Password must be 8-100 characters long and contain at least one uppercase letter, one lowercase letter, one number, one special character (@$!%*?&), and cannot be a common weak password"
+**Error Message:** "Password must be 8-100 characters long and contain at least one uppercase letter, one lowercase letter, one number, one special character (@$!%\*?&), and cannot be a common weak password"
 
 ---
 
@@ -163,6 +178,7 @@ password: string;
 **Purpose:** Ensures names contain only valid characters
 
 **Validation Rules:**
+
 - Letters only (a-z, A-Z)
 - Spaces allowed between words
 - Hyphens allowed (e.g., "Mary-Jane")
@@ -171,6 +187,7 @@ password: string;
 - No numbers or special characters
 
 **Usage:**
+
 ```typescript
 @IsValidName()
 firstName: string;
@@ -185,11 +202,13 @@ firstName: string;
 **Purpose:** Validates token format (hex from crypto.randomBytes())
 
 **Validation Rules:**
+
 - Alphanumeric characters only
 - Hex format (0-9, a-f, A-F)
 - Case-insensitive
 
 **Usage:**
+
 ```typescript
 @IsValidToken()
 token: string;
@@ -227,9 +246,9 @@ The validation is configured in `main.ts` with:
 ```typescript
 app.useGlobalPipes(
   new ValidationPipe({
-    whitelist: true,           // Strip non-whitelisted properties
+    whitelist: true, // Strip non-whitelisted properties
     forbidNonWhitelisted: true, // Throw error for extra properties
-    transform: true,            // Auto-transform payloads
+    transform: true, // Auto-transform payloads
     transformOptions: {
       enableImplicitConversion: true,
     },
@@ -242,6 +261,7 @@ app.useGlobalPipes(
 ## 🧪 Testing Validation
 
 ### Valid Registration Request
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -256,6 +276,7 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
 ### Invalid Registration Requests
 
 **1. Disposable Email:**
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -266,9 +287,11 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
     "password": "SecurePass123!"
   }'
 ```
+
 **Error:** "Disposable email addresses are not allowed"
 
 **2. Weak Password:**
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -279,9 +302,11 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
     "password": "password123"
   }'
 ```
+
 **Error:** "Password must be 8-100 characters long and contain... and cannot be a common weak password"
 
 **3. Invalid Name Format:**
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -292,9 +317,11 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
     "password": "SecurePass123!"
   }'
 ```
+
 **Error:** "Name can only contain letters, spaces, hyphens, and apostrophes, and must start with a letter"
 
 **4. Password Too Short:**
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -305,9 +332,11 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
     "password": "Pass1!"
   }'
 ```
+
 **Error:** "Password must be at least 8 characters long"
 
 **5. Missing Required Fields:**
+
 ```bash
 curl -X POST http://localhost:3001/api/v1/auth/register \
   -H "Content-Type: application/json" \
@@ -315,7 +344,9 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
     "email": "john.doe@example.com"
   }'
 ```
+
 **Errors:**
+
 - "First name is required"
 - "Last name is required"
 - "Password is required"
@@ -325,25 +356,30 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
 ## 🔒 Security Benefits
 
 ### 1. **Prevents Spam Registrations**
+
 - Disposable email blocking stops fake accounts
 - Reduces database pollution
 
 ### 2. **Enforces Strong Passwords**
+
 - Protects against brute force attacks
 - Prevents common password usage
 - Reduces account compromise risk
 
 ### 3. **Data Integrity**
+
 - Name validation ensures clean data
 - No SQL injection through names
 - Proper formatting for display
 
 ### 4. **Token Security**
+
 - Validates token format
 - Prevents invalid token processing
 - Reduces database queries for invalid tokens
 
 ### 5. **XSS Prevention**
+
 - Input sanitization through validation
 - Rejects malicious characters
 - Protects against code injection
@@ -353,9 +389,11 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
 ## 📚 Files Modified/Created
 
 ### New Files
+
 1. `server/src/auth/validators/auth.validators.ts` - Custom validators
 
 ### Modified DTOs
+
 1. `server/src/auth/dto/register.dto.ts` - Added custom validators
 2. `server/src/auth/dto/login.dto.ts` - Added password length validation
 3. `server/src/auth/dto/forgot-password.dto.ts` - Added disposable email check
@@ -415,6 +453,7 @@ yarn test:cov
 ## 📖 Documentation
 
 All validators are fully documented with:
+
 - JSDoc comments
 - Usage examples
 - Error messages
@@ -427,6 +466,7 @@ See `server/docs/AUTHENTICATION.md` for complete API documentation.
 ## ✨ Summary
 
 ✅ **Comprehensive backend validation implemented:**
+
 - 4 custom validators created
 - 6 DTOs enhanced with strict validation
 - Disposable email blocking

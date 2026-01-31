@@ -66,6 +66,7 @@ Setup session validation (5 min interval)
 **File:** `client/lib/api/client.ts`
 
 **Features:**
+
 - **Token injection:** Every request automatically includes `Authorization: Bearer <token>`
 - **401 handling:** Automatic token refresh on 401 errors
 - **Request queuing:** Multiple simultaneous requests wait for refresh to complete
@@ -73,6 +74,7 @@ Setup session validation (5 min interval)
 - **Auto-redirect:** Redirect to login if refresh fails
 
 **Key Code:**
+
 ```typescript
 // Prevent multiple simultaneous refresh requests
 let isRefreshing = false;
@@ -106,6 +108,7 @@ this.client.interceptors.response.use(
 **File:** `client/lib/providers/auth-provider.tsx`
 
 **Features:**
+
 - **Token expiration detection:** Decodes JWT to check expiration
 - **Proactive refresh:** Refreshes tokens before they expire (13-minute interval)
 - **Session validation:** Validates session every 5 minutes
@@ -139,12 +142,15 @@ const setupTokenRefresh = useCallback(() => {
 
 // Setup session validation
 const setupSessionValidation = useCallback(() => {
-  validationIntervalRef.current = setInterval(async () => {
-    const isValid = await validateSession();
-    if (!isValid && pathname && !pathname.startsWith('/auth')) {
-      router.push('/auth/login');
-    }
-  }, 5 * 60 * 1000);
+  validationIntervalRef.current = setInterval(
+    async () => {
+      const isValid = await validateSession();
+      if (!isValid && pathname && !pathname.startsWith('/auth')) {
+        router.push('/auth/login');
+      }
+    },
+    5 * 60 * 1000
+  );
 }, []);
 ```
 
@@ -475,9 +481,9 @@ const validateSession = async () => {
 
 ```typescript
 // In browser console:
-localStorage.getItem('accessToken');   // Check access token
-localStorage.getItem('refreshToken');  // Check refresh token
-localStorage.getItem('userData');      // Check user data
+localStorage.getItem('accessToken'); // Check access token
+localStorage.getItem('refreshToken'); // Check refresh token
+localStorage.getItem('userData'); // Check user data
 ```
 
 ### Monitor Token Refresh
@@ -490,7 +496,11 @@ setInterval(() => {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = new Date(payload.exp * 1000);
     console.log('Token expires at:', exp.toLocaleString());
-    console.log('Time until expiry:', Math.floor((payload.exp * 1000 - Date.now()) / 60000), 'minutes');
+    console.log(
+      'Time until expiry:',
+      Math.floor((payload.exp * 1000 - Date.now()) / 60000),
+      'minutes'
+    );
   }
 }, 10000); // Every 10 seconds
 ```

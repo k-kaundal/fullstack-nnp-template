@@ -22,6 +22,7 @@
 ## Authentication System
 
 Complete JWT-based authentication with:
+
 - User registration with email verification
 - Login/logout with access & refresh tokens
 - Token blacklist for secure logout
@@ -30,10 +31,10 @@ Complete JWT-based authentication with:
 - Rate limiting on all auth endpoints
 - Comprehensive test coverage (25 tests)
 
-
 ## Cache Implementation
 
 This project includes a standard NestJS caching system with:
+
 - In-memory cache (easily upgradeable to Redis)
 - Cache-aside pattern for read operations
 - Manual cache invalidation on write operations
@@ -44,6 +45,7 @@ See [docs/CACHE_IMPLEMENTATION.md](./docs/CACHE_IMPLEMENTATION.md) for detailed 
 ### Cache Configuration
 
 Add to your `.env` file:
+
 ```env
 CACHE_TTL=60000        # Cache time-to-live in milliseconds
 CACHE_MAX_ITEMS=100    # Maximum number of items in cache
@@ -75,10 +77,12 @@ $ yarn run start:prod
 This project is **Vercel-ready** for serverless deployment!
 
 **Quick Start (5 minutes):**
+
 1. See [VERCEL_QUICK_START.md](./VERCEL_QUICK_START.md) for step-by-step guide
 2. Or read [docs/VERCEL_DEPLOYMENT.md](./docs/VERCEL_DEPLOYMENT.md) for detailed documentation
 
 **Deploy Now:**
+
 ```bash
 # Install Vercel CLI
 npm install -g vercel
@@ -89,6 +93,7 @@ vercel --prod
 ```
 
 **What's included:**
+
 - ✅ `vercel.json` - Vercel configuration
 - ✅ `api/index.ts` - Serverless function handler
 - ✅ `.vercelignore` - Deployment optimization
@@ -97,6 +102,7 @@ vercel --prod
 ### Traditional Deployment
 
 For VPS/cloud deployment (DigitalOcean, AWS, etc.):
+
 ```bash
 yarn build
 yarn start:prod

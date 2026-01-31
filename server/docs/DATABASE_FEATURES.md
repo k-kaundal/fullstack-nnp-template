@@ -1,6 +1,7 @@
 # Database Features Guide
 
 ## Table of Contents
+
 1. [Migrations](#migrations)
 2. [Database Seeding](#database-seeding)
 3. [Query Performance & Logging](#query-performance--logging)
@@ -19,38 +20,46 @@ TypeORM migrations help manage database schema changes over time in a controlled
 Four bash scripts are available in `server/scripts/`:
 
 #### 1. Generate Migration (Auto-detect changes)
+
 ```bash
 cd server
 ./scripts/generate-migration.sh AddUserRoles
 ```
+
 - Compares current entities with database schema
 - Auto-generates migration with UP and DOWN methods
 - Named with timestamp: `1706310000000-AddUserRoles.ts`
 
 #### 2. Create Empty Migration
+
 ```bash
 cd server
 ./scripts/create-migration.sh AddCustomIndexes
 ```
+
 - Creates empty migration template
 - For custom SQL or complex changes
 - You write the UP and DOWN logic
 
 #### 3. Run Migrations
+
 ```bash
 cd server
 ./scripts/run-migrations.sh
 ```
+
 - Interactive script
 - Shows pending migrations
 - Confirms before running
 - Executes all pending migrations
 
 #### 4. Rollback Migration
+
 ```bash
 cd server
 ./scripts/rollback-migration.sh
 ```
+
 - Interactive script with safety prompts
 - Reverts the last executed migration
 - **Warning**: Data loss possible, use carefully
@@ -90,6 +99,7 @@ export class AddUserRoles1706310000000 implements MigrationInterface {
 ### Common Migration Patterns
 
 **Add Column:**
+
 ```typescript
 await queryRunner.query(`
   ALTER TABLE "users" ADD COLUMN "phone" VARCHAR(20) NULL
@@ -97,6 +107,7 @@ await queryRunner.query(`
 ```
 
 **Create Index:**
+
 ```typescript
 await queryRunner.query(`
   CREATE INDEX "idx_users_email" ON "users" ("email")
@@ -104,6 +115,7 @@ await queryRunner.query(`
 ```
 
 **Add Foreign Key:**
+
 ```typescript
 await queryRunner.query(`
   ALTER TABLE "posts"
@@ -124,6 +136,7 @@ Seeders populate the database with initial or test data for development and test
 **Location**: `server/src/database/seeders/`
 
 **Components:**
+
 - `seeder.interface.ts` - Base interface for all seeders
 - `seeder.service.ts` - Orchestrates all seeders
 - `seeder.module.ts` - NestJS module
@@ -133,17 +146,20 @@ Seeders populate the database with initial or test data for development and test
 ### Using the Seeder CLI
 
 **Run all seeders:**
+
 ```bash
 cd server
 yarn seed
 ```
 
 **Rollback all seeders:**
+
 ```bash
 yarn seed:rollback
 ```
 
 **Clear entire database:**
+
 ```bash
 yarn seed:clear
 ```
@@ -151,6 +167,7 @@ yarn seed:clear
 ### Creating Custom Seeders
 
 **1. Create seeder file** (`posts.seeder.ts`):
+
 ```typescript
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -215,6 +232,7 @@ export class PostsSeeder implements Seeder {
 ```
 
 **2. Register in SeederModule:**
+
 ```typescript
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -233,6 +251,7 @@ export class SeederModule {}
 ```
 
 **3. Add to SeederService:**
+
 ```typescript
 constructor(
   private readonly usersSeeder: UsersSeeder,
@@ -259,6 +278,7 @@ constructor(
 **Location**: `server/src/config/database-logger.config.ts`
 
 **Features:**
+
 - Logs all queries in development
 - Detects slow queries (>100ms threshold)
 - Provides optimization suggestions
@@ -273,12 +293,13 @@ TypeOrmModule.forRootAsync({
     // ...other config
     logger: isProduction ? undefined : new DatabaseLogger(),
   }),
-})
+});
 ```
 
 ### Slow Query Alerts
 
 **Example output:**
+
 ```
 ⚠️  SLOW QUERY (234ms):
 SELECT * FROM "users" WHERE name LIKE '%john%'
@@ -292,6 +313,7 @@ SELECT * FROM "users" WHERE name LIKE '%john%'
 ### Query Logging Best Practices
 
 1. **Index frequently queried columns**
+
 ```typescript
 @Entity('users')
 export class User {
@@ -306,6 +328,7 @@ export class User {
 ```
 
 2. **Avoid N+1 queries - use eager loading**
+
 ```typescript
 // ❌ BAD - N+1 query problem
 const users = await userRepository.find();
@@ -318,6 +341,7 @@ const users = await userRepository.find({ relations: ['posts'] });
 ```
 
 3. **Select only needed columns**
+
 ```typescript
 // ❌ BAD - Fetches all columns
 const users = await userRepository.find();
@@ -329,6 +353,7 @@ const users = await userRepository.find({
 ```
 
 4. **Use pagination for large datasets**
+
 ```typescript
 const [users, total] = await userRepository.findAndCount({
   skip: (page - 1) * limit,
@@ -345,6 +370,7 @@ const [users, total] = await userRepository.findAndCount({
 **Location**: `server/src/common/middleware/sanitization.middleware.ts`
 
 **Features:**
+
 - XSS prevention (removes `<script>`, `<iframe>`, event handlers)
 - SQL injection prevention (removes SQL keywords)
 - JavaScript protocol removal (`javascript:`, `data:`)
@@ -360,17 +386,20 @@ app.use(new SanitizationMiddleware().use);
 ### What Gets Sanitized
 
 **XSS Patterns Removed:**
+
 - `<script>` tags
 - `<iframe>`, `<object>`, `<embed>` tags
 - Event handlers (`onclick`, `onerror`, etc.)
 - JavaScript protocols (`javascript:`, `data:`)
 
 **SQL Injection Patterns Removed:**
+
 - SQL keywords (`SELECT`, `INSERT`, `UPDATE`, `DELETE`, `DROP`)
 - SQL comments (`--`, `/* */`)
 - SQL operators (`UNION`, `JOIN`, `EXEC`)
 
 **Example:**
+
 ```typescript
 // Input
 const userInput = {
@@ -402,6 +431,7 @@ const userInput = {
 ### Available Custom Validators
 
 #### 1. `@IsStrongPassword()`
+
 Requires 8+ characters, uppercase, lowercase, number, and special character.
 
 ```typescript
@@ -414,6 +444,7 @@ export class CreateUserDto {
 ```
 
 #### 2. `@NoSqlInjection()`
+
 Prevents SQL injection patterns.
 
 ```typescript
@@ -427,6 +458,7 @@ export class SearchDto {
 ```
 
 #### 3. `@NoXss()`
+
 Prevents XSS attack patterns.
 
 ```typescript
@@ -440,6 +472,7 @@ export class CommentDto {
 ```
 
 #### 4. `@SafeString()`
+
 Combines `@NoSqlInjection` and `@NoXss`.
 
 ```typescript
@@ -453,6 +486,7 @@ export class UpdateUserDto {
 ```
 
 #### 5. `@IsValidUUID()`
+
 Validates UUID v4 format.
 
 ```typescript
@@ -465,6 +499,7 @@ export class FindUserDto {
 ```
 
 #### 6. `@IsAlphanumericWithSpaces()`
+
 Allows only alphanumeric characters and spaces.
 
 ```typescript
@@ -480,12 +515,7 @@ export class CreateUserDto {
 ### Combining Validators
 
 ```typescript
-import {
-  IsEmail,
-  IsNotEmpty,
-  MinLength,
-  MaxLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
 import {
   IsStrongPassword,
   SafeString,
@@ -557,6 +587,7 @@ export class RegisterDto {
 ### Development Workflow
 
 1. **Local Development:**
+
    ```bash
    # Run seeders to populate database
    yarn seed
@@ -573,6 +604,7 @@ export class RegisterDto {
    ```
 
 2. **Testing:**
+
    ```bash
    # Clear database
    yarn seed:clear
@@ -586,6 +618,7 @@ export class RegisterDto {
    ```
 
 3. **Production Deployment:**
+
    ```bash
    # Run migrations on production database
    yarn migration:run
@@ -607,18 +640,23 @@ export class RegisterDto {
 ## Common Issues & Solutions
 
 ### Issue: Migration generation fails
+
 **Solution**: Ensure entities are properly configured and `synchronize: false` in production
 
 ### Issue: Seeder creates duplicates
+
 **Solution**: Check for existing records before creating (see seeder examples)
 
 ### Issue: Slow queries in production
+
 **Solution**: Add indexes, optimize queries, use caching
 
 ### Issue: XSS attack detected
+
 **Solution**: Sanitization middleware handles this automatically, ensure it's enabled
 
 ### Issue: Migration rollback fails
+
 **Solution**: Check DOWN method logic, ensure reversibility, may need to create new migration
 
 ---

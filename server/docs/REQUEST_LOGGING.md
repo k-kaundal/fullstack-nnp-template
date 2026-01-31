@@ -19,22 +19,23 @@ Complete request logging system with database storage, automatic cleanup, and ad
 
 ```typescript
 {
-  id: string;              // UUID
-  method: string;          // GET, POST, PUT, DELETE, etc.
-  path: string;            // Request URL
-  statusCode: number;      // HTTP status code
-  responseTime: number;    // Response time in ms
-  userId: string;          // User ID (if authenticated)
-  ipAddress: string;       // Client IP address
-  userAgent: string;       // User agent string
-  requestBody: string;     // Sanitized request body (JSON)
-  queryParams: string;     // Query parameters (JSON)
-  errorMessage: string;    // Error message (if failed)
-  createdAt: Date;         // Request timestamp
+  id: string; // UUID
+  method: string; // GET, POST, PUT, DELETE, etc.
+  path: string; // Request URL
+  statusCode: number; // HTTP status code
+  responseTime: number; // Response time in ms
+  userId: string; // User ID (if authenticated)
+  ipAddress: string; // Client IP address
+  userAgent: string; // User agent string
+  requestBody: string; // Sanitized request body (JSON)
+  queryParams: string; // Query parameters (JSON)
+  errorMessage: string; // Error message (if failed)
+  createdAt: Date; // Request timestamp
 }
 ```
 
 **Indexes:**
+
 - `createdAt` - For efficient cleanup queries
 - `userId` - For user-specific log retrieval
 - `method, path` - For endpoint analysis
@@ -60,6 +61,7 @@ All HTTP requests are automatically logged via middleware.
 ### Sensitive Data Sanitization
 
 The following fields are automatically redacted:
+
 - `password`
 - `token`
 - `secret`
@@ -67,6 +69,7 @@ The following fields are automatically redacted:
 - `refreshToken`
 
 **Example:**
+
 ```json
 // Original request body
 {
@@ -114,6 +117,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -157,6 +161,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -186,6 +191,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -210,6 +216,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -234,6 +241,7 @@ Authorization: Bearer <token>
 ```
 
 **Response:**
+
 ```json
 {
   "status": "success",
@@ -256,15 +264,13 @@ import { RequestLoggerService } from '../common/services/request-logger.service'
 
 @Injectable()
 export class AnalyticsService {
-  constructor(
-    private readonly requestLoggerService: RequestLoggerService,
-  ) {}
+  constructor(private readonly requestLoggerService: RequestLoggerService) {}
 
   async getUserActivity(userId: string) {
     const { logs, total } = await this.requestLoggerService.getUserRequestLogs(
       userId,
       1,
-      100
+      100,
     );
 
     return {
@@ -327,6 +333,7 @@ private readonly SENSITIVE_FIELDS = [
 ### Database Indexes
 
 The `RequestLog` entity has indexes on:
+
 - `createdAt` - Fast cleanup queries
 - `userId` - Fast user log retrieval
 - `method, path` - Endpoint analysis
@@ -338,7 +345,7 @@ Logging happens asynchronously and doesn't block HTTP responses:
 ```typescript
 res.on('finish', () => {
   // Log asynchronously (non-blocking)
-  this.requestLoggerService.logRequest(logData).catch(error => {
+  this.requestLoggerService.logRequest(logData).catch((error) => {
     // Log error but don't fail the request
   });
 });

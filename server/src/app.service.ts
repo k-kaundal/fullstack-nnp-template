@@ -39,7 +39,7 @@ export class AppService {
           environment: process.env.NODE_ENV || 'development',
         },
       });
-    } catch (error) {
+    } catch {
       // Return error response if health check fails
       return ApiResponse.error(res, {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

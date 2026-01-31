@@ -1,19 +1,23 @@
 # Modal, Alert, and Confirm Components
 
 ## Overview
+
 Custom, reusable dialog components that replace native JavaScript `alert()`, `confirm()`, and `prompt()` functions.
 
 **❌ NEVER USE:**
+
 - `alert()` - Use `<Alert>` component instead
 - `confirm()` - Use `<Confirm>` component instead
 - `prompt()` - Use `<Modal>` with custom form instead
 
 **✅ ALWAYS USE:**
+
 - `<Modal>` - General purpose dialog
 - `<Alert>` - Notification/information dialog
 - `<Confirm>` - Confirmation dialog for destructive actions
 
 ## Features
+
 - 🎨 Full dark mode support
 - ⌨️ Keyboard accessible (ESC to close)
 - 🖱️ Click outside to close (configurable)
@@ -28,6 +32,7 @@ Custom, reusable dialog components that replace native JavaScript `alert()`, `co
 ## Modal Component
 
 ### Basic Usage
+
 ```tsx
 import { useState } from 'react';
 import { Modal } from '@/components/ui';
@@ -39,12 +44,7 @@ function MyComponent() {
     <>
       <button onClick={() => setIsOpen(true)}>Open Modal</button>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title="My Modal Title"
-        size="md"
-      >
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="My Modal Title" size="md">
         <p>Modal content goes here</p>
       </Modal>
     </>
@@ -53,21 +53,23 @@ function MyComponent() {
 ```
 
 ### Props
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | - | Whether modal is visible |
-| `onClose` | `() => void` | - | Close handler |
-| `title` | `string` | - | Modal title |
-| `children` | `ReactNode` | - | Modal content |
-| `showCloseButton` | `boolean` | `true` | Show X button |
-| `closeOnOverlayClick` | `boolean` | `true` | Close on backdrop click |
-| `closeOnEsc` | `boolean` | `true` | Close on ESC key |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Modal width |
-| `footer` | `ReactNode` | - | Footer buttons/content |
-| `header` | `ReactNode` | - | Custom header |
-| `className` | `string` | `''` | Additional CSS classes |
+
+| Prop                  | Type                                     | Default | Description              |
+| --------------------- | ---------------------------------------- | ------- | ------------------------ |
+| `isOpen`              | `boolean`                                | -       | Whether modal is visible |
+| `onClose`             | `() => void`                             | -       | Close handler            |
+| `title`               | `string`                                 | -       | Modal title              |
+| `children`            | `ReactNode`                              | -       | Modal content            |
+| `showCloseButton`     | `boolean`                                | `true`  | Show X button            |
+| `closeOnOverlayClick` | `boolean`                                | `true`  | Close on backdrop click  |
+| `closeOnEsc`          | `boolean`                                | `true`  | Close on ESC key         |
+| `size`                | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'`  | Modal width              |
+| `footer`              | `ReactNode`                              | -       | Footer buttons/content   |
+| `header`              | `ReactNode`                              | -       | Custom header            |
+| `className`           | `string`                                 | `''`    | Additional CSS classes   |
 
 ### Sizes
+
 - `sm` - 448px max-width
 - `md` - 512px max-width (default)
 - `lg` - 672px max-width
@@ -75,6 +77,7 @@ function MyComponent() {
 - `full` - Full width with margin
 
 ### With Footer
+
 ```tsx
 <Modal
   isOpen={isOpen}
@@ -96,6 +99,7 @@ function MyComponent() {
 ## Alert Component
 
 ### Basic Usage
+
 ```tsx
 import { useState } from 'react';
 import { Alert } from '@/components/ui';
@@ -120,18 +124,20 @@ function MyComponent() {
 ```
 
 ### Props
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | - | Whether alert is visible |
-| `onClose` | `() => void` | - | Close handler |
-| `title` | `string` | - | Alert title |
-| `message` | `string \| ReactNode` | - | Alert message/content |
-| `type` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Alert type |
-| `confirmText` | `string` | `'OK'` | Confirm button text |
-| `onConfirm` | `() => void` | - | Optional confirm handler |
-| `showIcon` | `boolean` | `true` | Show type icon |
+
+| Prop          | Type                                          | Default  | Description              |
+| ------------- | --------------------------------------------- | -------- | ------------------------ |
+| `isOpen`      | `boolean`                                     | -        | Whether alert is visible |
+| `onClose`     | `() => void`                                  | -        | Close handler            |
+| `title`       | `string`                                      | -        | Alert title              |
+| `message`     | `string \| ReactNode`                         | -        | Alert message/content    |
+| `type`        | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Alert type               |
+| `confirmText` | `string`                                      | `'OK'`   | Confirm button text      |
+| `onConfirm`   | `() => void`                                  | -        | Optional confirm handler |
+| `showIcon`    | `boolean`                                     | `true`   | Show type icon           |
 
 ### Types
+
 - `info` - Blue color scheme with info icon
 - `success` - Green color scheme with checkmark icon
 - `warning` - Yellow color scheme with warning icon
@@ -140,6 +146,7 @@ function MyComponent() {
 ### Examples
 
 #### Info Alert
+
 ```tsx
 <Alert
   isOpen={isOpen}
@@ -151,6 +158,7 @@ function MyComponent() {
 ```
 
 #### Success Alert
+
 ```tsx
 <Alert
   isOpen={isOpen}
@@ -162,6 +170,7 @@ function MyComponent() {
 ```
 
 #### Warning Alert
+
 ```tsx
 <Alert
   isOpen={isOpen}
@@ -173,6 +182,7 @@ function MyComponent() {
 ```
 
 #### Error Alert
+
 ```tsx
 <Alert
   isOpen={isOpen}
@@ -188,6 +198,7 @@ function MyComponent() {
 ## Confirm Component
 
 ### Basic Usage
+
 ```tsx
 import { useState } from 'react';
 import { Confirm } from '@/components/ui';
@@ -218,20 +229,22 @@ function MyComponent() {
 ```
 
 ### Props
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | - | Whether dialog is visible |
-| `onClose` | `() => void` | - | Close handler |
-| `title` | `string` | - | Dialog title |
-| `message` | `string \| ReactNode` | - | Dialog message/content |
-| `type` | `'info' \| 'warning' \| 'danger'` | `'warning'` | Dialog type |
-| `confirmText` | `string` | `'Confirm'` | Confirm button text |
-| `cancelText` | `string` | `'Cancel'` | Cancel button text |
-| `onConfirm` | `() => void \| Promise<void>` | - | Confirm handler (can be async) |
-| `onCancel` | `() => void` | - | Optional cancel handler |
-| `showLoading` | `boolean` | `true` | Show spinner during async confirm |
+
+| Prop          | Type                              | Default     | Description                       |
+| ------------- | --------------------------------- | ----------- | --------------------------------- |
+| `isOpen`      | `boolean`                         | -           | Whether dialog is visible         |
+| `onClose`     | `() => void`                      | -           | Close handler                     |
+| `title`       | `string`                          | -           | Dialog title                      |
+| `message`     | `string \| ReactNode`             | -           | Dialog message/content            |
+| `type`        | `'info' \| 'warning' \| 'danger'` | `'warning'` | Dialog type                       |
+| `confirmText` | `string`                          | `'Confirm'` | Confirm button text               |
+| `cancelText`  | `string`                          | `'Cancel'`  | Cancel button text                |
+| `onConfirm`   | `() => void \| Promise<void>`     | -           | Confirm handler (can be async)    |
+| `onCancel`    | `() => void`                      | -           | Optional cancel handler           |
+| `showLoading` | `boolean`                         | `true`      | Show spinner during async confirm |
 
 ### Types
+
 - `info` - Blue color scheme with info icon
 - `warning` - Yellow color scheme with warning icon (default)
 - `danger` - Red color scheme with alert icon
@@ -239,6 +252,7 @@ function MyComponent() {
 ### Examples
 
 #### Delete Confirmation (Danger)
+
 ```tsx
 <Confirm
   isOpen={isOpen}
@@ -254,6 +268,7 @@ function MyComponent() {
 ```
 
 #### Warning Confirmation
+
 ```tsx
 <Confirm
   isOpen={isOpen}
@@ -268,6 +283,7 @@ function MyComponent() {
 ```
 
 #### Info Confirmation
+
 ```tsx
 <Confirm
   isOpen={isOpen}
@@ -287,6 +303,7 @@ function MyComponent() {
 ## Advanced Patterns
 
 ### Helper Functions Pattern
+
 Create helper functions to manage modal state:
 
 ```tsx
@@ -352,7 +369,7 @@ function MyPage() {
       {/* Alert */}
       <Alert
         isOpen={alertState.isOpen}
-        onClose={() => setAlertState(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setAlertState((prev) => ({ ...prev, isOpen: false }))}
         title={alertState.title}
         message={alertState.message}
         type={alertState.type}
@@ -361,7 +378,7 @@ function MyPage() {
       {/* Confirm */}
       <Confirm
         isOpen={confirmState.isOpen}
-        onClose={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setConfirmState((prev) => ({ ...prev, isOpen: false }))}
         title={confirmState.title}
         message={confirmState.message}
         type={confirmState.type}
@@ -373,6 +390,7 @@ function MyPage() {
 ```
 
 ### Custom Hook Pattern
+
 Create a reusable hook for dialog management:
 
 ```tsx
@@ -412,8 +430,8 @@ export function useDialogs() {
     setConfirmState({ isOpen: true, title, message, type, onConfirm });
   };
 
-  const closeAlert = () => setAlertState(prev => ({ ...prev, isOpen: false }));
-  const closeConfirm = () => setConfirmState(prev => ({ ...prev, isOpen: false }));
+  const closeAlert = () => setAlertState((prev) => ({ ...prev, isOpen: false }));
+  const closeConfirm = () => setConfirmState((prev) => ({ ...prev, isOpen: false }));
 
   return {
     alertState,
@@ -427,7 +445,8 @@ export function useDialogs() {
 
 // Usage in component
 function MyComponent() {
-  const { alertState, confirmState, showAlert, showConfirm, closeAlert, closeConfirm } = useDialogs();
+  const { alertState, confirmState, showAlert, showConfirm, closeAlert, closeConfirm } =
+    useDialogs();
 
   const handleAction = () => {
     showConfirm(
@@ -454,6 +473,7 @@ function MyComponent() {
 ## Best Practices
 
 ### ✅ DO
+
 - Use `<Alert>` for notifications and information
 - Use `<Confirm>` for destructive actions (delete, irreversible changes)
 - Use `<Modal>` for forms and complex content
@@ -462,6 +482,7 @@ function MyComponent() {
 - Use appropriate types (danger for delete, warning for caution)
 
 ### ❌ DON'T
+
 - Never use `alert()`, `confirm()`, or `prompt()`
 - Don't use Alert for confirmations (use Confirm instead)
 - Don't forget to handle loading states for async operations
@@ -475,6 +496,7 @@ function MyComponent() {
 All components support dark mode automatically through Tailwind CSS dark mode classes.
 
 ### Custom Colors
+
 Colors are defined in the components but can be overridden using the `className` prop on Modal:
 
 ```tsx
@@ -493,6 +515,7 @@ Colors are defined in the components but can be overridden using the `className`
 ## Accessibility
 
 All components follow accessibility best practices:
+
 - Keyboard navigation (ESC to close)
 - Focus management
 - ARIA labels

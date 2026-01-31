@@ -1,10 +1,13 @@
 # Fullstack NNP Template - Contributing Guide
 
-Thank you for considering contributing to this template! This guide will help you understand how to contribute effectively.
+Thank you for considering contributing to this template! This guide will help
+you understand how to contribute effectively.
 
 ## 🎯 Purpose
 
-This template is designed to be a production-ready base for fullstack applications. All contributions should maintain:
+This template is designed to be a production-ready base for fullstack
+applications. All contributions should maintain:
+
 - Code quality and consistency
 - Comprehensive documentation
 - Test coverage
@@ -33,6 +36,7 @@ This template is designed to be a production-ready base for fullstack applicatio
 We follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Commit Types
+
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation changes
@@ -43,6 +47,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `perf:` - Performance improvements
 
 ### Examples
+
 ```
 feat(users): add email verification endpoint
 fix(auth): resolve token refresh race condition
@@ -56,6 +61,7 @@ refactor(api): improve error handling consistency
 All contributions must include tests:
 
 ### Backend
+
 - Unit tests for services
 - Controller tests
 - E2E tests for critical flows
@@ -68,6 +74,7 @@ yarn test:cov
 ```
 
 ### Frontend
+
 - Component tests (when applicable)
 - Integration tests for critical features
 
@@ -79,6 +86,7 @@ yarn test:cov
    - Add JSDoc comments for complex code
 
 2. **Code Quality Checks**
+
    ```bash
    # Backend
    cd server
@@ -106,18 +114,21 @@ yarn test:cov
 ## 🎨 Code Style
 
 ### TypeScript
+
 - Use strict type checking
 - Avoid `any` types
 - Use interfaces for object shapes
 - Use type aliases for unions/primitives
 
 ### Naming Conventions
+
 - Variables/Functions: `camelCase`
 - Classes/Interfaces: `PascalCase`
 - Constants: `UPPER_SNAKE_CASE`
 - Files: `kebab-case.ts` or `PascalCase.tsx`
 
 ### Backend (NestJS)
+
 ```typescript
 // ✅ Good
 @Injectable()
@@ -143,6 +154,7 @@ export class UsersService {
 ```
 
 ### Frontend (Next.js)
+
 ```typescript
 // ✅ Good
 interface ButtonProps {
@@ -186,6 +198,7 @@ Before adding a new dependency:
 ## 🐛 Reporting Bugs
 
 Create an issue with:
+
 - Clear, descriptive title
 - Steps to reproduce
 - Expected vs actual behavior
@@ -196,6 +209,7 @@ Create an issue with:
 ## 💡 Feature Requests
 
 Create an issue with:
+
 - Clear description of the feature
 - Use cases
 - Why it benefits the template
@@ -204,8 +218,8 @@ Create an issue with:
 
 ## 🔒 Security Issues
 
-**DO NOT** create public issues for security vulnerabilities.
-Instead:
+**DO NOT** create public issues for security vulnerabilities. Instead:
+
 - Email the maintainers directly
 - Provide detailed information
 - Allow time for a fix before disclosure
@@ -213,12 +227,14 @@ Instead:
 ## 📜 Code of Conduct
 
 ### Our Standards
+
 - Be respectful and inclusive
 - Accept constructive criticism
 - Focus on what's best for the project
 - Show empathy towards others
 
 ### Unacceptable Behavior
+
 - Harassment or discrimination
 - Trolling or insulting comments
 - Personal or political attacks
@@ -229,6 +245,7 @@ Instead:
 When adding new features, follow the established structure:
 
 ### Backend
+
 ```
 src/modules/<feature>/
 ├── dto/
@@ -244,6 +261,7 @@ src/modules/<feature>/
 ```
 
 ### Frontend
+
 ```
 app/<feature>/
 ├── page.tsx
@@ -276,4 +294,4 @@ Every contribution, no matter how small, is valued and appreciated!
 
 ---
 
-*This contributing guide is subject to change. Please check back regularly.*
+_This contributing guide is subject to change. Please check back regularly._

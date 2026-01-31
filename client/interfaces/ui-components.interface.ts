@@ -7,7 +7,14 @@ import { ReactNode } from 'react';
 import { PaginationMeta } from '@/types';
 import { User } from './user.interface';
 import { SidebarItem } from './sidebar.interface';
-import { HeaderNavItem, UserProfile, UserMenuItem, NotificationItem, SearchFilter, SearchSuggestion } from './header.interface';
+import {
+  HeaderNavItem,
+  UserProfile,
+  UserMenuItem,
+  NotificationItem,
+  SearchFilter,
+  SearchSuggestion,
+} from './header.interface';
 
 /**
  * Loading spinner component props

@@ -3,6 +3,7 @@
 ## 🚀 GraphQL Patterns
 
 ### Create Schema (.graphql file)
+
 ```graphql
 type User {
   id: ID!
@@ -21,20 +22,20 @@ type Mutation {
 ```
 
 ### Create Resolver
+
 ```typescript
 @Resolver('User')
 export class UserResolver {
   @Query('users')
   @UseGuards(GqlAuthGuard)
-  async getUsers(
-    @Args('page', { type: () => Int }) page: number = 1,
-  ) {
+  async getUsers(@Args('page', { type: () => Int }) page: number = 1) {
     // Reuse existing services
   }
 }
 ```
 
 ### GraphQL Authentication Guard
+
 ```typescript
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
@@ -50,6 +51,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 ## 🛡️ Rate Limiting Patterns
 
 ### Use Decorators
+
 ```typescript
 // Login/Register - 5 attempts per 15 min
 @Post('login')
@@ -78,6 +80,7 @@ async health() { }
 ```
 
 ### Custom Throttler Guard
+
 ```typescript
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
@@ -96,6 +99,7 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
 ## 🔄 API Versioning Patterns
 
 ### Version Endpoints
+
 ```typescript
 // V1 (deprecated)
 @Get()
@@ -115,6 +119,7 @@ async findOne(@Param('id') id: string) { }
 ```
 
 ### Versioning in main.ts
+
 ```typescript
 app.enableVersioning({
   type: VersioningType.URI,
@@ -127,6 +132,7 @@ app.enableVersioning({
 ## ⚙️ Environment Configuration Patterns
 
 ### Validation Class
+
 ```typescript
 class EnvironmentVariables {
   @IsString() NODE_ENV: string;
@@ -136,6 +142,7 @@ class EnvironmentVariables {
 ```
 
 ### Type-Safe Access
+
 ```typescript
 const apiUrl = this.configService.get<string>('API_URL_LOCAL');
 const port = this.configService.get<number>('PORT', 3001);
@@ -147,6 +154,7 @@ const isProduction = this.configService.get('NODE_ENV') === 'production';
 ## 📦 Package Versions (CRITICAL)
 
 ### GraphQL Stack
+
 ```json
 {
   "@apollo/server": "4.11.2",
@@ -158,6 +166,7 @@ const isProduction = this.configService.get('NODE_ENV') === 'production';
 ```
 
 ### Rate Limiting
+
 ```json
 {
   "@nestjs/throttler": "6.5.0"

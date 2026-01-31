@@ -1,13 +1,16 @@
 # API Versioning & Swagger Documentation - Implementation Guide
 
 ## Overview
-Complete API versioning system with URI and header-based versioning, deprecation management, and advanced Swagger documentation with comprehensive examples.
+
+Complete API versioning system with URI and header-based versioning, deprecation
+management, and advanced Swagger documentation with comprehensive examples.
 
 ---
 
 ## 1. API Versioning System
 
 ### Features Implemented
+
 - ✅ URI-based versioning (`/api/v1`, `/api/v2`)
 - ✅ Header-based versioning (`X-API-Version`, `Accept-Version`)
 - ✅ Version deprecation notices with sunset dates
@@ -17,6 +20,7 @@ Complete API versioning system with URI and header-based versioning, deprecation
 ### URI Versioning (Primary Method)
 
 **Configuration**: Enabled in `main.ts`
+
 ```typescript
 app.enableVersioning({
   type: VersioningType.URI,
@@ -26,6 +30,7 @@ app.enableVersioning({
 ```
 
 **Controller Usage:**
+
 ```typescript
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
@@ -39,6 +44,7 @@ export class UsersV2Controller {
 ```
 
 **Endpoint Examples:**
+
 ```bash
 GET /api/v1/users        # Version 1 API
 GET /api/v2/users        # Version 2 API
@@ -48,16 +54,19 @@ POST /api/v1/auth/login  # Version 1 authentication
 ### Header-Based Versioning (Alternative)
 
 **Supported Headers:**
+
 - `X-API-Version: 1`
 - `Accept-Version: 1`
 
 **Usage:**
+
 ```bash
 curl -H "X-API-Version: 2" https://api.example.com/api/users
 curl -H "Accept-Version: 2" https://api.example.com/api/users
 ```
 
 **Decorator for Documentation:**
+
 ```typescript
 import { ApiHeaderVersioning } from '../common/decorators/api-version.decorator';
 
@@ -77,6 +86,7 @@ async findAll() {
 **Location**: `server/src/common/decorators/api-version.decorator.ts`
 
 **Usage:**
+
 ```typescript
 import { ApiDeprecated } from '../common/decorators/api-version.decorator';
 
@@ -114,6 +124,7 @@ X-API-Warn: 299 - "Deprecated API - Sunset: 2026-06-01"
 ### Swagger Documentation for Deprecated Endpoints
 
 Deprecated endpoints show:
+
 - ⚠️ Deprecation warning badge
 - Deprecation date
 - Sunset date
@@ -130,6 +141,7 @@ Deprecated endpoints show:
 **Location**: `server/src/config/swagger.config.ts`
 
 **Features:**
+
 - Comprehensive API description with markdown support
 - Multiple server configurations (development, production)
 - JWT Bearer authentication
@@ -142,6 +154,7 @@ Deprecated endpoints show:
 ### Swagger UI Customization
 
 **Custom Features:**
+
 - Persistent authorization (token saved in browser)
 - Request duration display
 - Search/filter functionality
@@ -150,6 +163,7 @@ Deprecated endpoints show:
 - Try-it-out enabled by default
 
 **Accessing Swagger UI:**
+
 ```
 Local: http://localhost:3001/api/docs
 Production: https://your-api.vercel.app/api/docs
@@ -158,10 +172,12 @@ Production: https://your-api.vercel.app/api/docs
 ### OpenAPI Export
 
 **Auto-generated files** (development only):
+
 - `docs/api/openapi.json` - OpenAPI 3.0 JSON format
 - `docs/api/openapi.yaml` - OpenAPI 3.0 YAML format
 
 **Manual export:**
+
 ```bash
 curl http://localhost:3001/api/docs-json > openapi.json
 ```
@@ -177,6 +193,7 @@ curl http://localhost:3001/api/docs-json > openapi.json
 **Available Decorators:**
 
 #### 1. Success Response Example
+
 ```typescript
 import { ApiSuccessResponse } from '../common/decorators/api-examples.decorator';
 
@@ -202,6 +219,7 @@ async findAll() {}
 ```
 
 #### 2. Error Response Examples
+
 ```typescript
 import { ApiErrorResponse } from '../common/decorators/api-examples.decorator';
 
@@ -216,6 +234,7 @@ async create() {}
 ```
 
 #### 3. Complete CRUD Examples
+
 ```typescript
 import { ApiCrudExamples } from '../common/decorators/api-examples.decorator';
 
@@ -230,6 +249,7 @@ async findOne() {}
 ```
 
 #### 4. Authentication Examples
+
 ```typescript
 import { ApiAuthExamples } from '../common/decorators/api-examples.decorator';
 
@@ -239,6 +259,7 @@ async login() {}
 ```
 
 #### 5. Pagination Examples
+
 ```typescript
 import { ApiPaginationExamples } from '../common/decorators/api-examples.decorator';
 
@@ -264,11 +285,7 @@ import {
   UseGuards,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
   ApiSuccessResponse,
@@ -280,7 +297,10 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
 } from '../common/decorators';
-import { ApiDeprecated, ApiHeaderVersioning } from '../common/decorators/api-version.decorator';
+import {
+  ApiDeprecated,
+  ApiHeaderVersioning,
+} from '../common/decorators/api-version.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -349,6 +369,7 @@ export class UsersController {
 ### Version 1 to Version 2 Migration
 
 **Step 1: Create V2 Controller**
+
 ```typescript
 @Controller({ path: 'users', version: '2' })
 export class UsersV2Controller {
@@ -357,6 +378,7 @@ export class UsersV2Controller {
 ```
 
 **Step 2: Deprecate V1 Endpoint**
+
 ```typescript
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
@@ -372,18 +394,21 @@ export class UsersController {
 ```
 
 **Step 3: Announce Deprecation**
+
 - Update API documentation
 - Send email notifications to API consumers
 - Add deprecation notices to Swagger UI
 - Include sunset date (minimum 6 months)
 
 **Step 4: Monitor Usage**
+
 ```bash
 # Check access logs for V1 usage
 grep "GET /api/v1/" access.log | wc -l
 ```
 
 **Step 5: Remove Deprecated Version**
+
 - After sunset date
 - Ensure all consumers migrated
 - Remove V1 controller and routes
@@ -394,6 +419,7 @@ grep "GET /api/v1/" access.log | wc -l
 ## 7. Best Practices
 
 ### Versioning Strategy
+
 1. ✅ **Use URI versioning** for public APIs (easier for clients)
 2. ✅ **Version in route path** not query parameters
 3. ✅ **Semantic versioning** for major changes only
@@ -401,6 +427,7 @@ grep "GET /api/v1/" access.log | wc -l
 5. ✅ **Deprecation period** of at least 6 months
 
 ### Deprecation Policy
+
 1. ✅ **Announce early** - Notify consumers immediately
 2. ✅ **Clear sunset date** - Specific removal date
 3. ✅ **Provide alternatives** - Document migration path
@@ -408,6 +435,7 @@ grep "GET /api/v1/" access.log | wc -l
 5. ✅ **Monitor usage** - Track deprecated endpoint calls
 
 ### Documentation Standards
+
 1. ✅ **Complete examples** for all endpoints
 2. ✅ **Error responses** documented with examples
 3. ✅ **Authentication** clearly explained
@@ -421,18 +449,21 @@ grep "GET /api/v1/" access.log | wc -l
 ### Using cURL
 
 **Test V1 endpoint:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
      http://localhost:3001/api/v1/users
 ```
 
 **Test V2 endpoint:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
      http://localhost:3001/api/v2/users
 ```
 
 **Test header versioning:**
+
 ```bash
 curl -H "Authorization: Bearer <token>" \
      -H "X-API-Version: 2" \
@@ -440,6 +471,7 @@ curl -H "Authorization: Bearer <token>" \
 ```
 
 **Test deprecated endpoint:**
+
 ```bash
 curl -i -H "Authorization: Bearer <token>" \
      http://localhost:3001/api/v1/deprecated-endpoint
@@ -466,6 +498,7 @@ curl -i -H "Authorization: Bearer <token>" \
 ### Track API Version Usage
 
 **Add custom logging:**
+
 ```typescript
 @Injectable()
 export class VersionLoggingInterceptor implements NestInterceptor {
@@ -484,6 +517,7 @@ export class VersionLoggingInterceptor implements NestInterceptor {
 ### Deprecation Warnings Analytics
 
 **Track deprecated endpoint usage:**
+
 ```typescript
 @Injectable()
 export class DeprecationAnalytics {
@@ -499,14 +533,18 @@ export class DeprecationAnalytics {
 ## 10. Files Created/Modified
 
 ### Created Files
-1. `server/src/common/decorators/api-version.decorator.ts` - Versioning decorators
+
+1. `server/src/common/decorators/api-version.decorator.ts` - Versioning
+   decorators
 2. `server/src/common/decorators/api-examples.decorator.ts` - Example decorators
-3. `server/src/common/interceptors/versioning.interceptor.ts` - Deprecation interceptor
+3. `server/src/common/interceptors/versioning.interceptor.ts` - Deprecation
+   interceptor
 4. `server/src/config/swagger.config.ts` - Advanced Swagger config
 5. `docs/api/openapi.json` - Auto-exported OpenAPI JSON
 6. `docs/api/openapi.yaml` - Auto-exported OpenAPI YAML
 
 ### Modified Files
+
 1. `server/src/main.ts` - Added versioning and Swagger setup
 2. `server/src/users/users.controller.ts` - Added version and examples
 3. `server/src/auth/auth.controller.ts` - Added version
@@ -518,6 +556,7 @@ export class DeprecationAnalytics {
 ## 11. Summary
 
 **✅ All Features Implemented:**
+
 - URI-based API versioning (`/api/v1`, `/api/v2`)
 - Header-based versioning support
 - Deprecation notices with sunset dates
@@ -531,6 +570,7 @@ export class DeprecationAnalytics {
 - Request duration display
 
 **🚀 Ready for Production**
+
 - All endpoints versioned
 - Deprecation system functional
 - Swagger documentation complete

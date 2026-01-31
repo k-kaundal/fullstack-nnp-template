@@ -1,13 +1,13 @@
 {
-  "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
-  "*.{json,md,yml,yaml}": ["prettier --write"],
-  "*.{css,scss}": ["prettier --write"],
+  "*.{js,jsx,ts,tsx}": ["yarn format"],
+  "*.{json,md}": ["yarn format"],
+  "*.{css,scss}": ["yarn format"],
   "server/**/*.{ts,tsx}": [
-    "cd server && eslint --fix",
-    "cd server && prettier --write"
+    "cd server && yarn lint --fix",
+    "cd server && yarn format"
   ],
   "client/**/*.{ts,tsx}": [
-    "cd client && eslint --fix",
-    "cd client && prettier --write"
+    "cd client && yarn lint --fix",
+    "cd client && yarn format"
   ]
 }

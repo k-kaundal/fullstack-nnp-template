@@ -60,8 +60,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: server/yarn.lock
 
       - name: Install dependencies
@@ -104,8 +104,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: client/yarn.lock
 
       - name: Install dependencies
@@ -150,8 +150,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: server/yarn.lock
 
       - name: Install backend dependencies
@@ -184,8 +184,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: |
             server/yarn.lock
             client/yarn.lock
@@ -211,8 +211,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: |
             server/yarn.lock
             client/yarn.lock

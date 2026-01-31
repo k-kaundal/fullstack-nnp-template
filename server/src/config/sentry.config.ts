@@ -31,11 +31,11 @@ export function initializeSentry(configService: ConfigService): void {
 
   // Try to add profiling integration (optional - requires native bindings)
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { nodeProfilingIntegration } = require('@sentry/profiling-node');
     integrations.push(nodeProfilingIntegration());
     console.log('✅ Sentry profiling enabled');
-  } catch (error) {
+  } catch {
     console.warn(
       '⚠️  Sentry profiling unavailable (native bindings missing). Error monitoring will still work.',
     );

@@ -3,6 +3,7 @@
 ## ✅ Users API - Complete Implementation
 
 ### Frontend Service (`client/lib/api/users.service.ts`)
+
 - **GET** `/users` - getAll(page, limit)
 - **GET** `/users/:id` - getById(id)
 - **POST** `/users` - create(data)
@@ -14,6 +15,7 @@
 - **DELETE** `/users/bulk` - bulkDelete(ids)
 
 ### Backend Controller (`server/src/users/users.controller.ts`)
+
 - **GET** `/api/v1/users` - findAll(page, limit) ✅
 - **GET** `/api/v1/users/:id` - findOne(id) ✅
 - **POST** `/api/v1/users` - create(createUserDto) ✅
@@ -27,6 +29,7 @@
 ## Advanced Search Features
 
 ### Frontend Parameters
+
 ```typescript
 interface SearchUsersParams {
   search?: string;
@@ -39,6 +42,7 @@ interface SearchUsersParams {
 ```
 
 ### Backend DTO
+
 ```typescript
 class SearchUsersDto {
   @IsOptional() search?: string;
@@ -53,11 +57,14 @@ class SearchUsersDto {
 ## Type Safety Fixes Applied
 
 ### ✅ Frontend
-- Added index signatures to `CreateUserDto`, `UpdateUserDto`, `SearchUsersParams`
+
+- Added index signatures to `CreateUserDto`, `UpdateUserDto`,
+  `SearchUsersParams`
 - Enhanced DELETE method to support body data for bulk operations
 - All TypeScript constraints satisfied
 
 ### ✅ Backend
+
 - All DTOs properly validated with class-validator
 - Comprehensive Swagger documentation
 - Proper error handling with ApiResponse utility
@@ -66,6 +73,7 @@ class SearchUsersDto {
 ## Status: 🟢 FULLY OPERATIONAL
 
 Both frontend and backend are properly aligned with:
+
 - ✅ 0 TypeScript errors
 - ✅ 0 linting errors (in our files)
 - ✅ All endpoints implemented

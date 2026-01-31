@@ -65,17 +65,17 @@ Response with Error + Correlation ID
 
 ### Error Code Categories
 
-| Category | Code Range | Description |
-|----------|------------|-------------|
-| **AUTH** | 1000-1099 | Authentication & authorization errors |
-| **VAL** | 2000-2099 | Validation & input errors |
-| **DB** | 3000-3099 | Database & query errors |
-| **RES** | 4000-4099 | Resource not found & access errors |
-| **BUS** | 5000-5099 | Business logic violations |
-| **SYS** | 6000-6099 | System & internal errors |
-| **EXT** | 7000-7099 | External service errors |
-| **RATE** | 8000-8099 | Rate limiting errors |
-| **FILE** | 9000-9099 | File upload errors |
+| Category | Code Range | Description                           |
+| -------- | ---------- | ------------------------------------- |
+| **AUTH** | 1000-1099  | Authentication & authorization errors |
+| **VAL**  | 2000-2099  | Validation & input errors             |
+| **DB**   | 3000-3099  | Database & query errors               |
+| **RES**  | 4000-4099  | Resource not found & access errors    |
+| **BUS**  | 5000-5099  | Business logic violations             |
+| **SYS**  | 6000-6099  | System & internal errors              |
+| **EXT**  | 7000-7099  | External service errors               |
+| **RATE** | 8000-8099  | Rate limiting errors                  |
+| **FILE** | 9000-9099  | File upload errors                    |
 
 ### Example Error Codes
 
@@ -104,10 +104,10 @@ export enum ErrorCode {
 
 ```typescript
 export const ErrorCodeToHttpStatus: Record<ErrorCode, HttpStatus> = {
-  [ErrorCode.AUTH_001]: HttpStatus.UNAUTHORIZED,      // 401
-  [ErrorCode.VAL_001]: HttpStatus.BAD_REQUEST,        // 400
-  [ErrorCode.DB_003]: HttpStatus.CONFLICT,            // 409
-  [ErrorCode.RES_001]: HttpStatus.NOT_FOUND,          // 404
+  [ErrorCode.AUTH_001]: HttpStatus.UNAUTHORIZED, // 401
+  [ErrorCode.VAL_001]: HttpStatus.BAD_REQUEST, // 400
+  [ErrorCode.DB_003]: HttpStatus.CONFLICT, // 409
+  [ErrorCode.RES_001]: HttpStatus.NOT_FOUND, // 404
   // ... all mappings defined
 };
 ```
@@ -147,7 +147,9 @@ export class BaseException extends Error {
   }
 
   getHttpStatus(): HttpStatus {
-    return ErrorCodeToHttpStatus[this.errorCode] || HttpStatus.INTERNAL_SERVER_ERROR;
+    return (
+      ErrorCodeToHttpStatus[this.errorCode] || HttpStatus.INTERNAL_SERVER_ERROR
+    );
   }
 
   getProductionMessage(): string {
@@ -159,91 +161,100 @@ export class BaseException extends Error {
 ### Available Exceptions
 
 **Authentication Exceptions:**
+
 ```typescript
-InvalidCredentialsException
-UnauthorizedException
-TokenExpiredException
-TokenInvalidException
-InsufficientPermissionsException
-AccountLockedException
-AccountNotVerifiedException
-RefreshTokenExpiredException
+InvalidCredentialsException;
+UnauthorizedException;
+TokenExpiredException;
+TokenInvalidException;
+InsufficientPermissionsException;
+AccountLockedException;
+AccountNotVerifiedException;
+RefreshTokenExpiredException;
 ```
 
 **Validation Exceptions:**
+
 ```typescript
-ValidationException
-MissingRequiredFieldException
-InvalidFormatException
-ValueOutOfRangeException
-InvalidEmailException
-WeakPasswordException
-DataIntegrityViolationException
+ValidationException;
+MissingRequiredFieldException;
+InvalidFormatException;
+ValueOutOfRangeException;
+InvalidEmailException;
+WeakPasswordException;
+DataIntegrityViolationException;
 ```
 
 **Resource Exceptions:**
+
 ```typescript
-ResourceNotFoundException
-UserNotFoundException
-RecordNotFoundException
-EndpointNotFoundException
-RouteNotFoundException
-AccessDeniedException
-ResourceAlreadyExistsException
+ResourceNotFoundException;
+UserNotFoundException;
+RecordNotFoundException;
+EndpointNotFoundException;
+RouteNotFoundException;
+AccessDeniedException;
+ResourceAlreadyExistsException;
 ```
 
 **Database Exceptions:**
+
 ```typescript
-DatabaseConnectionException
-DatabaseQueryException
-DuplicateEntryException
-ForeignKeyConstraintException
-DatabaseTimeoutException
-DatabaseTransactionException
-DatabaseIndexException
+DatabaseConnectionException;
+DatabaseQueryException;
+DuplicateEntryException;
+ForeignKeyConstraintException;
+DatabaseTimeoutException;
+DatabaseTransactionException;
+DatabaseIndexException;
 ```
 
 **Business Logic Exceptions:**
+
 ```typescript
-BusinessRuleViolationException
-InsufficientBalanceException
-InvalidOperationException
-StatusTransitionException
-DuplicateOperationException
-OperationNotAllowedException
+BusinessRuleViolationException;
+InsufficientBalanceException;
+InvalidOperationException;
+StatusTransitionException;
+DuplicateOperationException;
+OperationNotAllowedException;
 ```
 
 **System Exceptions:**
+
 ```typescript
-InternalServerException
-ConfigurationException
-ServiceUnavailableException
-TimeoutException
-DependencyFailureException
-SystemMaintenanceException
+InternalServerException;
+ConfigurationException;
+ServiceUnavailableException;
+TimeoutException;
+DependencyFailureException;
+SystemMaintenanceException;
 ```
 
 **External Service Exceptions:**
+
 ```typescript
-ExternalServiceException
-ThirdPartyAPIException
-PaymentGatewayException
-EmailServiceException
-StorageServiceException
+ExternalServiceException;
+ThirdPartyAPIException;
+PaymentGatewayException;
+EmailServiceException;
+StorageServiceException;
 ```
 
 **Rate Limiting Exceptions:**
+
 ```typescript
-RateLimitExceededException
-TooManyRequestsException
+RateLimitExceededException;
+TooManyRequestsException;
 ```
 
 **File Upload Exceptions:**
+
 ```typescript
-FileTooLargeException
-InvalidFileTypeException
-FileUploadException
-StorageQuotaExceededException
+FileTooLargeException;
+InvalidFileTypeException;
+FileUploadException;
+StorageQuotaExceededException;
 ```
 
 ### Usage Examples
@@ -295,6 +306,7 @@ try {
 ### File: `src/common/logger/logger.service.ts`
 
 **Structured logging** with Winston including:
+
 - Multiple log levels (error, warn, info, debug, verbose)
 - Console transport with colors (development)
 - Daily rotating file transports
@@ -304,22 +316,24 @@ try {
 
 ### Log Levels
 
-| Level | When to Use |
-|-------|-------------|
-| **error** | Fatal errors, exceptions, system failures |
-| **warn** | Warnings, deprecated features, slow queries |
-| **info** | General information, startup, configuration |
-| **debug** | Debugging information, detailed flow |
-| **verbose** | Very detailed logs, trace-level |
+| Level       | When to Use                                 |
+| ----------- | ------------------------------------------- |
+| **error**   | Fatal errors, exceptions, system failures   |
+| **warn**    | Warnings, deprecated features, slow queries |
+| **info**    | General information, startup, configuration |
+| **debug**   | Debugging information, detailed flow        |
+| **verbose** | Very detailed logs, trace-level             |
 
 ### Log Transports
 
 **Console Transport:**
+
 - Colored output in development
 - JSON format in production
 - Always enabled
 
 **File Transports:**
+
 1. **error-%DATE%.log** (Retention: 30 days)
    - Error level and above
    - Includes stack traces
@@ -372,6 +386,7 @@ export class SomeService {
 ### Specialized Logging Methods
 
 **1. Request Logging:**
+
 ```typescript
 this.logger.logRequest({
   method: 'POST',
@@ -384,6 +399,7 @@ this.logger.logRequest({
 ```
 
 **2. Database Query Logging:**
+
 ```typescript
 this.logger.logQuery({
   query: 'SELECT * FROM users WHERE email = $1',
@@ -393,6 +409,7 @@ this.logger.logQuery({
 ```
 
 **3. External API Logging:**
+
 ```typescript
 this.logger.logExternalAPI({
   service: 'PaymentGateway',
@@ -405,6 +422,7 @@ this.logger.logExternalAPI({
 ```
 
 **4. Event Logging:**
+
 ```typescript
 this.logger.logEvent({
   eventName: 'UserRegistered',
@@ -415,6 +433,7 @@ this.logger.logEvent({
 ```
 
 **5. Security Event Logging:**
+
 ```typescript
 this.logger.logSecurity({
   event: 'FailedLoginAttempt',
@@ -426,6 +445,7 @@ this.logger.logSecurity({
 ```
 
 **6. Performance Logging:**
+
 ```typescript
 this.logger.logPerformance({
   operation: 'BulkUserImport',
@@ -451,6 +471,7 @@ childLogger.log('Login attempt', 'Login', { email: dto.email });
 ### File: `src/common/middleware/request-logging.middleware.ts`
 
 **Automatically logs all HTTP requests** with:
+
 - Correlation ID generation (UUID v4)
 - Request metadata (method, URL, IP, user agent)
 - Response metadata (status, size, duration)
@@ -535,6 +556,7 @@ app.use(requestLoggingMiddleware.use.bind(requestLoggingMiddleware));
 ### File: `src/common/filters/global-exception.filter.ts`
 
 **Catches ALL exceptions** and provides:
+
 - Consistent error response format
 - Automatic error logging
 - Sentry integration
@@ -545,6 +567,7 @@ app.use(requestLoggingMiddleware.use.bind(requestLoggingMiddleware));
 ### Error Response Format
 
 **Development Environment:**
+
 ```json
 {
   "status": "error",
@@ -565,6 +588,7 @@ app.use(requestLoggingMiddleware.use.bind(requestLoggingMiddleware));
 ```
 
 **Production Environment:**
+
 ```json
 {
   "status": "error",
@@ -639,6 +663,7 @@ throw new Error('Unexpected null pointer');
 ### File: `src/config/sentry.config.ts`
 
 **Error monitoring and performance tracking** with:
+
 - Error tracking with stack traces
 - Performance monitoring (traces)
 - Profiling integration
@@ -649,6 +674,7 @@ throw new Error('Unexpected null pointer');
 ### Configuration
 
 **Environment Variables:**
+
 ```env
 SENTRY_ENABLED=true
 SENTRY_DSN=https://your-dsn@sentry.io/project-id
@@ -672,7 +698,10 @@ initializeSentry(configService);
 ### Manual Error Capture
 
 ```typescript
-import { captureSentryException, captureSentryMessage } from './config/sentry.config';
+import {
+  captureSentryException,
+  captureSentryMessage,
+} from './config/sentry.config';
 
 // Capture exception
 try {
@@ -712,15 +741,21 @@ try {
 ```typescript
 import { addSentryBreadcrumb } from './config/sentry.config';
 
-addSentryBreadcrumb('user', 'User logged in', {
-  userId: user.id,
-  email: user.email,
-}, 'info');
+addSentryBreadcrumb(
+  'user',
+  'User logged in',
+  {
+    userId: user.id,
+    email: user.email,
+  },
+  'info',
+);
 ```
 
 ### Filtering
 
 **Operational errors are filtered out:**
+
 ```typescript
 beforeSend(event, hint) {
   const error = hint.originalException as Error & { isOperational?: boolean };
@@ -734,6 +769,7 @@ beforeSend(event, hint) {
 ```
 
 **Sensitive data is sanitized:**
+
 ```typescript
 beforeSend(event, hint) {
   if (event.request?.headers) {
@@ -855,11 +891,16 @@ export class UsersController {
     try {
       return await this.usersService.create(dto, res);
     } catch (error) {
-      this.logger.error('User creation failed', error.stack, 'UsersController', {
-        correlationId,
-        email: dto.email,
-        errorCode: error.errorCode,
-      });
+      this.logger.error(
+        'User creation failed',
+        error.stack,
+        'UsersController',
+        {
+          correlationId,
+          email: dto.email,
+          errorCode: error.errorCode,
+        },
+      );
       throw error; // Global exception filter will handle it
     }
   }
@@ -998,15 +1039,17 @@ describe('UsersService', () => {
   it('should throw DuplicateEntryException if email exists', async () => {
     jest.spyOn(userRepository, 'findOne').mockResolvedValue(existingUser);
 
-    await expect(service.create(dto, res))
-      .rejects.toThrow(DuplicateEntryException);
+    await expect(service.create(dto, res)).rejects.toThrow(
+      DuplicateEntryException,
+    );
   });
 
   it('should throw WeakPasswordException if password is too short', async () => {
     const dto = { ...createDto, password: '123' };
 
-    await expect(service.create(dto, res))
-      .rejects.toThrow(WeakPasswordException);
+    await expect(service.create(dto, res)).rejects.toThrow(
+      WeakPasswordException,
+    );
   });
 });
 ```
@@ -1082,7 +1125,7 @@ NODE_ENV=development # Stack traces shown
 ✅ **Production-Ready**: Comprehensive error infrastructure
 
 For more information, see:
+
 - [NestJS Exception Filters](https://docs.nestjs.com/exception-filters)
 - [Winston Logger](https://github.com/winstonjs/winston)
 - [Sentry Node.js](https://docs.sentry.io/platforms/node/)
-

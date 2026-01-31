@@ -1,13 +1,16 @@
 # GraphQL & Rate Limiting - Complete Implementation Guide
 
 ## Overview
-Complete implementation of GraphQL API with Apollo Server and advanced rate limiting system with IP and user-based throttling.
+
+Complete implementation of GraphQL API with Apollo Server and advanced rate
+limiting system with IP and user-based throttling.
 
 ---
 
 ## 1. GraphQL Support ✅
 
 ### Features Implemented
+
 - ✅ GraphQL server with Apollo Server integration
 - ✅ Schema-first design (.graphql files)
 - ✅ GraphQL Playground (development mode)
@@ -21,6 +24,7 @@ Complete implementation of GraphQL API with Apollo Server and advanced rate limi
 **Location**: `server/src/graphql/`
 
 **Apollo Server Configuration**:
+
 ```typescript
 // server/src/graphql/graphql.config.ts
 export const graphqlConfig: ApolloDriverConfig = {
@@ -41,6 +45,7 @@ export const graphqlConfig: ApolloDriverConfig = {
 **Location**: `server/src/graphql/schema/user.graphql`
 
 **GraphQL Schema**:
+
 ```graphql
 type User {
   id: ID!
@@ -71,6 +76,7 @@ type Mutation {
 **Access**: `http://localhost:3001/graphql`
 
 **Features**:
+
 - Interactive query editor with syntax highlighting
 - Schema documentation explorer
 - Query history
@@ -78,6 +84,7 @@ type Mutation {
 - HTTP headers configuration
 
 **Example Query**:
+
 ```graphql
 query GetUsers($page: Int, $limit: Int) {
   users(page: $page, limit: $limit) {
@@ -97,6 +104,7 @@ query GetUsers($page: Int, $limit: Int) {
 ```
 
 **With Authentication**:
+
 ```json
 {
   "Authorization": "Bearer your-jwt-token"
@@ -108,17 +116,20 @@ query GetUsers($page: Int, $limit: Int) {
 Both APIs work simultaneously:
 
 **REST API**:
+
 ```bash
 GET http://localhost:3001/api/v1/users
 POST http://localhost:3001/api/v1/users
 ```
 
 **GraphQL API**:
+
 ```bash
 POST http://localhost:3001/graphql
 ```
 
 **Shared Features**:
+
 - Same authentication (JWT)
 - Same business logic (UsersService)
 - Same database entities
@@ -131,6 +142,7 @@ POST http://localhost:3001/graphql
 **Location**: `server/src/graphql/guards/gql-auth.guard.ts`
 
 **Usage**:
+
 ```typescript
 @Resolver('User')
 @UseGuards(GqlAuthGuard) // Protect all queries/mutations
@@ -149,6 +161,7 @@ export class UserResolver {
 **Available Operations**:
 
 #### Queries
+
 ```graphql
 # Get all users with pagination
 users(page: Int, limit: Int): UsersConnection
@@ -161,6 +174,7 @@ searchUsers(email: String!): [User!]!
 ```
 
 #### Mutations
+
 ```graphql
 # Create user
 createUser(input: CreateUserInput!): User!
@@ -180,6 +194,7 @@ toggleUserStatus(id: ID!): User!
 ## 2. API Rate Limiting ✅
 
 ### Features Implemented
+
 - ✅ Request throttling per user
 - ✅ IP-based rate limiting
 - ✅ Custom rate limit decorators
@@ -193,6 +208,7 @@ toggleUserStatus(id: ID!): User!
 **Location**: `server/src/config/rate-limit.config.ts`
 
 **Default Configuration**:
+
 ```typescript
 export const throttlerConfig: ThrottlerModuleOptions = {
   throttlers: [
@@ -220,7 +236,9 @@ export const throttlerConfig: ThrottlerModuleOptions = {
 **Location**: `server/src/common/decorators/rate-limit.decorator.ts`
 
 #### 1. @RateLimit(ttl, limit, message?)
+
 Custom rate limiting with specific values:
+
 ```typescript
 @RateLimit(60000, 10, 'Too many requests')
 @Post('custom-endpoint')
@@ -228,7 +246,9 @@ async customEndpoint() {}
 ```
 
 #### 2. @AuthRateLimit()
+
 Strict rate limiting for authentication (5 requests per 15 minutes):
+
 ```typescript
 @AuthRateLimit()
 @Post('login')
@@ -236,7 +256,9 @@ async login() {}
 ```
 
 #### 3. @StrictRateLimit()
+
 Moderate rate limiting (10 requests per minute):
+
 ```typescript
 @StrictRateLimit()
 @Post('reset-password')
@@ -244,7 +266,9 @@ async resetPassword() {}
 ```
 
 #### 4. @PublicRateLimit()
+
 Generous rate limiting for public endpoints (1000 requests per minute):
+
 ```typescript
 @PublicRateLimit()
 @Get('health')
@@ -252,7 +276,9 @@ async healthCheck() {}
 ```
 
 #### 5. @SkipRateLimit()
+
 Skip rate limiting for internal endpoints:
+
 ```typescript
 @SkipRateLimit()
 @Get('internal/metrics')
@@ -260,7 +286,9 @@ async getMetrics() {}
 ```
 
 #### 6. @UserRateLimit(ttl, limit)
+
 Per-user rate limiting (requires authentication):
+
 ```typescript
 @UserRateLimit(60000, 50) // 50 requests per minute per user
 @Post('upload')
@@ -280,6 +308,7 @@ Retry-After: 60
 ```
 
 **Header Descriptions**:
+
 - `X-RateLimit-Limit` - Maximum requests allowed
 - `X-RateLimit-Remaining` - Requests remaining in current window
 - `X-RateLimit-Reset` - Unix timestamp when limit resets
@@ -289,6 +318,7 @@ Retry-After: 60
 ### IP vs User-Based Rate Limiting
 
 **Automatic Detection**:
+
 ```typescript
 // Authenticated request → user-based
 "ip:192.168.1.1" → "user:uuid-here"
@@ -298,6 +328,7 @@ Retry-After: 60
 ```
 
 **Custom Throttler Guard**:
+
 ```typescript
 // server/src/common/guards/throttler.guard.ts
 protected async getTracker(context: ExecutionContext): Promise<string> {
@@ -317,6 +348,7 @@ protected async getTracker(context: ExecutionContext): Promise<string> {
 ### Rate Limiting Examples
 
 #### Authentication Endpoints
+
 ```typescript
 @Controller('auth')
 export class AuthController {
@@ -335,6 +367,7 @@ export class AuthController {
 ```
 
 #### User Management Endpoints
+
 ```typescript
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -356,6 +389,7 @@ export class UsersController {
 ### Rate Limit Response
 
 **429 Too Many Requests**:
+
 ```json
 {
   "status": "error",
@@ -392,6 +426,7 @@ RATE_LIMIT_ENABLED=false
 ### Testing GraphQL
 
 **Using cURL**:
+
 ```bash
 # Query with authentication
 curl -X POST http://localhost:3001/graphql \
@@ -401,6 +436,7 @@ curl -X POST http://localhost:3001/graphql \
 ```
 
 **Using GraphQL Playground**:
+
 1. Navigate to `http://localhost:3001/graphql`
 2. Add JWT token in HTTP Headers:
    ```json
@@ -414,6 +450,7 @@ curl -X POST http://localhost:3001/graphql \
 ### Testing Rate Limiting
 
 **Test Rate Limit**:
+
 ```bash
 # Make 101 requests quickly
 for i in {1..101}; do
@@ -422,6 +459,7 @@ done
 ```
 
 **Expected Headers**:
+
 ```http
 HTTP/1.1 200 OK
 X-RateLimit-Limit: 100
@@ -431,6 +469,7 @@ X-RateLimit-Policy: 100;w=60
 ```
 
 **After Limit Exceeded**:
+
 ```http
 HTTP/1.1 429 Too Many Requests
 X-RateLimit-Limit: 100
@@ -444,6 +483,7 @@ Retry-After: 60
 ## 5. GraphQL Query Examples
 
 ### Get All Users
+
 ```graphql
 query GetUsers {
   users(page: 1, limit: 10) {
@@ -466,6 +506,7 @@ query GetUsers {
 ```
 
 ### Get Single User
+
 ```graphql
 query GetUser($id: ID!) {
   user(id: $id) {
@@ -481,6 +522,7 @@ query GetUser($id: ID!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
@@ -488,6 +530,7 @@ query GetUser($id: ID!) {
 ```
 
 ### Search Users
+
 ```graphql
 query SearchUsers($email: String!) {
   searchUsers(email: $email) {
@@ -500,6 +543,7 @@ query SearchUsers($email: String!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "email": "john"
@@ -507,6 +551,7 @@ query SearchUsers($email: String!) {
 ```
 
 ### Create User
+
 ```graphql
 mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
@@ -520,6 +565,7 @@ mutation CreateUser($input: CreateUserInput!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "input": {
@@ -532,6 +578,7 @@ mutation CreateUser($input: CreateUserInput!) {
 ```
 
 ### Update User
+
 ```graphql
 mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
   updateUser(id: $id, input: $input) {
@@ -545,6 +592,7 @@ mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "id": "user-uuid-here",
@@ -556,6 +604,7 @@ mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
 ```
 
 ### Delete User
+
 ```graphql
 mutation DeleteUser($id: ID!) {
   deleteUser(id: $id)
@@ -563,6 +612,7 @@ mutation DeleteUser($id: ID!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "id": "user-uuid-here"
@@ -570,6 +620,7 @@ mutation DeleteUser($id: ID!) {
 ```
 
 ### Toggle User Status
+
 ```graphql
 mutation ToggleUserStatus($id: ID!) {
   toggleUserStatus(id: $id) {
@@ -585,6 +636,7 @@ mutation ToggleUserStatus($id: ID!) {
 ## 6. Files Structure
 
 ### GraphQL Files
+
 ```
 server/src/graphql/
 ├── graphql.config.ts          # Apollo Server configuration
@@ -598,6 +650,7 @@ server/src/graphql/
 ```
 
 ### Rate Limiting Files
+
 ```
 server/src/
 ├── config/
@@ -614,6 +667,7 @@ server/src/
 ## 7. Best Practices
 
 ### GraphQL
+
 1. ✅ **Always use schema-first design** - Better type safety
 2. ✅ **Protect all resolvers with auth** - Security first
 3. ✅ **Implement pagination** - Performance optimization
@@ -622,6 +676,7 @@ server/src/
 6. ✅ **Handle errors gracefully** - Return null or throw specific errors
 
 ### Rate Limiting
+
 1. ✅ **Use strict limits for auth** - Prevent brute force
 2. ✅ **Generous limits for reads** - Better UX
 3. ✅ **Per-user limits when authenticated** - Fairer distribution
@@ -636,11 +691,13 @@ server/src/
 ### Rate Limit Logging
 
 Check logs for rate limit violations:
+
 ```bash
 tail -f logs/app.log | grep "Rate limit exceeded"
 ```
 
 **Log Output**:
+
 ```
 [CustomThrottlerGuard] Rate limit exceeded for user:uuid on POST /api/v1/auth/login
 ```
@@ -648,6 +705,7 @@ tail -f logs/app.log | grep "Rate limit exceeded"
 ### GraphQL Query Logging
 
 Monitor slow GraphQL queries:
+
 ```typescript
 // Add to graphql.config.ts
 plugins: [
@@ -672,6 +730,7 @@ plugins: [
 ## 9. Summary
 
 ### GraphQL Implementation ✅
+
 - **Endpoint**: `http://localhost:3001/graphql`
 - **Playground**: `http://localhost:3001/graphql` (dev only)
 - **Schema**: Schema-first with `.graphql` files
@@ -680,6 +739,7 @@ plugins: [
 - **Coexistence**: Works alongside REST API
 
 ### Rate Limiting Implementation ✅
+
 - **Global**: 100 requests per minute (default)
 - **Auth**: 5 requests per 15 minutes
 - **Strict**: 10 requests per minute
@@ -688,6 +748,7 @@ plugins: [
 - **Decorators**: 6 custom decorators available
 
 ### Access Points
+
 - **REST API**: `http://localhost:3001/api/v1/`
 - **GraphQL**: `http://localhost:3001/graphql`
 - **Swagger**: `http://localhost:3001/api/docs`

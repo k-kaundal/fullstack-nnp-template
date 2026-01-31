@@ -6,7 +6,15 @@
 
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+  useRef,
+} from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { AuthContextValue, RegisterData, User } from '@/interfaces';
 import { StorageKey } from '@/enums';
@@ -115,22 +123,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Store authentication data
    */
-  const storeAuth = useCallback((
-    userData: User,
-    access: string,
-    refresh: string,
-    session?: string
-  ) => {
-    setUser(userData);
-    setAccessToken(access);
-    setRefreshToken(refresh);
-    if (session) setSessionId(session);
+  const storeAuth = useCallback(
+    (userData: User, access: string, refresh: string, session?: string) => {
+      setUser(userData);
+      setAccessToken(access);
+      setRefreshToken(refresh);
+      if (session) setSessionId(session);
 
-    setStorageItem(StorageKey.USER_DATA, userData);
-    setStorageItem(StorageKey.ACCESS_TOKEN, access);
-    setStorageItem(StorageKey.REFRESH_TOKEN, refresh);
-    if (session) setStorageItem(StorageKey.SESSION_ID, session);
-  }, []);
+      setStorageItem(StorageKey.USER_DATA, userData);
+      setStorageItem(StorageKey.ACCESS_TOKEN, access);
+      setStorageItem(StorageKey.REFRESH_TOKEN, refresh);
+      if (session) setStorageItem(StorageKey.SESSION_ID, session);
+    },
+    []
+  );
 
   /**
    * Validate current session
@@ -313,18 +319,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
         clearInterval(validationIntervalRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array - only run once on mount
 
   /**
    * Login user
    */
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await authService.login({ email, password });
 
       if (isSuccessResponse(response)) {
-        const { user: userData, accessToken: access, refreshToken: refresh, sessionId: session } = response.data;
+        const {
+          user: userData,
+          accessToken: access,
+          refreshToken: refresh,
+          sessionId: session,
+        } = response.data;
         storeAuth(userData, access, refresh, session);
 
         // Setup automatic token refresh and session validation
@@ -374,7 +388,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await authService.register(data);
 
       if (isSuccessResponse(response)) {
-        const { user: userData, accessToken: access, refreshToken: refresh, sessionId: session } = response.data;
+        const {
+          user: userData,
+          accessToken: access,
+          refreshToken: refresh,
+          sessionId: session,
+        } = response.data;
         storeAuth(userData, access, refresh, session);
 
         // Setup automatic token refresh and session validation
@@ -436,7 +455,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return { success: false, error: response.message };
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to resend verification email';
+      const message =
+        error instanceof Error ? error.message : 'Failed to resend verification email';
       toast.error(message);
       return { success: false, error: message };
     }
@@ -457,7 +477,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return { success: false, error: response.message };
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to send password reset email';
+      const message =
+        error instanceof Error ? error.message : 'Failed to send password reset email';
       toast.error(message);
       return { success: false, error: message };
     }
@@ -466,7 +487,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Reset password with token
    */
-  const resetPassword = async (token: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const resetPassword = async (
+    token: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await authService.resetPassword(token, password);
 

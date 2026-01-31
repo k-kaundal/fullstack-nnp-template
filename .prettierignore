@@ -35,3 +35,4 @@ pnpm-lock.yaml
 *.tmp
 *.temp
 .DS_Store
+*.yaml

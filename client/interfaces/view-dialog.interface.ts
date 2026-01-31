@@ -23,7 +23,16 @@ export interface ViewField {
   /** Custom render function for the value */
   render?: (value: ViewFieldValue) => ReactNode;
   /** Field type for built-in rendering */
-  type?: 'text' | 'email' | 'date' | 'datetime' | 'boolean' | 'status' | 'badge' | 'link' | 'custom';
+  type?:
+    | 'text'
+    | 'email'
+    | 'date'
+    | 'datetime'
+    | 'boolean'
+    | 'status'
+    | 'badge'
+    | 'link'
+    | 'custom';
   /** Whether field value is copyable */
   copyable?: boolean;
   /** Custom className for field wrapper */

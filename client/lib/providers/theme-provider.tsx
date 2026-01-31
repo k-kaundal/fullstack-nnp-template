@@ -44,4 +44,3 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
  * ```
  */
 export { useTheme } from 'next-themes';
-

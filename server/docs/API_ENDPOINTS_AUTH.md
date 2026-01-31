@@ -1,14 +1,17 @@
 # Authentication API Endpoints - cURL Examples
 
 ## 📚 Documentation Index
+
 - **[API Security Implementation](./API_SECURITY.md)** - Complete JWT authentication security guide
 - **[Complete Validation Guide](./VALIDATION.md)** - Comprehensive validation rules and security features
 - **[Implementation Status](./VALIDATION_IMPLEMENTATION_COMPLETE.md)** - Validation implementation summary
 
 ## 🔒 Security Notice
+
 **All Users API endpoints (`/api/v1/users/*`) now require JWT authentication!**
 
 Public endpoints (no token required):
+
 - ✅ POST `/auth/register` - User registration
 - ✅ POST `/auth/login` - User login
 - ✅ POST `/auth/refresh` - Refresh access token
@@ -18,6 +21,7 @@ Public endpoints (no token required):
 - ✅ GET `/` - Health check
 
 Protected endpoints (JWT token required):
+
 - 🔒 POST `/auth/logout` - Logout
 - 🔒 POST `/auth/resend-verification` - Resend verification
 - 🔒 GET `/auth/me` - Get current user
@@ -28,7 +32,9 @@ See [API_SECURITY.md](./API_SECURITY.md) for complete authentication guide.
 ---
 
 ## ✅ Validation Features
+
 All authentication endpoints have enterprise-grade validation:
+
 - 🛡️ **Disposable email blocking** (8 providers blacklisted)
 - 🔒 **Strong password enforcement** (complexity + weak password detection)
 - ✏️ **Name format validation** (letters, spaces, hyphens, apostrophes)
@@ -40,6 +46,7 @@ See [VALIDATION.md](./VALIDATION.md) for complete details.
 ---
 
 ## Base URL
+
 ```
 http://localhost:3001/api/v1
 ```
@@ -60,11 +67,13 @@ curl -X POST http://localhost:3001/api/v1/auth/register \
 **Rate Limit**: 5 requests/minute
 
 **Validation Rules**:
+
 - ✅ Email: Valid format, no disposable providers (tempmail.com, guerrillamail.com, etc.)
 - ✅ First/Last Name: 2-50 characters, letters/spaces/hyphens/apostrophes only, must start with letter
-- ✅ Password: 8-100 characters, must have uppercase, lowercase, number, special char (@$!%*?&), no weak passwords
+- ✅ Password: 8-100 characters, must have uppercase, lowercase, number, special char (@$!%\*?&), no weak passwords
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -101,6 +110,7 @@ curl -X POST http://localhost:3001/api/v1/auth/login \
 **Rate Limit**: 10 requests/minute
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -132,6 +142,7 @@ curl -X GET http://localhost:3001/api/v1/auth/me \
 **Authentication**: Required
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -159,6 +170,7 @@ curl -X POST http://localhost:3001/api/v1/auth/refresh \
 **Rate Limit**: 20 requests/minute
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -183,6 +195,7 @@ curl -X POST http://localhost:3001/api/v1/auth/logout \
 **Authentication**: Required
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -211,6 +224,7 @@ curl -X POST http://localhost:3001/api/v1/auth/forgot-password \
 **Rate Limit**: 3 requests/hour
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -236,6 +250,7 @@ curl -X POST http://localhost:3001/api/v1/auth/reset-password \
 **Rate Limit**: 5 requests/hour
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -264,6 +279,7 @@ curl -X POST http://localhost:3001/api/v1/auth/verify-email \
 **Rate Limit**: 5 requests/hour
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -290,6 +306,7 @@ curl -X POST http://localhost:3001/api/v1/auth/resend-verification \
 **Rate Limit**: 3 requests/hour
 
 **Response**:
+
 ```json
 {
   "status": "success",
@@ -309,6 +326,7 @@ curl -X POST http://localhost:3001/api/v1/auth/resend-verification \
 You can import these into Postman by creating a new collection with the following structure:
 
 ### Environment Variables
+
 ```json
 {
   "baseUrl": "http://localhost:3001/api/v1",
@@ -318,25 +336,27 @@ You can import these into Postman by creating a new collection with the followin
 ```
 
 ### Pre-request Script (for authenticated endpoints)
+
 ```javascript
-const accessToken = pm.environment.get("accessToken");
+const accessToken = pm.environment.get('accessToken');
 if (accessToken) {
   pm.request.headers.add({
-    key: "Authorization",
-    value: `Bearer ${accessToken}`
+    key: 'Authorization',
+    value: `Bearer ${accessToken}`,
   });
 }
 ```
 
 ### Test Script (to save tokens after login/register)
+
 ```javascript
 if (pm.response.code === 200 || pm.response.code === 201) {
   const response = pm.response.json();
   if (response.data && response.data.accessToken) {
-    pm.environment.set("accessToken", response.data.accessToken);
+    pm.environment.set('accessToken', response.data.accessToken);
   }
   if (response.data && response.data.refreshToken) {
-    pm.environment.set("refreshToken", response.data.refreshToken);
+    pm.environment.set('refreshToken', response.data.refreshToken);
   }
 }
 ```
@@ -346,18 +366,18 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 ## Common Error Responses
 
 ### 400 Bad Request - Validation Error
+
 ```json
 {
   "status": "error",
   "statusCode": 400,
   "message": "Validation failed",
-  "errors": [
-    "Password must be at least 8 characters long"
-  ]
+  "errors": ["Password must be at least 8 characters long"]
 }
 ```
 
 ### 401 Unauthorized - Invalid Credentials
+
 ```json
 {
   "status": "error",
@@ -367,6 +387,7 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 ```
 
 ### 401 Unauthorized - Token Expired
+
 ```json
 {
   "status": "error",
@@ -376,6 +397,7 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 ```
 
 ### 409 Conflict - User Already Exists
+
 ```json
 {
   "status": "error",
@@ -385,6 +407,7 @@ if (pm.response.code === 200 || pm.response.code === 201) {
 ```
 
 ### 429 Too Many Requests - Rate Limit
+
 ```json
 {
   "status": "error",
