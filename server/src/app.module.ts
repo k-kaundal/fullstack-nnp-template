@@ -49,8 +49,34 @@ const conditionalImports: Array<any> = [
     inject: [ConfigService],
     useFactory: (configService: ConfigService) => {
       const isProduction = configService.get('NODE_ENV') === 'production';
-      // const isTest = configService.get('NODE_ENV') === 'test';
+      const isServerless =
+        process.env.VERCEL ||
+        process.env.AWS_LAMBDA_FUNCTION_NAME ||
+        process.env.LAMBDA_TASK_ROOT;
       const databaseUrl = configService.get('DATABASE_URL');
+
+      // Serverless-optimized connection pool settings
+      const connectionPoolConfig = isServerless
+        ? {
+            // Minimal connections for serverless to avoid exhausting DB connection limits
+            extra: {
+              max: 1, // Maximum 1 connection per serverless instance
+              min: 0, // No minimum connections
+              idleTimeoutMillis: 1000, // Close idle connections after 1 second
+              connectionTimeoutMillis: 3000, // 3 second connection timeout
+            },
+            keepConnectionAlive: false, // Don't keep connections alive in serverless
+            maxQueryExecutionTime: 5000, // Kill queries taking longer than 5 seconds
+          }
+        : {
+            // Normal server connection pool settings
+            extra: {
+              max: 10, // Maximum 10 connections
+              min: 2, // Minimum 2 connections
+              idleTimeoutMillis: 30000, // Close idle connections after 30 seconds
+            },
+            keepConnectionAlive: true,
+          };
 
       // If DATABASE_URL is provided (common in production), use it
       if (databaseUrl) {
@@ -66,6 +92,7 @@ const conditionalImports: Array<any> = [
                 rejectUnauthorized: false, // Required for most cloud providers
               }
             : false,
+          ...connectionPoolConfig,
         };
       }
 
@@ -87,6 +114,7 @@ const conditionalImports: Array<any> = [
               rejectUnauthorized: false, // Required for most cloud providers
             }
           : false,
+        ...connectionPoolConfig,
       };
     },
   }),

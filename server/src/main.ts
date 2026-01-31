@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger, VersioningType } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
@@ -30,15 +30,9 @@ async function createApp(): Promise<INestApplication> {
   // Initialize Sentry for error monitoring
   initializeSentry(configService);
 
-  // Enable API versioning (URI-based)
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-  });
-
-  // Global prefix (for non-versioned routes)
-  app.setGlobalPrefix('api', {
-    exclude: ['/'],
+  // Global prefix for API routes
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['/', '/health', '/favicon.ico'],
   });
 
   // CORS configuration
