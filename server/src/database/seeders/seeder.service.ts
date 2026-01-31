@@ -36,8 +36,9 @@ export class SeederService {
         this.logger.log(`Running seeder: ${name}`);
         await seeder.run();
         this.logger.log(`✅ Seeder completed: ${name}`);
-      } catch (error) {
-        this.logger.error(`❌ Seeder failed: ${name}`, error.stack);
+      } catch (error: unknown) {
+        const stack = error instanceof Error ? error.stack : undefined;
+        this.logger.error(`❌ Seeder failed: ${name}`, stack);
         throw error;
       }
     }
@@ -77,8 +78,9 @@ export class SeederService {
           this.logger.log(`Rolling back seeder: ${name}`);
           await seeder.rollback();
           this.logger.log(`✅ Rollback completed: ${name}`);
-        } catch (error) {
-          this.logger.error(`❌ Rollback failed: ${name}`, error.stack);
+        } catch (error: unknown) {
+          const stack = error instanceof Error ? error.stack : undefined;
+          this.logger.error(`❌ Rollback failed: ${name}`, stack);
           throw error;
         }
       }

@@ -12,10 +12,21 @@
     // "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    // TypeScript strict mode enabled for code quality
+    "strict": true,
     "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": false
   }
 }

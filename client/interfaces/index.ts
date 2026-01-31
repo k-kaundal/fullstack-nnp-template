@@ -15,3 +15,4 @@ export * from './view-dialog.interface';
 export * from './edit-dialog.interface';
 export * from './ui-components.interface';
 export * from './layout.interface';
+export * from './request-log.interface';

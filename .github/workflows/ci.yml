@@ -2,9 +2,35 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      [
+        main,
+        develop,
+        staging,
+        production,
+        release/*,
+        hotfix/*,
+        feature/*,
+        bugfix/*,
+        chore/*,
+        docs/*,
+        test/*,
+        ci/*,
+        perf/*,
+        refactor/*,
+        style/*,
+        build/*,
+        deps/*,
+        security/*,
+        workflow/*,
+        ci-cd/*,
+        release-candidate/*,
+        experimental/*,
+        spike/*,
+        core-foundation,
+      ]
   pull_request:
-    branches: [main, develop]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
 
 jobs:
   # Backend Tests

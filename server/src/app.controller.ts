@@ -31,4 +31,21 @@ export class AppController {
   getHello(@Res() res: Response): Response {
     return this.appService.getHello(res);
   }
+
+  /**
+   * Favicon endpoint to prevent 404 errors from browser requests
+   * Returns 204 No Content to silently handle favicon requests
+   *
+   * @param res - Express response object
+   * @returns Response - HTTP 204 No Content
+   */
+  @Get('favicon.ico')
+  @ApiOperation({ summary: 'Favicon endpoint' })
+  @ApiResponseDecorator({
+    status: HttpStatus.NO_CONTENT,
+    description: 'No favicon available',
+  })
+  getFavicon(@Res() res: Response): Response {
+    return res.status(HttpStatus.NO_CONTENT).send();
+  }
 }

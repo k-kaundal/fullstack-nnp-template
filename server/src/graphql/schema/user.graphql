@@ -1,0 +1,69 @@
+# User GraphQL Schema
+# Schema-first design for User operations
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  isActive: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type UsersConnection {
+  users: [User!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+  totalPages: Int!
+  hasNext: Boolean!
+  hasPrevious: Boolean!
+}
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  firstName: String
+  lastName: String
+  password: String
+  isActive: Boolean
+}
+
+type Query {
+  # Get all users with pagination
+  users(page: Int = 1, limit: Int = 10): UsersConnection!
+
+  # Get user by ID
+  user(id: ID!): User
+
+  # Search users by email
+  searchUsers(email: String!): [User!]!
+}
+
+type Mutation {
+  # Create new user
+  createUser(input: CreateUserInput!): User!
+
+  # Update existing user
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+
+  # Delete user
+  deleteUser(id: ID!): Boolean!
+
+  # Toggle user active status
+  toggleUserStatus(id: ID!): User!
+}
+
+# Subscriptions for real-time updates (optional)
+type Subscription {
+  userCreated: User!
+  userUpdated: User!
+  userDeleted: ID!
+}

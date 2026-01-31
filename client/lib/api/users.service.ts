@@ -10,13 +10,14 @@ import { ApiSuccessResponse, ApiErrorResponse } from '@/types';
 /**
  * Search users parameters
  */
-export interface SearchUsersParams extends Record<string, string | number | boolean | undefined> {
+export interface SearchUsersParams {
   search?: string;
-  isActive?: string;
+  isActive?: boolean;
   sortBy?: 'email' | 'firstName' | 'lastName' | 'createdAt' | 'isActive';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
+  [key: string]: string | number | boolean | undefined; // Index signature for QueryParams compatibility
 }
 
 /**
@@ -82,7 +83,7 @@ export class UsersService {
    * ```
    */
   async create(data: CreateUserDto): Promise<ApiSuccessResponse<User> | ApiErrorResponse> {
-    return apiClient.post<User, CreateUserDto>('/users', data);
+    return apiClient.post<User>('/users', data);
   }
 
   /**
@@ -103,7 +104,7 @@ export class UsersService {
     id: string,
     data: UpdateUserDto
   ): Promise<ApiSuccessResponse<User> | ApiErrorResponse> {
-    return apiClient.patch<User, UpdateUserDto>(`/users/${id}`, data);
+    return apiClient.patch<User>(`/users/${id}`, data);
   }
 
   /**
@@ -163,7 +164,7 @@ export class UsersService {
   async bulkActivate(
     ids: string[]
   ): Promise<ApiSuccessResponse<{ affected: number }> | ApiErrorResponse> {
-    return apiClient.post<{ affected: number }, { ids: string[] }>('/users/bulk/activate', { ids });
+    return apiClient.post<{ affected: number }>('/users/bulk/activate', { ids });
   }
 
   /**
@@ -180,7 +181,7 @@ export class UsersService {
   async bulkDeactivate(
     ids: string[]
   ): Promise<ApiSuccessResponse<{ affected: number }> | ApiErrorResponse> {
-    return apiClient.post<{ affected: number }, { ids: string[] }>('/users/bulk/deactivate', {
+    return apiClient.post<{ affected: number }>('/users/bulk/deactivate', {
       ids,
     });
   }

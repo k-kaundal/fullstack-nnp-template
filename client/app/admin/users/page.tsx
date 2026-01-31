@@ -1,155 +1,159 @@
 /**
- * Users Page - Admin
- * Full implementation with real API calls for CRUD operations and advanced search
+ * Professional User Management Page
+ * Full CRUD operations with statistics, filtering, bulk actions
  */
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Table, Confirm, ViewDialog, EditDialog } from '@/components/ui';
-import { User, UpdateUserDto, CreateUserDto } from '@/interfaces';
+import { useState, useEffect } from 'react';
+import { User, CreateUserDto, UpdateUserDto } from '@/interfaces';
 import { isSuccessResponse, toast } from '@/lib/utils';
-import { TableConfig, ViewDialogConfig, EditDialogConfig } from '@/interfaces';
-import { usersService } from '@/lib/api/index';
+import { LoadingSpinner, Pagination, Confirm, ViewDialog, EditDialog } from '@/components/ui';
+import { ViewDialogConfig, EditDialogConfig } from '@/interfaces';
+import { usersService } from '@/lib/api/users.service';
+
+/**
+ * Safely format date to locale string
+ */
+const formatDate = (
+  dateString: string | Date | undefined | null,
+  options?: Intl.DateTimeFormatOptions
+): string => {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleString(undefined, options);
+  } catch {
+    return '-';
+  }
+};
+
+interface UserStatistics {
+  total: number;
+  active: number;
+  inactive: number;
+  todayRegistered: number;
+}
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    pageSizeOptions: [10, 25, 50, 100],
-  });
-  const [sort, setSort] = useState({
-    column: 'createdAt',
-    direction: 'desc' as 'asc' | 'desc',
-  });
+  const [statistics, setStatistics] = useState<UserStatistics | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-
-  // ViewDialog state
-  const [viewDialogConfig, setViewDialogConfig] = useState<ViewDialogConfig>({
-    isOpen: false,
-    onClose: () => setViewDialogConfig((prev) => ({ ...prev, isOpen: false })),
-    title: '',
-    fields: [],
-  });
-
-  // EditDialog state
-  const [editDialogConfig, setEditDialogConfig] = useState<EditDialogConfig>({
-    isOpen: false,
-    onClose: () => setEditDialogConfig((prev) => ({ ...prev, isOpen: false })),
-    title: '',
-    fields: [],
-  });
-
-  // CreateDialog state
-  const [createDialogConfig, setCreateDialogConfig] = useState<EditDialogConfig>({
-    isOpen: false,
-    onClose: () => setCreateDialogConfig((prev) => ({ ...prev, isOpen: false })),
-    title: '',
-    fields: [],
-  });
-
-  // Confirm state
-  const [confirmState, setConfirmState] = useState({
-    isOpen: false,
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [confirmAction, setConfirmAction] = useState<() => Promise<void>>(() => async () => {});
+  const [confirmConfig, setConfirmConfig] = useState<{
+    title: string;
+    message: string;
+    type: 'warning' | 'danger';
+  }>({
     title: '',
     message: '',
-    type: 'warning' as 'info' | 'warning' | 'danger',
-    onConfirm: () => {},
+    type: 'warning',
   });
+  const [viewDialogConfig, setViewDialogConfig] = useState<ViewDialogConfig | null>(null);
+  const [editDialogConfig, setEditDialogConfig] = useState<EditDialogConfig | null>(null);
 
-  // Show confirmation
-  const showConfirm = (
-    title: string,
-    message: string,
-    onConfirm: () => void,
-    type: 'info' | 'warning' | 'danger' = 'warning'
-  ) => {
-    setConfirmState({ isOpen: true, title, message, type, onConfirm });
-  };
+  useEffect(() => {
+    fetchUsers();
+    fetchStatistics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, limit, searchQuery, statusFilter]);
 
-  // Fetch users
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
+  const fetchUsers = async () => {
+    setIsLoading(true);
     try {
-      // Always use advanced search API for sorting/filtering support
       const response = await usersService.search({
         search: searchQuery || undefined,
-        sortBy: sort.column as 'email' | 'firstName' | 'lastName' | 'createdAt' | 'isActive',
-        sortOrder: sort.direction,
-        page: pagination.page,
-        limit: pagination.limit,
+        isActive: statusFilter === 'all' ? undefined : statusFilter === 'active',
+        page,
+        limit,
       });
 
       if (isSuccessResponse<User[]>(response)) {
         setUsers(response.data);
-        if (response.meta && typeof response.meta.total === 'number') {
-          setPagination((prev) => ({
-            ...prev,
-            total: response.meta!.total as number,
-          }));
-        }
+        setTotal(Number(response.meta?.total || 0));
+        setTotalPages(Number(response.meta?.total_pages || 1));
       } else {
         toast.error(response.message);
       }
     } catch {
       toast.error('Failed to fetch users');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }, [pagination.page, pagination.limit, sort.column, sort.direction, searchQuery]);
+  };
 
-  // Fetch users on mount and when dependencies change
-  useEffect(() => {
+  const fetchStatistics = async () => {
+    try {
+      // Calculate from all users
+      const response = await usersService.getAll(1, 10000);
+      if (isSuccessResponse<User[]>(response)) {
+        const allUsers = response.data;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        setStatistics({
+          total: allUsers.length,
+          active: allUsers.filter((u) => u.isActive).length,
+          inactive: allUsers.filter((u) => !u.isActive).length,
+          todayRegistered: allUsers.filter((u) => {
+            try {
+              const createdDate = new Date(u.createdAt);
+              return !isNaN(createdDate.getTime()) && createdDate >= today;
+            } catch {
+              return false;
+            }
+          }).length,
+        });
+      }
+    } catch {
+      // Silent fail for statistics
+    }
+  };
+
+  const handleSearch = () => {
+    setPage(1);
     fetchUsers();
-  }, [fetchUsers]);
-
-  // Handle search
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setPagination((prev) => ({ ...prev, page: 1 })); // Reset to first page
   };
 
-  // Handle sort
-  const handleSort = (column: string, direction: 'asc' | 'desc') => {
-    setSort({ column, direction });
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setStatusFilter('all');
+    setPage(1);
   };
 
-  // Handle pagination
-  const handlePagination = (page: number, limit: number) => {
-    setPagination((prev) => ({ ...prev, page, limit }));
+  const handleSelectUser = (userId: string) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+    );
   };
 
-  // Handle selection change
-  const handleSelectionChange = (selectedIndices: number[]) => {
-    setSelectedRows(selectedIndices);
+  const handleSelectAll = () => {
+    if (selectedUsers.length === users.length) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(users.map((u) => u.id));
+    }
   };
 
-  // Handle view user
-  const handleView = (user: User) => {
+  const handleViewUser = (user: User) => {
     setViewDialogConfig({
       isOpen: true,
-      onClose: () => setViewDialogConfig((prev) => ({ ...prev, isOpen: false })),
+      onClose: () => setViewDialogConfig(null),
       title: 'User Details',
-      subtitle: `Viewing details for ${user.email}`,
-      size: 'lg',
+      subtitle: user.email,
       sections: [
         {
           id: 'basic',
           title: 'Basic Information',
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          ),
           fields: [
             {
               id: 'id',
@@ -231,7 +235,7 @@ export default function UsersPage() {
             </svg>
           ),
           onClick: () => {
-            setViewDialogConfig((prev) => ({ ...prev, isOpen: false }));
+            setViewDialogConfig(null);
             handleEdit(user);
           },
         },
@@ -250,7 +254,7 @@ export default function UsersPage() {
             </svg>
           ),
           onClick: () => {
-            setViewDialogConfig((prev) => ({ ...prev, isOpen: false }));
+            setViewDialogConfig(null);
             handleDelete(user);
           },
           disabled: user.isActive,
@@ -259,127 +263,17 @@ export default function UsersPage() {
           id: 'close',
           label: 'Close',
           variant: 'secondary',
-          onClick: () => setViewDialogConfig((prev) => ({ ...prev, isOpen: false })),
+          onClick: () => setViewDialogConfig(null),
         },
       ],
     });
   };
 
-  // Handle create user
-  const handleCreate = () => {
-    setCreateDialogConfig({
-      isOpen: true,
-      onClose: () => setCreateDialogConfig((prev) => ({ ...prev, isOpen: false })),
-      title: 'Create New User',
-      subtitle: 'Add a new user - temporary password will be generated and sent via email',
-      size: 'lg',
-      sections: [
-        {
-          id: 'basic',
-          title: 'User Information',
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          ),
-          fields: [
-            {
-              id: 'email',
-              name: 'email',
-              label: 'Email Address',
-              type: 'email',
-              placeholder: 'user@example.com',
-              validation: {
-                required: true,
-                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              },
-              helpText: 'User will receive login credentials at this email',
-            },
-            {
-              id: 'firstName',
-              name: 'firstName',
-              label: 'First Name',
-              type: 'text',
-              placeholder: 'John',
-              validation: {
-                required: true,
-                minLength: 2,
-                maxLength: 50,
-              },
-            },
-            {
-              id: 'lastName',
-              name: 'lastName',
-              label: 'Last Name',
-              type: 'text',
-              placeholder: 'Doe',
-              validation: {
-                required: true,
-                minLength: 2,
-                maxLength: 50,
-              },
-            },
-          ],
-        },
-      ],
-      onSubmit: async (formData) => {
-        // Prepare create data
-        const createData: CreateUserDto = {
-          email: formData.email as string,
-          firstName: formData.firstName as string,
-          lastName: formData.lastName as string,
-        };
-
-        const response = await usersService.create(createData);
-        if (isSuccessResponse<User>(response)) {
-          toast.success(
-            `User ${response.data.email} created successfully. Temporary password sent via email.`
-          );
-          setCreateDialogConfig((prev) => ({ ...prev, isOpen: false }));
-          fetchUsers(); // Refresh list
-        } else {
-          toast.error(response.message);
-          throw new Error(response.message); // Keep dialog open on error
-        }
-      },
-      actions: [
-        {
-          id: 'create',
-          label: 'Create User',
-          variant: 'primary',
-          type: 'submit',
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          ),
-          onClick: () => {}, // Handled by onSubmit
-        },
-        {
-          id: 'cancel',
-          label: 'Cancel',
-          variant: 'secondary',
-          onClick: () => setCreateDialogConfig((prev) => ({ ...prev, isOpen: false })),
-        },
-      ],
-    });
-  };
-
-  // Handle edit user (placeholder)
+  // Handle edit user
   const handleEdit = (user: User) => {
     setEditDialogConfig({
       isOpen: true,
-      onClose: () => setEditDialogConfig((prev) => ({ ...prev, isOpen: false })),
+      onClose: () => setEditDialogConfig(null),
       title: 'Edit User',
       subtitle: `Update details for ${user.email}`,
       size: 'lg',
@@ -556,7 +450,7 @@ export default function UsersPage() {
         const response = await usersService.update(user.id, updateData);
         if (isSuccessResponse<User>(response)) {
           toast.success(`User ${response.data.email} updated successfully`);
-          setEditDialogConfig((prev) => ({ ...prev, isOpen: false }));
+          setEditDialogConfig(null);
           fetchUsers(); // Refresh list
         } else {
           toast.error(response.message);
@@ -585,294 +479,619 @@ export default function UsersPage() {
           id: 'cancel',
           label: 'Cancel',
           variant: 'secondary',
-          onClick: () => setEditDialogConfig((prev) => ({ ...prev, isOpen: false })),
+          onClick: () => setEditDialogConfig(null),
         },
       ],
     });
   };
 
-  // Handle delete user
   const handleDelete = (user: User) => {
-    showConfirm(
-      'Delete User',
-      `Are you sure you want to delete ${user.email}? This action cannot be undone.`,
-      async () => {
-        const response = await usersService.delete(user.id);
-        if (isSuccessResponse(response)) {
-          toast.success(`User ${user.email} deleted successfully`);
-          fetchUsers(); // Refresh list
-        } else {
-          toast.error(response.message);
-        }
-      },
-      'danger'
-    );
+    setConfirmConfig({
+      title: 'Delete User',
+      message: `Are you sure you want to delete ${user.email}? This action cannot be undone.`,
+      type: 'danger',
+    });
+    setConfirmAction(() => async () => {
+      const response = await usersService.delete(user.id);
+      if (isSuccessResponse(response)) {
+        toast.success('User deleted successfully');
+        fetchUsers();
+        fetchStatistics();
+      } else {
+        toast.error(response.message);
+      }
+      setConfirmOpen(false);
+    });
+    setConfirmOpen(true);
   };
 
-  // Handle bulk activate
-  const handleBulkActivate = (selectedUsers: User[]) => {
-    const userIds = selectedUsers.map((u) => u.id);
-    showConfirm(
-      'Activate Users',
-      `Are you sure you want to activate ${selectedUsers.length} user(s)?`,
-      async () => {
-        const response = await usersService.bulkActivate(userIds);
-        if (isSuccessResponse(response)) {
-          toast.success(`${response.data.affected} user(s) activated successfully`);
-          fetchUsers(); // Refresh list
-          setSelectedRows([]); // Clear selection
-        } else {
-          toast.error(response.message);
-        }
-      },
-      'info'
-    );
-  };
-
-  // Handle bulk deactivate
-  const handleBulkDeactivate = (selectedUsers: User[]) => {
-    const userIds = selectedUsers.map((u) => u.id);
-    showConfirm(
-      'Deactivate Users',
-      `Are you sure you want to deactivate ${selectedUsers.length} user(s)?`,
-      async () => {
-        const response = await usersService.bulkDeactivate(userIds);
-        if (isSuccessResponse(response)) {
-          toast.warning(`${response.data.affected} user(s) deactivated`);
-          fetchUsers(); // Refresh list
-          setSelectedRows([]); // Clear selection
-        } else {
-          toast.error(response.message);
-        }
-      },
-      'warning'
-    );
-  };
-
-  // Handle bulk delete
-  const handleBulkDelete = (selectedUsers: User[]) => {
-    const userIds = selectedUsers.map((u) => u.id);
-    showConfirm(
-      'Delete Users',
-      `Are you sure you want to delete ${selectedUsers.length} user(s)? This action cannot be undone.`,
-      async () => {
-        const response = await usersService.bulkDelete(userIds);
-        if (isSuccessResponse(response)) {
-          toast.success(`${response.data.affected} user(s) deleted successfully`);
-          fetchUsers(); // Refresh list
-          setSelectedRows([]); // Clear selection
-        } else {
-          toast.error(response.message);
-        }
-      },
-      'danger'
-    );
-  };
-
-  // Table configuration
-  const tableConfig: TableConfig<User> = {
-    columns: [
-      {
-        id: 'email',
-        label: 'Email',
-        sortable: true,
-        width: '30%',
-      },
-      {
-        id: 'firstName',
-        label: 'First Name',
-        sortable: true,
-        hideOnMobile: true,
-      },
-      {
-        id: 'lastName',
-        label: 'Last Name',
-        sortable: true,
-        hideOnMobile: true,
-      },
-      {
-        id: 'isActive',
-        label: 'Status',
-        sortable: true,
-        align: 'center',
-        render: (value) => {
-          const isActive = value as boolean;
-          return (
-            <span
-              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                isActive
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-              }`}
-            >
-              {isActive ? 'Active' : 'Inactive'}
-            </span>
-          );
+  const handleCreateUser = () => {
+    setEditDialogConfig({
+      isOpen: true,
+      onClose: () => setEditDialogConfig(null),
+      title: 'Create New User',
+      subtitle: 'Add a new user to the system',
+      sections: [
+        {
+          id: 'basic',
+          title: 'User Information',
+          icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+          ),
+          fields: [
+            {
+              id: 'email',
+              name: 'email',
+              label: 'Email Address',
+              type: 'email',
+              placeholder: 'user@example.com',
+              validation: {
+                required: true,
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              },
+              helpText: 'User will receive login credentials at this email',
+            },
+            {
+              id: 'firstName',
+              name: 'firstName',
+              label: 'First Name',
+              type: 'text',
+              placeholder: 'John',
+              validation: {
+                required: true,
+                minLength: 2,
+                maxLength: 50,
+              },
+            },
+            {
+              id: 'lastName',
+              name: 'lastName',
+              label: 'Last Name',
+              type: 'text',
+              placeholder: 'Doe',
+              validation: {
+                required: true,
+                minLength: 2,
+                maxLength: 50,
+              },
+            },
+            {
+              id: 'password',
+              name: 'password',
+              label: 'Password',
+              type: 'password',
+              placeholder: 'Enter secure password',
+              validation: {
+                required: true,
+                minLength: 8,
+                validate: (value: unknown) => {
+                  const password = String(value);
+                  if (password.length < 8) return 'Password must be at least 8 characters';
+                  if (!/[A-Z]/.test(password))
+                    return 'Password must contain at least one uppercase letter';
+                  if (!/[a-z]/.test(password))
+                    return 'Password must contain at least one lowercase letter';
+                  if (!/[0-9]/.test(password)) return 'Password must contain at least one number';
+                  return true;
+                },
+              },
+              helpText: 'Must be at least 8 characters with uppercase, lowercase, and number',
+            },
+          ],
         },
+      ],
+      onSubmit: async (data) => {
+        const response = await usersService.create(data as unknown as CreateUserDto);
+        if (isSuccessResponse<User>(response)) {
+          toast.success(`User ${response.data.email} created successfully`);
+          setEditDialogConfig(null);
+          fetchUsers();
+          fetchStatistics();
+        } else {
+          toast.error(response.message);
+        }
       },
-      {
-        id: 'createdAt',
-        label: 'Created',
-        sortable: true,
-        hideOnMobile: true,
-        render: (value) => {
-          const date = new Date(value as string);
-          return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-          });
-        },
-      },
-    ],
-    data: users,
-    actions: [
-      {
-        id: 'view',
-        label: 'View',
-        iconOnly: true,
-        icon: <ViewIcon />,
-        onClick: (user) => handleView(user),
-      },
-      {
-        id: 'edit',
-        label: 'Edit',
-        iconOnly: true,
-        icon: <EditIcon />,
-        onClick: (user) => handleEdit(user),
-      },
-      {
-        id: 'delete',
-        label: 'Delete',
-        iconOnly: true,
-        variant: 'danger',
-        icon: <DeleteIcon />,
-        onClick: (user) => handleDelete(user),
-        disabled: (user) => user.isActive, // Can't delete active users
-      },
-    ],
-    bulkActions: [
-      {
-        id: 'activate',
-        label: 'Activate',
-        variant: 'success',
-        onClick: (selectedUsers) => handleBulkActivate(selectedUsers),
-      },
-      {
-        id: 'deactivate',
-        label: 'Deactivate',
-        variant: 'warning',
-        onClick: (selectedUsers) => handleBulkDeactivate(selectedUsers),
-      },
-      {
-        id: 'delete',
-        label: 'Delete',
-        variant: 'danger',
-        onClick: (selectedUsers) => handleBulkDelete(selectedUsers),
-      },
-    ],
-    selectable: true,
-    selectedRows,
-    onSelectionChange: handleSelectionChange,
-    searchable: true,
-    searchPlaceholder: 'Search users...',
-    onSearch: handleSearch,
-    showRowNumbers: true,
-    striped: true,
-    hoverable: true,
-    pagination,
-    onPaginationChange: handlePagination,
-    sort,
-    onSortChange: handleSort,
-    loading,
-    emptyMessage: 'No users found',
-    getRowKey: (user) => user.id,
+    });
+  };
+
+  const handleToggleStatus = async (user: User) => {
+    const response = await usersService.update(user.id, { isActive: !user.isActive });
+    if (isSuccessResponse(response)) {
+      toast.success(`User ${user.isActive ? 'deactivated' : 'activated'} successfully`);
+      fetchUsers();
+      fetchStatistics();
+    } else {
+      toast.error(response.message);
+    }
+  };
+
+  const handleBulkActivate = () => {
+    if (selectedUsers.length === 0) {
+      toast.error('Please select users to activate');
+      return;
+    }
+
+    setConfirmConfig({
+      title: 'Activate Users',
+      message: `Are you sure you want to activate ${selectedUsers.length} user(s)?`,
+      type: 'warning',
+    });
+    setConfirmAction(() => async () => {
+      const response = await usersService.bulkActivate(selectedUsers);
+      if (isSuccessResponse(response)) {
+        toast.success(`${response.data.affected} users activated`);
+        setSelectedUsers([]);
+        fetchUsers();
+        fetchStatistics();
+      } else {
+        toast.error(response.message);
+      }
+      setConfirmOpen(false);
+    });
+    setConfirmOpen(true);
+  };
+
+  const handleBulkDeactivate = () => {
+    if (selectedUsers.length === 0) {
+      toast.error('Please select users to deactivate');
+      return;
+    }
+
+    setConfirmConfig({
+      title: 'Deactivate Users',
+      message: `Are you sure you want to deactivate ${selectedUsers.length} user(s)?`,
+      type: 'warning',
+    });
+    setConfirmAction(() => async () => {
+      const response = await usersService.bulkDeactivate(selectedUsers);
+      if (isSuccessResponse(response)) {
+        toast.success(`${response.data.affected} users deactivated`);
+        setSelectedUsers([]);
+        fetchUsers();
+        fetchStatistics();
+      } else {
+        toast.error(response.message);
+      }
+      setConfirmOpen(false);
+    });
+    setConfirmOpen(true);
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedUsers.length === 0) {
+      toast.error('Please select users to delete');
+      return;
+    }
+
+    setConfirmConfig({
+      title: 'Delete Users',
+      message: `Are you sure you want to delete ${selectedUsers.length} user(s)? This action cannot be undone.`,
+      type: 'danger',
+    });
+    setConfirmAction(() => async () => {
+      const response = await usersService.bulkDelete(selectedUsers);
+      if (isSuccessResponse(response)) {
+        toast.success(`${response.data.affected} users deleted`);
+        setSelectedUsers([]);
+        fetchUsers();
+        fetchStatistics();
+      } else {
+        toast.error(response.message);
+      }
+      setConfirmOpen(false);
+    });
+    setConfirmOpen(true);
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex justify-between items-center">
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Users Management</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage all users in the system</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Manage users, roles, and permissions
+          </p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover dark:bg-primary-dark dark:hover:bg-primary-dark-hover text-white rounded-lg transition-colors duration-200 shadow-lg"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Create User
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              fetchUsers();
+              fetchStatistics();
+              toast.success('Data refreshed');
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            Refresh
+          </button>
+          <button
+            onClick={handleCreateUser}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Create User
+          </button>
+        </div>
       </div>
 
-      <Table config={tableConfig} />
+      {/* Statistics Cards */}
+      {statistics && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Users</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+                  {statistics.total.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                <svg
+                  className="w-6 h-6 text-blue-600 dark:text-blue-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
 
-      {/* Confirmation Dialog */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Active Users</p>
+                <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
+                  {statistics.active.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
+                <svg
+                  className="w-6 h-6 text-green-600 dark:text-green-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Inactive Users
+                </p>
+                <p className="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">
+                  {statistics.inactive.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
+                <svg
+                  className="w-6 h-6 text-red-600 dark:text-red-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition-shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+                  Registered Today
+                </p>
+                <p className="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-2">
+                  {statistics.todayRegistered.toLocaleString()}
+                </p>
+              </div>
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
+                <svg
+                  className="w-6 h-6 text-purple-600 dark:text-purple-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Filters and Bulk Actions */}
+      <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow space-y-4">
+        {/* Search and Filters */}
+        <div className="flex gap-4 items-end flex-wrap">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Search
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+              onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                e.key === 'Enter' && handleSearch()
+              }
+              placeholder="Search by email or name..."
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')
+              }
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Items per page
+            </label>
+            <select
+              value={limit}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setLimit(Number(e.target.value));
+                setPage(1);
+              }}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={200}>200</option>
+            </select>
+          </div>
+          <button
+            onClick={handleSearch}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Search
+          </button>
+          {(searchQuery || statusFilter !== 'all') && (
+            <button
+              onClick={handleClearSearch}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Bulk Actions */}
+        {selectedUsers.length > 0 && (
+          <div className="flex gap-3 items-center flex-wrap p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {selectedUsers.length} user(s) selected
+            </span>
+            <button
+              onClick={handleBulkActivate}
+              className="px-4 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors"
+            >
+              Activate
+            </button>
+            <button
+              onClick={handleBulkDeactivate}
+              className="px-4 py-1.5 bg-yellow-600 text-white text-sm rounded-lg hover:bg-yellow-700 transition-colors"
+            >
+              Deactivate
+            </button>
+            <button
+              onClick={handleBulkDelete}
+              className="px-4 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => setSelectedUsers([])}
+              className="px-4 py-1.5 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Clear Selection
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Users Table */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div className="overflow-x-auto">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : users.length === 0 ? (
+            <div className="text-center py-12 text-gray-500 dark:text-gray-400">No users found</div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left">
+                    <input
+                      type="checkbox"
+                      checked={selectedUsers.length === users.length}
+                      onChange={handleSelectAll}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Created At
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {users.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(user.id)}
+                        onChange={() => handleSelectUser(user.id)}
+                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                      />
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                      {user.firstName} {user.lastName || ''}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleToggleStatus(user)}
+                        className={`px-2 py-1 text-xs font-semibold rounded ${
+                          user.isActive
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800'
+                        } transition-colors cursor-pointer`}
+                      >
+                        {user.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                      {formatDate(user.createdAt, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
+                      <button
+                        onClick={() => handleViewUser(user)}
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(user)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Pagination */}
+        {!isLoading && users.length > 0 && (
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                Showing <span className="font-medium">{(page - 1) * limit + 1}</span> to{' '}
+                <span className="font-medium">{Math.min(page * limit, total)}</span> of{' '}
+                <span className="font-medium">{total}</span> results
+              </p>
+              <Pagination
+                meta={{
+                  total,
+                  count: users.length,
+                  page,
+                  limit,
+                  total_pages: totalPages,
+                  has_next: page < totalPages,
+                  has_previous: page > 1,
+                }}
+                onPageChange={setPage}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Dialogs */}
+      {viewDialogConfig && <ViewDialog config={viewDialogConfig} />}
+      {editDialogConfig && <EditDialog config={editDialogConfig} />}
+
+      {/* Confirm Dialog */}
       <Confirm
-        isOpen={confirmState.isOpen}
-        onClose={() => setConfirmState((prev) => ({ ...prev, isOpen: false }))}
-        title={confirmState.title}
-        message={confirmState.message}
-        type={confirmState.type}
-        onConfirm={confirmState.onConfirm}
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+        onConfirm={confirmAction}
       />
-
-      {/* View Dialog */}
-      <ViewDialog config={viewDialogConfig} />
-
-      {/* Edit Dialog */}
-      <EditDialog config={editDialogConfig} />
-
-      {/* Create Dialog */}
-      <EditDialog config={createDialogConfig} />
     </div>
-  );
-}
-
-// Icon Components
-function ViewIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-      />
-    </svg>
-  );
-}
-
-function EditIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-      />
-    </svg>
-  );
-}
-
-function DeleteIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-      />
-    </svg>
   );
 }

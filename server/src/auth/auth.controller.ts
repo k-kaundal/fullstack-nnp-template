@@ -15,8 +15,12 @@ import {
   ApiResponse as ApiResponseDecorator,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { Throttle } from '@nestjs/throttler';
 import { Response, Request } from 'express';
+import {
+  AuthRateLimit,
+  StrictRateLimit,
+  RateLimit,
+} from '../common/decorators/rate-limit.decorator';
 import { AuthService } from './auth.service';
 import { SessionService } from './session.service';
 import { RegisterDto } from './dto/register.dto';
@@ -44,7 +48,7 @@ import {
  * Rate limiting applied to prevent abuse
  */
 @ApiTags('auth')
-@Controller('auth')
+@Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -53,10 +57,10 @@ export class AuthController {
 
   /**
    * Register a new user account
-   * Rate limited to 5 requests per minute
+   * Rate limited to 5 requests per 15 minutes (brute force protection)
    */
   @Post('register')
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
+  @AuthRateLimit() // 5 requests per 15 minutes
   @ApiOperation({
     summary: 'Register a new user',
     description:
@@ -126,7 +130,7 @@ export class AuthController {
    * Rate limited to 10 requests per minute
    */
   @Post('login')
-  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 requests per minute
+  @AuthRateLimit() // 5 requests per 15 minutes (brute force protection)
   @ApiOperation({
     summary: 'Login user',
     description:
@@ -231,7 +235,7 @@ export class AuthController {
    * Rate limited to 20 requests per minute
    */
   @Post('refresh')
-  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 20 requests per minute
+  @RateLimit(60000, 20) // 20 requests per minute
   @ApiOperation({
     summary: 'Refresh access token',
     description:
@@ -279,7 +283,7 @@ export class AuthController {
    * Rate limited to 3 requests per hour
    */
   @Post('forgot-password')
-  @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 requests per hour
+  @StrictRateLimit() // 10 requests per minute (abuse prevention)
   @ApiOperation({
     summary: 'Request password reset',
     description:
@@ -315,7 +319,7 @@ export class AuthController {
    * Rate limited to 5 requests per hour
    */
   @Post('reset-password')
-  @Throttle({ default: { limit: 5, ttl: 3600000 } }) // 5 requests per hour
+  @StrictRateLimit() // 10 requests per minute (abuse prevention)
   @ApiOperation({
     summary: 'Reset password',
     description:
@@ -356,7 +360,7 @@ export class AuthController {
    * Rate limited to 5 requests per hour
    */
   @Post('verify-email')
-  @Throttle({ default: { limit: 5, ttl: 3600000 } }) // 5 requests per hour
+  @StrictRateLimit() // 10 requests per minute (abuse prevention)
   @ApiOperation({
     summary: 'Verify email',
     description:
@@ -394,12 +398,12 @@ export class AuthController {
   /**
    * Resend email verification
    * Requires authentication
-   * Rate limited to 3 requests per hour
+   * Rate limited to 10 requests per minute (abuse prevention)
    */
   @Post('resend-verification')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Throttle({ default: { limit: 3, ttl: 3600000 } }) // 3 requests per hour
+  @StrictRateLimit() // 10 requests per minute (abuse prevention)
   @ApiOperation({
     summary: 'Resend email verification',
     description:

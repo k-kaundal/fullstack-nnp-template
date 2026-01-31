@@ -423,6 +423,580 @@ if (existingUser) {
 }
 ```
 
+### Error Handling, Logging & Monitoring - PRODUCTION READY
+
+**This project implements comprehensive error infrastructure with standardized error codes, structured logging, and error monitoring.**
+
+#### Error Code Standardization
+
+**File: `src/common/enums/error-codes.enum.ts`**
+
+**70+ standardized error codes** organized by category with automatic HTTP status mapping.
+
+**Error Code Categories:**
+- **AUTH** (1000-1099): Authentication & authorization errors
+- **VAL** (2000-2099): Validation & input errors
+- **DB** (3000-3099): Database & query errors
+- **RES** (4000-4099): Resource not found & access errors
+- **BUS** (5000-5099): Business logic violations
+- **SYS** (6000-6099): System & internal errors
+- **EXT** (7000-7099): External service errors
+- **RATE** (8000-8099): Rate limiting errors
+- **FILE** (9000-9099): File upload errors
+
+**Usage Example:**
+```typescript
+import { ErrorCode } from '../common/enums';
+
+throw new ValidationException('Email is required', {
+  field: 'email',
+  errorCode: ErrorCode.VAL_001,
+});
+```
+
+#### Custom Exception Library - MANDATORY
+
+**File: `src/common/exceptions/custom-exceptions.ts`**
+
+**40+ custom exception classes** extending `BaseException` with automatic HTTP status mapping and environment-aware messages.
+
+**BaseException Structure:**
+```typescript
+export class BaseException extends Error {
+  constructor(
+    public readonly errorCode: ErrorCode,
+    public readonly message: string,
+    public readonly isOperational: boolean = true, // Expected errors
+    public readonly metadata?: Record<string, unknown>,
+  ) {}
+
+  getHttpStatus(): HttpStatus // Auto-mapped from error code
+  getProductionMessage(): string // Generic message for production
+}
+```
+
+**Available Exception Classes:**
+
+**Authentication Exceptions:**
+- `InvalidCredentialsException` - Invalid email or password
+- `UnauthorizedException` - Not authenticated
+- `TokenExpiredException` - JWT token expired
+- `TokenInvalidException` - Invalid JWT token
+- `InsufficientPermissionsException` - Not authorized for action
+- `AccountLockedException` - Account locked after failed attempts
+- `AccountNotVerifiedException` - Email not verified
+- `RefreshTokenExpiredException` - Refresh token expired
+
+**Validation Exceptions:**
+- `ValidationException` - General validation error
+- `MissingRequiredFieldException` - Required field missing
+- `InvalidFormatException` - Invalid data format
+- `ValueOutOfRangeException` - Value outside allowed range
+- `InvalidEmailException` - Invalid email format
+- `WeakPasswordException` - Password doesn't meet requirements
+- `DataIntegrityViolationException` - Data integrity constraint violated
+
+**Resource Exceptions:**
+- `ResourceNotFoundException` - Generic resource not found
+- `UserNotFoundException` - User not found
+- `RecordNotFoundException` - Database record not found
+- `EndpointNotFoundException` - API endpoint not found
+- `AccessDeniedException` - Access denied to resource
+- `ResourceAlreadyExistsException` - Resource already exists
+
+**Database Exceptions:**
+- `DatabaseConnectionException` - Database connection failed
+- `DatabaseQueryException` - Query execution failed
+- `DuplicateEntryException` - Unique constraint violation
+- `ForeignKeyConstraintException` - Foreign key constraint violated
+- `DatabaseTimeoutException` - Query timeout
+- `DatabaseTransactionException` - Transaction failed
+
+**Business Logic Exceptions:**
+- `BusinessRuleViolationException` - Business rule violated
+- `InsufficientBalanceException` - Insufficient balance for operation
+- `InvalidOperationException` - Operation not allowed in current state
+- `StatusTransitionException` - Invalid status transition
+- `DuplicateOperationException` - Operation already performed
+
+**System Exceptions:**
+- `InternalServerException` - Internal server error
+- `ConfigurationException` - Configuration error
+- `ServiceUnavailableException` - Service temporarily unavailable
+- `TimeoutException` - Operation timeout
+- `DependencyFailureException` - External dependency failed
+
+**External Service Exceptions:**
+- `ExternalServiceException` - External service error
+- `ThirdPartyAPIException` - Third-party API call failed
+- `PaymentGatewayException` - Payment gateway error
+- `EmailServiceException` - Email service error
+- `StorageServiceException` - Storage service error
+
+**Rate Limiting Exceptions:**
+- `RateLimitExceededException` - Rate limit exceeded
+- `TooManyRequestsException` - Too many requests
+
+**File Upload Exceptions:**
+- `FileTooLargeException` - File size exceeds limit
+- `InvalidFileTypeException` - File type not allowed
+- `FileUploadException` - File upload failed
+- `StorageQuotaExceededException` - Storage quota exceeded
+
+**Exception Usage Patterns:**
+
+```typescript
+import {
+  InvalidCredentialsException,
+  ResourceNotFoundException,
+  ValidationException,
+  DuplicateEntryException,
+  InsufficientBalanceException,
+} from '../common/exceptions';
+
+// Authentication error
+if (!user || !isPasswordValid) {
+  throw new InvalidCredentialsException('email or password');
+}
+
+// Resource not found
+const user = await this.userRepository.findOne({ where: { id } });
+if (!user) {
+  throw new ResourceNotFoundException('User', id);
+}
+
+// Validation error with metadata
+if (!dto.email || !dto.email.includes('@')) {
+  throw new ValidationException('Invalid email format', {
+    field: 'email',
+    value: dto.email,
+  });
+}
+
+// Business logic error
+if (user.balance < amount) {
+  throw new InsufficientBalanceException('withdraw', amount);
+}
+
+// Database error (operational - won't be sent to Sentry)
+try {
+  await this.userRepository.save(user);
+} catch (error) {
+  if (error.code === '23505') {
+    throw new DuplicateEntryException('User', 'email', dto.email);
+  }
+  // Unknown error - let it bubble up (will be sent to Sentry)
+  throw error;
+}
+```
+
+#### Winston Logger Service - MANDATORY
+
+**File: `src/common/logger/logger.service.ts`**
+
+**Structured logging with Winston** including multiple log levels, daily rotation, and specialized logging methods.
+
+**Log Levels:**
+- **error**: Fatal errors, exceptions, system failures
+- **warn**: Warnings, deprecated features, slow queries
+- **info**: General information, startup, configuration
+- **debug**: Debugging information, detailed flow
+- **verbose**: Very detailed logs, trace-level
+
+**Log Transports:**
+1. **Console** - Colored output in dev, JSON in production
+2. **error-%DATE%.log** - Error logs (30 days retention)
+3. **combined-%DATE%.log** - All logs (14 days retention)
+4. **access-%DATE%.log** - HTTP logs (7 days retention)
+
+**Basic Logging Methods:**
+
+```typescript
+import { LoggerService } from './common/logger/logger.service';
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly logger: LoggerService) {}
+
+  async create(dto: CreateUserDto, res: Response) {
+    // Info log
+    this.logger.log('Creating user', 'UsersService', {
+      email: dto.email,
+      correlationId: req.correlationId,
+    });
+
+    // Error log with stack trace
+    this.logger.error('Failed to create user', error.stack, 'UsersService', {
+      email: dto.email,
+      errorCode: 'DB_001',
+    });
+
+    // Warning log
+    this.logger.warn('Slow query detected', 'UsersService', {
+      query: 'SELECT * FROM users',
+      duration: 1500,
+    });
+
+    // Debug log
+    this.logger.debug('Processing request', 'UsersService', {
+      requestId: req.id,
+    });
+  }
+}
+```
+
+**Specialized Logging Methods:**
+
+```typescript
+// HTTP Request logging
+this.logger.logRequest({
+  method: 'POST',
+  url: '/api/v1/users',
+  statusCode: 201,
+  duration: 150,
+  correlationId: 'abc-123',
+  userId: 'user-id',
+});
+
+// Database query logging
+this.logger.logQuery({
+  query: 'SELECT * FROM users WHERE email = $1',
+  duration: 45,
+  correlationId: 'abc-123',
+});
+
+// External API logging
+this.logger.logExternalAPI({
+  service: 'PaymentGateway',
+  method: 'POST',
+  url: 'https://api.stripe.com/v1/charges',
+  statusCode: 200,
+  duration: 320,
+  correlationId: 'abc-123',
+});
+
+// Event logging
+this.logger.logEvent({
+  eventName: 'UserRegistered',
+  userId: 'user-id',
+  email: 'user@example.com',
+  correlationId: 'abc-123',
+});
+
+// Security event logging
+this.logger.logSecurity({
+  event: 'FailedLoginAttempt',
+  userId: 'user-id',
+  ip: '192.168.1.1',
+  reason: 'Invalid password',
+  correlationId: 'abc-123',
+});
+
+// Performance logging
+this.logger.logPerformance({
+  operation: 'BulkUserImport',
+  duration: 5420,
+  recordsProcessed: 1000,
+  correlationId: 'abc-123',
+});
+```
+
+#### Correlation IDs - AUTOMATIC
+
+**File: `src/common/middleware/request-logging.middleware.ts`**
+
+**Every HTTP request automatically receives a correlation ID** for tracking across logs and errors.
+
+**Correlation ID Flow:**
+1. Middleware generates UUID v4 for each request
+2. ID stored in `req.correlationId`
+3. ID added to response header (`X-Correlation-Id`)
+4. ID included in all logs for this request
+5. ID included in error responses
+6. ID sent to Sentry for error tracking
+
+**Automatic Features:**
+- Request logging (method, URL, IP, user agent)
+- Response logging (status, size, duration)
+- Slow request detection (>1000ms)
+- Error logging (4xx, 5xx)
+- Correlation ID in all logs
+
+**Usage in Services:**
+```typescript
+async create(dto: CreateUserDto, @Req() req: Request) {
+  const correlationId = req.correlationId; // UUID available on all requests
+
+  this.logger.log('Creating user', 'UsersService', {
+    correlationId, // Always include in logs
+    email: dto.email,
+  });
+
+  // Correlation ID automatically included in error responses
+  throw new ResourceNotFoundException('User', id);
+}
+```
+
+#### Global Exception Filter - AUTOMATIC
+
+**File: `src/common/filters/global-exception.filter.ts`**
+
+**Catches ALL exceptions globally** and provides:
+- Consistent error response format
+- Automatic error logging with correlation IDs
+- Sentry integration (only non-operational errors)
+- Environment-aware messages (detailed in dev, generic in prod)
+- Sensitive data sanitization
+
+**Error Response Format:**
+
+**Development:**
+```json
+{
+  "status": "error",
+  "statusCode": 400,
+  "message": "Validation failed: email must be a valid email",
+  "timestamp": "2026-01-31T10:30:00.000Z",
+  "path": "/api/v1/users",
+  "method": "POST",
+  "correlationId": "550e8400-e29b-41d4-a716-446655440000",
+  "errorCode": "VAL_002",
+  "details": { "field": "email" },
+  "stack": "Error: Validation failed\n    at..."
+}
+```
+
+**Production:**
+```json
+{
+  "status": "error",
+  "statusCode": 400,
+  "message": "Invalid input provided",
+  "timestamp": "2026-01-31T10:30:00.000Z",
+  "path": "/api/v1/users",
+  "method": "POST",
+  "correlationId": "550e8400-e29b-41d4-a716-446655440000",
+  "errorCode": "VAL_002"
+}
+```
+
+**Operational vs Non-Operational Errors:**
+- **Operational errors** (expected business logic) - NOT sent to Sentry
+- **Non-operational errors** (unexpected system errors) - Sent to Sentry
+- All errors logged locally regardless
+
+```typescript
+// Operational - NOT sent to Sentry
+throw new InvalidCredentialsException('email');
+throw new ResourceNotFoundException('User', id);
+
+// Non-operational - Sent to Sentry
+throw new InternalServerException('Database connection failed');
+throw new Error('Unexpected null pointer');
+```
+
+#### Sentry Error Monitoring - OPTIONAL
+
+**File: `src/config/sentry.config.ts`**
+
+**Production-grade error monitoring and performance tracking** with Sentry integration.
+
+**Environment Variables:**
+```env
+SENTRY_ENABLED=true
+SENTRY_DSN=https://your-dsn@sentry.io/project-id
+SENTRY_ENVIRONMENT=production
+SENTRY_TRACES_SAMPLE_RATE=1.0
+SENTRY_PROFILES_SAMPLE_RATE=1.0
+SENTRY_SERVER_NAME=api-server-01
+APP_VERSION=1.0.0
+```
+
+**Features:**
+- Error tracking with stack traces
+- Performance monitoring (traces and profiles)
+- Request/response breadcrumbs
+- User context tracking
+- Automatic operational error filtering
+- Sensitive data sanitization
+
+**Manual Error Capture:**
+```typescript
+import {
+  captureSentryException,
+  captureSentryMessage,
+  startSentrySpan,
+  addSentryBreadcrumb,
+} from '../config/sentry.config';
+
+// Capture exception with context
+try {
+  await dangerousOperation();
+} catch (error) {
+  captureSentryException(error, {
+    userId: user.id,
+    operation: 'dangerousOperation',
+  });
+  throw error;
+}
+
+// Capture message
+captureSentryMessage('Critical event occurred', 'warning', {
+  eventType: 'SystemAlert',
+  severity: 'high',
+});
+
+// Performance tracking
+const span = startSentrySpan('BulkUserImport', 'task');
+try {
+  await importUsers(file);
+  span.end();
+} catch (error) {
+  span.end();
+  throw error;
+}
+
+// Add breadcrumb
+addSentryBreadcrumb('user', 'User logged in', {
+  userId: user.id,
+  email: user.email,
+}, 'info');
+```
+
+#### Error Handling Best Practices - CRITICAL
+
+**1. Use Appropriate Exception Classes:**
+```typescript
+// ✅ GOOD - Use specific exception
+throw new ResourceNotFoundException('User', userId);
+
+// ❌ BAD - Generic error
+throw new Error('User not found');
+```
+
+**2. Include Metadata:**
+```typescript
+// ✅ GOOD - Include context
+throw new ValidationException('Invalid email format', {
+  field: 'email',
+  value: dto.email,
+  constraint: 'isEmail',
+});
+
+// ❌ BAD - No context
+throw new ValidationException('Invalid email');
+```
+
+**3. Log at Appropriate Levels:**
+```typescript
+// ✅ GOOD - Use correct levels
+this.logger.error('Database connection failed', error.stack);
+this.logger.warn('Slow query detected', 'Service', { duration: 1500 });
+this.logger.info('User created successfully', 'Service', { userId });
+this.logger.debug('Processing request', 'Service', { params });
+
+// ❌ BAD - Everything is error
+this.logger.error('User created');
+```
+
+**4. Always Use Correlation IDs:**
+```typescript
+// ✅ GOOD - Include correlation ID
+this.logger.log('Operation completed', 'Service', {
+  correlationId: req.correlationId,
+  userId: user.id,
+});
+
+// ❌ BAD - No correlation ID
+this.logger.log('Operation completed');
+```
+
+**5. Don't Log Sensitive Data:**
+```typescript
+// ✅ GOOD - Sanitize sensitive fields
+this.logger.log('Login attempt', 'AuthService', {
+  email: dto.email,
+  // Don't log password
+});
+
+// ❌ BAD - Logging password
+this.logger.log('Login attempt', 'AuthService', {
+  email: dto.email,
+  password: dto.password, // NEVER DO THIS
+});
+```
+
+**6. Operational vs Non-Operational:**
+```typescript
+// ✅ GOOD - Operational (expected, don't send to Sentry)
+throw new InvalidCredentialsException('email'); // isOperational = true
+
+// ✅ GOOD - Non-operational (unexpected, send to Sentry)
+throw new InternalServerException('Null pointer', false); // isOperational = false
+```
+
+**7. Complete Service Pattern:**
+```typescript
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly logger: LoggerService,
+  ) {}
+
+  async create(dto: CreateUserDto, @Req() req: Request, @Res() res: Response) {
+    const correlationId = req.correlationId;
+
+    this.logger.log('Creating user', 'UsersService', {
+      correlationId,
+      email: dto.email,
+    });
+
+    // Check duplicate
+    const existing = await this.userRepository.findOne({
+      where: { email: dto.email },
+    });
+
+    if (existing) {
+      throw new DuplicateEntryException('User', 'email', dto.email);
+    }
+
+    // Validate
+    if (dto.password.length < 8) {
+      throw new WeakPasswordException('at least 8 characters');
+    }
+
+    try {
+      const user = this.userRepository.create(dto);
+      const saved = await this.userRepository.save(user);
+
+      this.logger.log('User created successfully', 'UsersService', {
+        correlationId,
+        userId: saved.id,
+      });
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.CREATED,
+        data: saved,
+        message: 'User created successfully',
+        meta: { user_id: saved.id, created_at: saved.createdAt },
+      });
+    } catch (error) {
+      this.logger.error('Database error', error.stack, 'UsersService', {
+        correlationId,
+        email: dto.email,
+      });
+
+      throw new DatabaseQueryException('create user');
+    }
+  }
+}
+```
+
+**For comprehensive documentation, see: `server/docs/ERROR_HANDLING_AND_LOGGING.md`**
+
+
 ### JWT Authentication & Route Protection - MANDATORY
 
 **All API routes must be secured with JWT authentication except public auth endpoints.**
@@ -553,6 +1127,331 @@ return ApiResponse.error(res, {
 **Meta Field Naming Convention:**
 - Use snake_case: `has_next`, `has_previous`, `total_pages`, `user_id`, `created_at`
 - NOT camelCase: ~~hasNext~~, ~~hasPrevious~~, ~~totalPages~~, ~~userId~~, ~~createdAt~~
+
+### API Versioning & Deprecation Management - PRODUCTION READY
+
+**This project uses URI-based and header-based API versioning for backward compatibility.**
+
+#### API Versioning Strategy
+
+**Versioning Methods:**
+1. **URI Versioning (Primary):** `/api/v1/users`, `/api/v2/users`
+2. **Header Versioning (Alternative):** `X-API-Version: 1` or `Accept-Version: 1`
+
+**Configuration in `main.ts`:**
+```typescript
+app.enableVersioning({
+  type: VersioningType.URI,
+  defaultVersion: '1',
+});
+
+// Support both URI and header versioning
+app.enableVersioning({
+  type: VersioningType.HEADER,
+  header: 'X-API-Version',
+});
+```
+
+#### API Versioning Decorators
+
+**File: `src/common/decorators/versioning.decorators.ts`**
+
+```typescript
+import { SetMetadata } from '@nestjs/common';
+
+// Mark endpoint with specific version
+export const ApiVersion = (version: string | string[]) =>
+  SetMetadata('version', version);
+
+// Mark endpoint as deprecated with sunset date
+export const ApiDeprecated = (
+  sunsetDate: string,
+  migrationGuide?: string,
+) => SetMetadata('deprecated', { sunsetDate, migrationGuide });
+
+// Header-based versioning
+export const ApiHeaderVersioning = (header: string = 'X-API-Version') =>
+  SetMetadata('version-header', header);
+```
+
+**Usage Examples:**
+
+```typescript
+import { Controller, Get, Version } from '@nestjs/common';
+import { ApiVersion, ApiDeprecated } from '../common/decorators';
+
+@Controller('users')
+export class UsersController {
+  // V1 endpoint (deprecated)
+  @Get()
+  @Version('1')
+  @ApiDeprecated('2026-12-31', 'https://api.example.com/docs/migration-guide')
+  async findAllV1() {
+    return this.usersService.findAllLegacy();
+  }
+
+  // V2 endpoint (current)
+  @Get()
+  @Version('2')
+  async findAllV2() {
+    return this.usersService.findAll();
+  }
+
+  // Support multiple versions
+  @Get(':id')
+  @Version(['1', '2'])
+  async findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
+  }
+}
+```
+
+#### Versioning Interceptor
+
+**File: `src/common/interceptors/versioning.interceptor.ts`**
+
+```typescript
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+/**
+ * Versioning interceptor adds deprecation headers to responses
+ * Warns clients about deprecated endpoints and sunset dates
+ */
+@Injectable()
+export class VersioningInterceptor implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const response = context.switchToHttp().getResponse();
+    const handler = context.getHandler();
+
+    // Check if endpoint is deprecated
+    const deprecated = this.reflector.get('deprecated', handler);
+
+    if (deprecated) {
+      response.setHeader('Deprecation', 'true');
+      response.setHeader('Sunset', deprecated.sunsetDate);
+
+      if (deprecated.migrationGuide) {
+        response.setHeader('Link', `<${deprecated.migrationGuide}>; rel="deprecation"`);
+      }
+    }
+
+    return next.handle();
+  }
+}
+```
+
+**Register Globally in `app.module.ts`:**
+```typescript
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { VersioningInterceptor } from './common/interceptors/versioning.interceptor';
+
+@Module({
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: VersioningInterceptor,
+    },
+  ],
+})
+export class AppModule {}
+```
+
+#### Versioning Best Practices
+
+1. ✅ **Use URI versioning by default** - Most explicit and cache-friendly
+2. ✅ **Support header versioning** - For clients preferring headers
+3. ✅ **Deprecate before removing** - Give clients 6-12 months notice
+4. ✅ **Document breaking changes** - Clear migration guides
+5. ✅ **Add deprecation headers** - Sunset date, deprecation warning, migration link
+6. ✅ **Version major changes only** - Don't version minor bug fixes
+7. ✅ **Test all versions** - Ensure backward compatibility
+8. ❌ **Never remove versions abruptly** - Always deprecate first
+
+#### Deprecation Response Headers
+
+**Deprecated Endpoint Response:**
+```
+HTTP/1.1 200 OK
+Deprecation: true
+Sunset: Wed, 31 Dec 2026 23:59:59 GMT
+Link: <https://api.example.com/docs/migration-guide>; rel="deprecation"
+```
+
+### Environment Configuration Standards - PRODUCTION READY
+
+**All external configuration must be stored in environment variables.**
+
+#### Environment Variables Pattern
+
+**Backend Environment Variables (`.env`):**
+```env
+# Application
+NODE_ENV=development
+PORT=3001
+API_URL_LOCAL=http://localhost:3001
+API_URL_PRODUCTION=https://api.example.com
+
+# Database
+DATABASE_TYPE=postgres
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=your_password
+DATABASE_NAME=your_database
+
+# JWT Authentication
+JWT_SECRET=your-secret-key-change-this
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=your-refresh-secret-change-this
+JWT_REFRESH_EXPIRES_IN=7d
+
+# Email Service
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_FROM=noreply@example.com
+
+# API Contact Information
+API_CONTACT_NAME=API Support
+API_CONTACT_URL=https://example.com/support
+API_CONTACT_EMAIL=support@example.com
+
+# GraphQL Configuration
+GRAPHQL_PLAYGROUND=true
+GRAPHQL_INTROSPECTION=true
+GRAPHQL_DEBUG=true
+
+# Rate Limiting
+RATE_LIMIT_ENABLED=true
+RATE_LIMIT_TTL=60000
+RATE_LIMIT_MAX=100
+RATE_LIMIT_STRICT_TTL=60000
+RATE_LIMIT_STRICT_MAX=10
+RATE_LIMIT_AUTH_TTL=900000
+RATE_LIMIT_AUTH_MAX=5
+
+# Cache
+CACHE_TTL=60000
+CACHE_MAX_ITEMS=100
+
+# Client URL (for CORS)
+CLIENT_URL=http://localhost:3000
+```
+
+**Frontend Environment Variables (`.env.local`):**
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+NEXT_PUBLIC_GRAPHQL_URL=http://localhost:3001/graphql
+```
+
+#### Environment Validation
+
+**File: `src/config/env.validation.ts`**
+
+```typescript
+import { plainToInstance } from 'class-transformer';
+import { IsString, IsNumber, IsBoolean, validateSync } from 'class-validator';
+
+class EnvironmentVariables {
+  @IsString()
+  NODE_ENV: string;
+
+  @IsNumber()
+  PORT: number;
+
+  @IsString()
+  DATABASE_HOST: string;
+
+  @IsNumber()
+  DATABASE_PORT: number;
+
+  @IsString()
+  JWT_SECRET: string;
+
+  @IsBoolean()
+  RATE_LIMIT_ENABLED: boolean;
+}
+
+export function validate(config: Record<string, unknown>) {
+  const validatedConfig = plainToInstance(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
+
+  const errors = validateSync(validatedConfig, {
+    skipMissingProperties: false,
+  });
+
+  if (errors.length > 0) {
+    throw new Error(errors.toString());
+  }
+
+  return validatedConfig;
+}
+```
+
+**Load in `app.module.ts`:**
+```typescript
+import { ConfigModule } from '@nestjs/config';
+import { validate } from './config/env.validation';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+      envFilePath: '.env',
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+#### Using Environment Variables
+
+**In Services:**
+```typescript
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class SomeService {
+  constructor(private configService: ConfigService) {}
+
+  someMethod() {
+    const apiUrl = this.configService.get<string>('API_URL_LOCAL');
+    const port = this.configService.get<number>('PORT', 3001); // with default
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
+  }
+}
+```
+
+**In Config Files:**
+```typescript
+import { ConfigService } from '@nestjs/config';
+
+export const someConfig = (configService: ConfigService) => ({
+  enabled: configService.get<boolean>('FEATURE_ENABLED', true),
+  timeout: configService.get<number>('TIMEOUT', 5000),
+  apiKey: configService.get<string>('API_KEY'),
+});
+```
+
+#### Environment Best Practices
+
+1. ✅ **Never commit `.env` files** - Add to `.gitignore`
+2. ✅ **Provide `.env.example`** - Document all required variables
+3. ✅ **Validate environment on startup** - Use env.validation.ts
+4. ✅ **Use ConfigService** - Never access process.env directly
+5. ✅ **Provide defaults** - For non-critical variables
+6. ✅ **Use typed getters** - `get<number>`, `get<string>`, `get<boolean>`
+7. ✅ **Document all variables** - In README and .env.example
+8. ❌ **Never hardcode secrets** - Always use environment variables
 
 ### Swagger/OpenAPI Documentation Standards
 
@@ -938,6 +1837,962 @@ export class FindUserDto {
 4. ✅ **Never trust user input** - Always validate and sanitize
 5. ✅ **Use HTTPS in production** - Protect data in transit
 6. ✅ **Hash passwords with bcrypt** - Never store plain text passwords
+
+### GraphQL Support - PRODUCTION READY
+
+**This project uses GraphQL alongside REST API for flexible data querying.**
+
+#### GraphQL Stack & Configuration
+
+**Compatible Versions (CRITICAL):**
+```json
+{
+  "@apollo/server": "4.11.2",
+  "@nestjs/apollo": "12.2.0",
+  "@nestjs/graphql": "12.2.0",
+  "graphql": "16.12.0",
+  "ts-morph": "27.0.2"
+}
+```
+
+**Why these versions?**
+- Apollo Server v4 doesn't require `@as-integrations/express5` package
+- NestJS Apollo/GraphQL v12 is compatible with Apollo Server v4
+- ts-morph is required for auto-generating TypeScript types from .graphql schemas
+- ❌ DO NOT upgrade to Apollo Server v5 (requires additional express integration)
+
+#### GraphQL Architecture - Schema-First Design
+
+**File Structure:**
+```
+server/src/graphql/
+  graphql.config.ts        # Apollo Server configuration
+  graphql.module.ts        # GraphQL module setup
+  schema/                  # GraphQL schema definitions (.graphql files)
+    user.graphql           # User type, queries, mutations
+    post.graphql           # Example: Post schema
+  resolvers/               # GraphQL resolvers
+    user.resolver.ts       # User query/mutation handlers
+  guards/                  # GraphQL-specific guards
+    gql-auth.guard.ts      # JWT authentication for GraphQL
+```
+
+**Schema-First Approach:**
+1. **Write .graphql schema files** - Define types, queries, mutations
+2. **Auto-generate TypeScript types** - GraphQL module generates types automatically
+3. **Implement resolvers** - Use generated types for type safety
+4. **Use existing services** - Reuse REST service logic in resolvers
+
+#### GraphQL Configuration (`graphql.config.ts`)
+
+```typescript
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ConfigService } from '@nestjs/config';
+import { GraphQLError } from 'graphql';
+
+export const graphqlConfig = (
+  configService: ConfigService,
+): ApolloDriverConfig => ({
+  driver: ApolloDriver,
+
+  // Schema-first: auto-generate from .graphql files
+  typePaths: ['./**/*.graphql'],
+
+  // Auto-generate TypeScript types
+  definitions: {
+    path: join(process.cwd(), 'src/graphql/graphql.schema.ts'),
+    outputAs: 'class',
+    emitTypenameField: true,
+  },
+
+  // GraphQL Playground (development only)
+  playground: configService.get('NODE_ENV') === 'development',
+
+  // Auto-generate schema file
+  autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+  sortSchema: true,
+
+  // Context: Inject request for authentication
+  context: ({ req, res }: { req: Request; res: Response }) => ({
+    req,
+    res,
+  }),
+
+  // Custom error formatting
+  formatError: (error: GraphQLError) => ({
+    message: error.message,
+    code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
+    timestamp: new Date().toISOString(),
+  }),
+});
+```
+
+**Key Configuration Points:**
+- `typePaths`: Where to find .graphql schema files
+- `definitions.path`: Where to generate TypeScript types
+- `playground`: Enable GraphQL Playground in development
+- `context`: Inject Express request/response for guards
+- `formatError`: Consistent error format
+
+#### GraphQL Schema Pattern (`.graphql`)
+
+**Example: `user.graphql`**
+```graphql
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String
+  isActive: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type PaginatedUsers {
+  users: [User!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+  hasNext: Boolean!
+  hasPrevious: Boolean!
+}
+
+type Query {
+  # Get all users with pagination
+  users(page: Int, limit: Int): PaginatedUsers!
+
+  # Get single user by ID
+  user(id: ID!): User
+
+  # Search users by name or email
+  searchUsers(query: String!): [User!]!
+}
+
+type Mutation {
+  # Create new user
+  createUser(
+    email: String!
+    firstName: String!
+    lastName: String
+    password: String!
+  ): User!
+
+  # Update existing user
+  updateUser(
+    id: ID!
+    email: String
+    firstName: String
+    lastName: String
+  ): User!
+
+  # Delete user (soft delete)
+  deleteUser(id: ID!): Boolean!
+
+  # Toggle user active status
+  toggleUserStatus(id: ID!): User!
+}
+
+type Subscription {
+  # Real-time user creation events
+  userCreated: User!
+
+  # Real-time user update events
+  userUpdated: User!
+}
+```
+
+**Schema Best Practices:**
+1. **Use descriptive field names** - Clear and self-documenting
+2. **Add comments** - Explain complex types and fields
+3. **Use proper types** - String, Int, Boolean, Float, ID
+4. **Mark required fields** - Use `!` for non-nullable fields
+5. **Define input types** - For complex mutation inputs
+6. **Include pagination** - For list queries
+7. **Consider subscriptions** - For real-time updates
+
+#### GraphQL Resolver Pattern
+
+**Example: `user.resolver.ts`**
+```typescript
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { UseGuards, HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
+import { GqlAuthGuard } from '../guards/gql-auth.guard';
+import { UsersService } from '../../users/users.service';
+import { CreateUserDto, UpdateUserDto } from '../../users/dto';
+import { User } from '../../users/entities/user.entity';
+import { isSuccessResponse } from '../../common/utils';
+
+/**
+ * GraphQL resolver for user operations
+ * Handles queries and mutations for user management
+ */
+@Resolver('User')
+export class UserResolver {
+  constructor(private readonly usersService: UsersService) {}
+
+  /**
+   * Query: Get all users with pagination
+   * Protected: Requires JWT authentication
+   */
+  @Query('users')
+  @UseGuards(GqlAuthGuard)
+  async getUsers(
+    @Args('page', { type: () => Int, nullable: true }) page: number = 1,
+    @Args('limit', { type: () => Int, nullable: true }) limit: number = 10,
+  ) {
+    // Create mock response object for service
+    const mockRes = {
+      status: () => mockRes,
+      send: (data: unknown) => data,
+    } as unknown as Response;
+
+    const response = await this.usersService.findAll(page, limit, mockRes);
+
+    if (isSuccessResponse(response)) {
+      return {
+        users: response.data,
+        total: response.meta?.total || 0,
+        page: response.meta?.page || page,
+        limit: response.meta?.limit || limit,
+        hasNext: response.meta?.has_next || false,
+        hasPrevious: response.meta?.has_previous || false,
+      };
+    }
+
+    throw new Error(response.message);
+  }
+
+  /**
+   * Query: Get user by ID
+   * Protected: Requires JWT authentication
+   */
+  @Query('user')
+  @UseGuards(GqlAuthGuard)
+  async getUser(@Args('id', { type: () => ID }) id: string) {
+    const mockRes = {
+      status: () => mockRes,
+      send: (data: unknown) => data,
+    } as unknown as Response;
+
+    const response = await this.usersService.findOne(id, mockRes);
+
+    if (isSuccessResponse(response)) {
+      return response.data;
+    }
+
+    throw new Error(response.message);
+  }
+
+  /**
+   * Mutation: Create new user
+   * Protected: Requires JWT authentication
+   */
+  @Mutation('createUser')
+  @UseGuards(GqlAuthGuard)
+  async createUser(
+    @Args('email') email: string,
+    @Args('firstName') firstName: string,
+    @Args('lastName', { nullable: true }) lastName: string,
+    @Args('password') password: string,
+  ) {
+    const mockRes = {
+      status: () => mockRes,
+      send: (data: unknown) => data,
+    } as unknown as Response;
+
+    const createDto: CreateUserDto = { email, firstName, lastName, password };
+    const response = await this.usersService.create(createDto, mockRes);
+
+    if (isSuccessResponse(response)) {
+      return response.data;
+    }
+
+    throw new Error(response.message);
+  }
+
+  /**
+   * Mutation: Update user
+   * Protected: Requires JWT authentication
+   */
+  @Mutation('updateUser')
+  @UseGuards(GqlAuthGuard)
+  async updateUser(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('email', { nullable: true }) email?: string,
+    @Args('firstName', { nullable: true }) firstName?: string,
+    @Args('lastName', { nullable: true }) lastName?: string,
+  ) {
+    const mockRes = {
+      status: () => mockRes,
+      send: (data: unknown) => data,
+    } as unknown as Response;
+
+    const updateDto: UpdateUserDto = { email, firstName, lastName };
+    const response = await this.usersService.update(id, updateDto, mockRes);
+
+    if (isSuccessResponse(response)) {
+      return response.data;
+    }
+
+    throw new Error(response.message);
+  }
+}
+```
+
+**Resolver Best Practices:**
+1. **Reuse existing services** - Don't duplicate business logic
+2. **Use GqlAuthGuard** - Protect queries/mutations requiring authentication
+3. **Create mock Response object** - Services expect Express Response
+4. **Type all arguments** - Use @Args with proper types
+5. **Handle errors properly** - Throw GraphQLError for consistent error format
+6. **Use isSuccessResponse()** - Check service response type
+7. **Add JSDoc comments** - Document all queries and mutations
+
+#### GraphQL Authentication Guard
+
+**File: `gql-auth.guard.ts`**
+```typescript
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { GqlExecutionContext } from '@nestjs/graphql';
+
+/**
+ * JWT authentication guard for GraphQL
+ * Extracts request from GraphQL context and applies JWT validation
+ */
+@Injectable()
+export class GqlAuthGuard extends AuthGuard('jwt') {
+  /**
+   * Extract request from GraphQL execution context
+   * Converts GraphQL context to HTTP context for JWT strategy
+   */
+  getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+}
+```
+
+**Usage in Resolvers:**
+```typescript
+@Query('protectedQuery')
+@UseGuards(GqlAuthGuard)
+async protectedQuery() {
+  // Only accessible with valid JWT token
+}
+```
+
+#### GraphQL Module Setup
+
+**File: `graphql.module.ts`**
+```typescript
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { graphqlConfig } from './graphql.config';
+import { UserResolver } from './resolvers/user.resolver';
+import { UsersModule } from '../users/users.module';
+
+@Module({
+  imports: [
+    GraphQLModule.forRootAsync({
+      driver: ApolloDriver,
+      imports: [ConfigModule],
+      useFactory: graphqlConfig,
+      inject: [ConfigService],
+    }),
+    UsersModule, // Import modules needed by resolvers
+  ],
+  providers: [UserResolver],
+})
+export class GraphqlAppModule {}
+```
+
+#### Integrating GraphQL in App Module
+
+**File: `app.module.ts`**
+```typescript
+import { Module } from '@nestjs/common';
+import { GraphqlAppModule } from './graphql/graphql.module';
+
+@Module({
+  imports: [
+    // ... other modules
+    GraphqlAppModule, // Add GraphQL module
+  ],
+})
+export class AppModule {}
+```
+
+#### GraphQL Playground Access
+
+**Development URL:** `http://localhost:3001/graphql`
+
+**Example Query:**
+```graphql
+query GetUsers {
+  users(page: 1, limit: 10) {
+    users {
+      id
+      email
+      firstName
+      lastName
+      isActive
+    }
+    total
+    hasNext
+    hasPrevious
+  }
+}
+```
+
+**Example Mutation:**
+```graphql
+mutation CreateUser {
+  createUser(
+    email: "test@example.com"
+    firstName: "John"
+    lastName: "Doe"
+    password: "SecurePass123!"
+  ) {
+    id
+    email
+    firstName
+  }
+}
+```
+
+**Authentication in Playground:**
+Add JWT token in HTTP Headers:
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+#### GraphQL + REST Coexistence
+
+**Both APIs work simultaneously:**
+- **REST API:** `http://localhost:3001/api/v1/users`
+- **GraphQL API:** `http://localhost:3001/graphql`
+
+**Use REST for:**
+- ✅ Simple CRUD operations
+- ✅ File uploads
+- ✅ Standard HTTP caching
+- ✅ Public APIs
+
+**Use GraphQL for:**
+- ✅ Complex data relationships
+- ✅ Flexible data fetching (avoid over-fetching)
+- ✅ Real-time subscriptions
+- ✅ Mobile/frontend apps with varying data needs
+
+#### GraphQL Environment Variables
+
+**Required in `.env`:**
+```env
+# GraphQL Configuration
+GRAPHQL_PLAYGROUND=true  # Enable playground in development
+GRAPHQL_INTROSPECTION=true  # Enable schema introspection
+GRAPHQL_DEBUG=true  # Enable debug mode
+```
+
+#### GraphQL Best Practices & Rules
+
+1. ✅ **Schema-first design** - Write .graphql files first, then implement resolvers
+2. ✅ **Auto-generate types** - Let GraphQL module generate TypeScript types
+3. ✅ **Reuse REST services** - Don't duplicate business logic in resolvers
+4. ✅ **Use GqlAuthGuard** - Protect all queries/mutations requiring authentication
+5. ✅ **Handle errors** - Throw GraphQLError with proper error codes
+6. ✅ **Add pagination** - For all list queries
+7. ✅ **Use nullable types wisely** - Mark optional fields with nullable: true
+8. ✅ **Document schema** - Add comments to .graphql files
+9. ✅ **Version GraphQL schema** - Use deprecation for breaking changes
+10. ✅ **Monitor performance** - Log slow queries
+
+#### GraphQL Common Issues & Solutions
+
+**Issue: "Cannot find module 'ts-morph'"**
+- **Solution:** Install ts-morph as dev dependency: `yarn add -D ts-morph`
+- **Reason:** Required for auto-generating TypeScript types from .graphql schemas
+
+**Issue: "Cannot find module '@as-integrations/express5'"**
+- **Solution:** Downgrade to Apollo Server v4.11.2, @nestjs/apollo@12.2.0, @nestjs/graphql@12.2.0
+- **Reason:** Apollo Server v5 requires additional express integration, v4 doesn't
+
+**Issue: "Only one plugin can implement renderLandingPage"**
+- **Solution:** Remove `ApolloServerPluginLandingPageLocalDefault` from config
+- **Reason:** `playground: true` already provides GraphQL Playground UI
+
+**Issue: "Cannot read property 'req' of undefined in GqlAuthGuard"**
+- **Solution:** Ensure context function in graphql.config.ts returns `{ req, res }`
+- **Reason:** GqlAuthGuard needs request object for JWT extraction
+
+### API Rate Limiting - PRODUCTION READY
+
+**Protect your API from abuse with IP-based and user-based rate limiting.**
+
+#### Rate Limiting Stack
+
+**Package:** `@nestjs/throttler@6.5.0`
+
+**Features:**
+- Global rate limiting (default: 100 requests/minute)
+- IP-based rate limiting for unauthenticated users
+- User-based rate limiting for authenticated users
+- Custom decorators for different rate limit tiers
+- RFC 6585 compliant headers (X-RateLimit-*)
+- Automatic Retry-After headers on 429 responses
+
+#### Rate Limiting Architecture
+
+**File Structure:**
+```
+server/src/
+  config/
+    rate-limit.config.ts           # Throttler configuration
+  common/
+    decorators/
+      rate-limit.decorator.ts      # Custom rate limit decorators
+    guards/
+      throttler.guard.ts           # Custom throttler guard with headers
+```
+
+#### Rate Limit Configuration (`rate-limit.config.ts`)
+
+```typescript
+import { ConfigService } from '@nestjs/config';
+import { ThrottlerModuleOptions } from '@nestjs/throttler';
+
+export const rateLimitConfig = (
+  configService: ConfigService,
+): ThrottlerModuleOptions => {
+  const enabled = configService.get<string>('RATE_LIMIT_ENABLED') !== 'false';
+
+  if (!enabled) {
+    return { throttlers: [] };
+  }
+
+  return {
+    throttlers: [
+      {
+        name: 'default',
+        ttl: configService.get<number>('RATE_LIMIT_TTL', 60000), // 1 minute
+        limit: configService.get<number>('RATE_LIMIT_MAX', 100), // 100 requests
+      },
+      {
+        name: 'strict',
+        ttl: configService.get<number>('RATE_LIMIT_STRICT_TTL', 60000),
+        limit: configService.get<number>('RATE_LIMIT_STRICT_MAX', 10), // 10 requests/min
+      },
+      {
+        name: 'auth',
+        ttl: configService.get<number>('RATE_LIMIT_AUTH_TTL', 900000), // 15 minutes
+        limit: configService.get<number>('RATE_LIMIT_AUTH_MAX', 5), // 5 attempts
+      },
+    ],
+  };
+};
+```
+
+**Configuration Tiers:**
+- **default:** 100 requests/minute - General API endpoints
+- **strict:** 10 requests/minute - Sensitive operations
+- **auth:** 5 requests/15 minutes - Login/register endpoints
+
+#### Custom Rate Limit Decorators (`rate-limit.decorator.ts`)
+
+**Available Decorators:**
+
+```typescript
+import { SetMetadata } from '@nestjs/common';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
+
+// 1. Custom rate limit with message
+export const RateLimit = (
+  ttl: number,
+  limit: number,
+  message?: string,
+) => {
+  return SetMetadata('rate-limit', {
+    throttlers: [{ name: 'custom', ttl, limit }],
+    message: message || 'Too many requests',
+  });
+};
+
+// 2. Authentication endpoints (strict)
+export const AuthRateLimit = () => Throttle([{ name: 'auth', ttl: 900000, limit: 5 }]);
+
+// 3. Strict rate limit (sensitive operations)
+export const StrictRateLimit = () => Throttle([{ name: 'strict', ttl: 60000, limit: 10 }]);
+
+// 4. Public endpoints (relaxed)
+export const PublicRateLimit = () => Throttle([{ name: 'default', ttl: 60000, limit: 100 }]);
+
+// 5. Skip rate limiting (use sparingly)
+export const SkipRateLimit = () => SkipThrottle();
+
+// 6. Per-user rate limit
+export const UserRateLimit = (ttl: number, limit: number) =>
+  SetMetadata('user-rate-limit', { ttl, limit });
+```
+
+**Decorator Usage Examples:**
+
+```typescript
+import {
+  RateLimit,
+  AuthRateLimit,
+  StrictRateLimit,
+  PublicRateLimit,
+  SkipRateLimit,
+} from '../common/decorators';
+
+@Controller('auth')
+export class AuthController {
+  // Login: 5 attempts per 15 minutes
+  @Post('login')
+  @AuthRateLimit()
+  async login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
+
+  // Register: 5 attempts per 15 minutes
+  @Post('register')
+  @AuthRateLimit()
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
+
+  // Refresh: 10 attempts per minute
+  @Post('refresh')
+  @StrictRateLimit()
+  async refresh(@Body() dto: RefreshDto) {
+    return this.authService.refresh(dto);
+  }
+
+  // Logout: No rate limit
+  @Post('logout')
+  @SkipRateLimit()
+  async logout() {
+    return this.authService.logout();
+  }
+
+  // Password reset: Custom limit
+  @Post('reset-password')
+  @RateLimit(300000, 3, 'Too many password reset attempts')
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
+  }
+}
+
+@Controller('users')
+export class UsersController {
+  // Public endpoint: 100 requests/minute
+  @Get()
+  @PublicRateLimit()
+  async findAll() {
+    return this.usersService.findAll();
+  }
+
+  // Sensitive operation: 10 requests/minute
+  @Delete(':id')
+  @StrictRateLimit()
+  async remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
+  }
+}
+```
+
+#### Custom Throttler Guard (`throttler.guard.ts`)
+
+**Features:**
+- IP-based tracking for unauthenticated users
+- User-based tracking for authenticated users (by user ID)
+- RFC 6585 compliant headers
+- Retry-After header on 429 responses
+
+```typescript
+import {
+  Injectable,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { Request, Response } from 'express';
+
+/**
+ * Custom throttler guard with enhanced features:
+ * - IP-based rate limiting for unauthenticated users
+ * - User-based rate limiting for authenticated users
+ * - RFC 6585 compliant rate limit headers
+ * - Retry-After header on 429 responses
+ */
+@Injectable()
+export class CustomThrottlerGuard extends ThrottlerGuard {
+  /**
+   * Override canActivate to add custom headers
+   */
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
+
+    try {
+      const canActivate = await super.canActivate(context);
+
+      // Add rate limit headers
+      const throttlerLimit = this.getThrottlerLimit(context);
+      const throttlerRemaining = this.getThrottlerRemaining(context);
+      const throttlerReset = this.getThrottlerReset(context);
+
+      response.setHeader('X-RateLimit-Limit', throttlerLimit);
+      response.setHeader('X-RateLimit-Remaining', throttlerRemaining);
+      response.setHeader('X-RateLimit-Reset', throttlerReset);
+
+      return canActivate;
+    } catch (error) {
+      // Add Retry-After header on rate limit exceeded
+      const retryAfter = this.getRetryAfter(context);
+      response.setHeader('Retry-After', retryAfter);
+
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.TOO_MANY_REQUESTS,
+          message: 'Too many requests, please try again later',
+          error: 'Too Many Requests',
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+  }
+
+  /**
+   * Get tracker key: user ID for authenticated, IP for unauthenticated
+   */
+  protected getTracker(request: Request): Promise<string> {
+    // If user is authenticated, use user ID
+    if (request.user && (request.user as { sub?: string }).sub) {
+      return Promise.resolve(
+        `user:${(request.user as { sub: string }).sub}`,
+      );
+    }
+
+    // Otherwise, use IP address
+    const ip =
+      request.ip ||
+      request.headers['x-forwarded-for'] ||
+      request.socket.remoteAddress ||
+      'unknown';
+    return Promise.resolve(`ip:${ip}`);
+  }
+}
+```
+
+**Key Features:**
+1. **Smart Tracking:** Uses user ID when authenticated, IP when not
+2. **Rate Limit Headers:** X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+3. **Retry-After Header:** Tells client when to retry after 429 error
+4. **Consistent Error Format:** Matches ApiResponse error structure
+
+#### Integrating Rate Limiting in App Module
+
+**File: `app.module.ts`**
+```typescript
+import { Module } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { rateLimitConfig } from './config/rate-limit.config';
+import { CustomThrottlerGuard } from './common/guards/throttler.guard';
+
+@Module({
+  imports: [
+    // Configure throttler module
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: rateLimitConfig,
+      inject: [ConfigService],
+    }),
+    // ... other modules
+  ],
+  providers: [
+    // Register custom throttler guard globally
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
+    },
+  ],
+})
+export class AppModule {}
+```
+
+#### Rate Limiting Environment Variables
+
+**Required in `.env`:**
+```env
+# Rate Limiting Configuration
+RATE_LIMIT_ENABLED=true            # Enable/disable rate limiting
+RATE_LIMIT_TTL=60000               # Default TTL in milliseconds (1 minute)
+RATE_LIMIT_MAX=100                 # Default max requests per TTL
+RATE_LIMIT_STRICT_TTL=60000        # Strict TTL (1 minute)
+RATE_LIMIT_STRICT_MAX=10           # Strict max requests
+RATE_LIMIT_AUTH_TTL=900000         # Auth TTL (15 minutes)
+RATE_LIMIT_AUTH_MAX=5              # Auth max attempts
+```
+
+#### Rate Limit Response Headers
+
+**Success Response (within limit):**
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1706371200
+```
+
+**Error Response (limit exceeded):**
+```
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1706371200
+Retry-After: 45
+```
+
+**Error Body:**
+```json
+{
+  "statusCode": 429,
+  "message": "Too many requests, please try again later",
+  "error": "Too Many Requests"
+}
+```
+
+#### Rate Limiting Best Practices & Rules
+
+1. ✅ **Use appropriate tier** - Auth endpoints use strict limits, public endpoints use relaxed
+2. ✅ **Skip rate limiting carefully** - Only skip for health checks, webhooks from trusted sources
+3. ✅ **Monitor rate limit hits** - Log when users hit rate limits
+4. ✅ **Clear error messages** - Tell users why they're rate limited
+5. ✅ **Use custom messages** - @RateLimit decorator accepts custom error message
+6. ✅ **Expose headers in CORS** - Add rate limit headers to CORS exposedHeaders
+7. ✅ **Test rate limiting** - Write tests for rate limit scenarios
+8. ✅ **Document limits** - Include rate limits in API documentation
+9. ✅ **Use user-based tracking** - More accurate for authenticated users
+10. ❌ **Never disable globally** - Keep rate limiting enabled in production
+
+#### Rate Limiting + CORS Configuration
+
+**File: `main.ts`**
+```typescript
+app.enableCors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true,
+  exposedHeaders: [
+    'X-RateLimit-Limit',
+    'X-RateLimit-Remaining',
+    'X-RateLimit-Reset',
+    'Retry-After',
+  ],
+});
+```
+
+#### Rate Limiting Common Patterns
+
+**Pattern 1: Protect Auth Endpoints**
+```typescript
+@Controller('auth')
+export class AuthController {
+  @Post('login')
+  @AuthRateLimit() // 5 attempts per 15 min
+  async login() { }
+
+  @Post('register')
+  @AuthRateLimit() // 5 attempts per 15 min
+  async register() { }
+}
+```
+
+**Pattern 2: Protect Sensitive Operations**
+```typescript
+@Controller('users')
+export class UsersController {
+  @Delete(':id')
+  @StrictRateLimit() // 10 per minute
+  async remove() { }
+
+  @Post('bulk-delete')
+  @StrictRateLimit() // 10 per minute
+  async bulkDelete() { }
+}
+```
+
+**Pattern 3: Public Endpoints**
+```typescript
+@Controller('public')
+export class PublicController {
+  @Get('health')
+  @SkipRateLimit() // No limit
+  async health() { }
+
+  @Get('posts')
+  @PublicRateLimit() // 100 per minute
+  async getPosts() { }
+}
+```
+
+**Pattern 4: Custom Limits**
+```typescript
+@Controller('api')
+export class ApiController {
+  @Post('export')
+  @RateLimit(3600000, 10, 'Export limit: 10 per hour')
+  async export() { }
+
+  @Post('send-email')
+  @RateLimit(300000, 5, 'Email limit: 5 per 5 minutes')
+  async sendEmail() { }
+}
+```
+
+#### Rate Limiting Testing
+
+**Test Rate Limit Enforcement:**
+```typescript
+describe('Rate Limiting', () => {
+  it('should enforce rate limit on login', async () => {
+    // Make requests up to limit
+    for (let i = 0; i < 5; i++) {
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'test@example.com', password: 'password' })
+        .expect((res) => {
+          expect(res.headers['x-ratelimit-limit']).toBe('5');
+        });
+    }
+
+    // 6th request should be rate limited
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email: 'test@example.com', password: 'password' })
+      .expect(429)
+      .expect((res) => {
+        expect(res.body.message).toContain('Too many requests');
+        expect(res.headers['retry-after']).toBeDefined();
+      });
+  });
+});
+```
+
+#### Rate Limiting Documentation Reference
+
+**Complete guide:** See `docs/GRAPHQL_AND_RATE_LIMITING.md` for comprehensive documentation including:
+- Advanced rate limiting strategies
+- GraphQL subscription patterns
+- Performance optimization tips
+- Troubleshooting common issues
 
 ### Frontend (Next.js) Standards
 

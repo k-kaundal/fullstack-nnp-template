@@ -17,17 +17,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900">
+      <div className="h-screen flex bg-gray-50 dark:bg-gray-900 overflow-hidden">
         {/* Professional Sidebar */}
         <Sidebar config={adminSidebarConfig} />
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Professional Header */}
           <Header config={adminHeaderConfig} />
 
           {/* Page Content */}
-          <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+          <main className="flex-1 overflow-y-auto">
+            <div className="p-6">{children}</div>
+          </main>
         </div>
       </div>
     </ProtectedRoute>

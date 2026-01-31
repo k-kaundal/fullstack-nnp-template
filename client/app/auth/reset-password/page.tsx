@@ -5,13 +5,13 @@
 
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks';
 import { LoadingSpinner } from '@/components/ui';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { resetPassword } = useAuth();
@@ -223,5 +223,23 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+/**
+ * Reset Password Page Wrapper
+ * Wraps ResetPasswordForm in Suspense boundary for useSearchParams
+ */
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+          <LoadingSpinner size="lg" />
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

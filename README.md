@@ -2,7 +2,7 @@
 
 # 🚀 Fullstack NNP Template
 
-### *Production-Ready • Type-Safe • Modern Stack*
+### _Production-Ready • Type-Safe • Modern Stack_
 
 <p align="center">
   <strong>Build enterprise-grade applications with NestJS, Next.js 16, and PostgreSQL</strong>
@@ -65,34 +65,27 @@
 <td width="33%" valign="top">
 
 ### 🤖 **AI-First Architecture**
-✨ Optimized for coding agents
-📋 Comprehensive AI guidelines
-🎯 Standardized code patterns
-🔧 Pre-configured for Copilot
-📚 Detailed documentation
-🚀 Ready-to-use base setup
+
+✨ Optimized for coding agents 📋 Comprehensive AI guidelines 🎯 Standardized
+code patterns 🔧 Pre-configured for Copilot 📚 Detailed documentation 🚀
+Ready-to-use base setup
 
 </td>
 <td width="33%" valign="top">
 
 ### 🎯 **Production Ready**
-🏗️ Enterprise-grade architecture
-🔒 Security best practices
-✅ Zero-tolerance quality gates
-🧪 80%+ test coverage
-⚡ Optimized performance
-📝 Complete API documentation
+
+🏗️ Enterprise-grade architecture 🔒 Security best practices ✅ Zero-tolerance
+quality gates 🧪 80%+ test coverage ⚡ Optimized performance 📝 Complete API
+documentation
 
 </td>
 <td width="33%" valign="top">
 
 ### 💎 **Developer Experience**
-🎨 Beautiful UI components
-🌙 Dark mode support
-🔥 Hot reload & Fast refresh
-📦 Pre-configured tooling
-🎭 Type-safe throughout
-🔍 ESLint + Prettier ready
+
+🎨 Beautiful UI components 🌙 Dark mode support 🔥 Hot reload & Fast refresh 📦
+Pre-configured tooling 🎭 Type-safe throughout 🔍 ESLint + Prettier ready
 
 </td>
 </tr>
@@ -105,23 +98,17 @@
 <td width="50%" valign="top">
 
 ### 📐 **Code Standards**
-🚫 Zero `any` types allowed
-✅ Strict TypeScript mode
-🎯 Interface-first design
-📝 JSDoc required
-🧹 Clean code principles
-🔄 Consistent patterns
+
+🚫 Zero `any` types allowed ✅ Strict TypeScript mode 🎯 Interface-first design
+📝 JSDoc required 🧹 Clean code principles 🔄 Consistent patterns
 
 </td>
 <td width="50%" valign="top">
 
 ### 🛠️ **Built-in Features**
-🗄️ PostgreSQL + TypeORM
-🔐 JWT Authentication ready
-📊 Swagger API docs
-🧪 Jest testing setup
-🐳 Docker Compose
-📬 Email service configured
+
+🗄️ PostgreSQL + TypeORM 🔐 JWT Authentication ready 📊 Swagger API docs 🧪 Jest
+testing setup 🐳 Docker Compose 📬 Email service configured
 
 </td>
 </tr>
@@ -202,61 +189,165 @@
 
 ### 🤖 **AI-Assisted Development Ready**
 
-This repository is **specifically designed and optimized for AI coding agents** like GitHub Copilot, Cursor, and other AI assistants. It serves as a **ready-to-use base setup** with comprehensive rules, regulations, validations, and instructions pre-configured for seamless AI-assisted development.
+This repository is **specifically designed and optimized for AI coding agents**
+like GitHub Copilot, Cursor, and other AI assistants. It serves as a
+**ready-to-use base setup** with comprehensive rules, regulations, validations,
+and instructions pre-configured for seamless AI-assisted development.
 
-> 🎯 **Purpose**: Provide a production-ready foundation where AI coding agents can work efficiently with clear guidelines, best practices, and standardized patterns already in place.
+> 🎯 **Purpose**: Provide a production-ready foundation where AI coding agents
+> can work efficiently with clear guidelines, best practices, and standardized
+> patterns already in place.
 
 ### ✨ **What's Included:**
-- 📋 **Comprehensive Copilot Instructions** - Detailed guidelines in `.github/copilot-instructions.md` for consistent AI-generated code
-- 🔒 **Pre-configured Code Standards** - ESLint, Prettier, TypeScript strict mode with zero-tolerance for `any` types
-- ✅ **Built-in Validations** - DTOs, environment variables, API responses all validated by default
-- 🧪 **Testing Framework** - Jest setup with 80%+ coverage requirement and test patterns
-- 📝 **Standardized Patterns** - Controllers, services, components all follow strict conventions
-- 🎨 **UI Components Library** - Ready-to-use components (Modal, Alert, Table, Sidebar) with dark mode
-- 🚀 **API Response Standards** - Consistent success/error handling across backend and frontend
-- 📚 **Complete Documentation** - Architecture guides, testing guides, and API documentation
+
+- 📋 **Comprehensive Copilot Instructions** - Detailed guidelines in
+  `.github/copilot-instructions.md` for consistent AI-generated code
+- 🔒 **Pre-configured Code Standards** - ESLint, Prettier, TypeScript strict
+  mode with zero-tolerance for `any` types
+- ✅ **Built-in Validations** - DTOs, environment variables, API responses all
+  validated by default
+- 🧪 **Testing Framework** - Jest setup with 80%+ coverage requirement and test
+  patterns
+- 📝 **Standardized Patterns** - Controllers, services, components all follow
+  strict conventions
+- 🎨 **UI Components Library** - Ready-to-use components (Modal, Alert, Table,
+  Sidebar) with dark mode
+- 🚀 **API Response Standards** - Consistent success/error handling across
+  backend and frontend
+- 📚 **Complete Documentation** - Architecture guides, testing guides, and API
+  documentation
 
 ### 🎁 **Perfect For:**
-- 🤖 **AI-powered development** - Work with coding agents that follow established patterns
+
+- 🤖 **AI-powered development** - Work with coding agents that follow
+  established patterns
 - 🚀 Building production-ready fullstack applications with AI assistance
 - 📚 Learning modern web development best practices with AI guidance
 - 🛠️ Prototyping new ideas quickly with pre-configured setup
 - 👥 Contributing to open source with clear contribution guidelines
 - 🎓 Teaching fullstack development concepts with AI as a learning aid
 
-> 💡 **Open Source & Community Driven**: This is a public template open for contributions! Whether you're fixing bugs, adding features, improving documentation, or sharing ideas - all contributions are welcome and appreciated.
+> 💡 **Open Source & Community Driven**: This is a public template open for
+> contributions! Whether you're fixing bugs, adding features, improving
+> documentation, or sharing ideas - all contributions are welcome and
+> appreciated.
 
 ## 🎯 Features
 
-### Backend (NestJS)
-- ✅ **TypeScript** with strict type checking
-- ✅ **NestJS** - Progressive Node.js framework
-- ✅ **TypeORM** - Database ORM with migrations
+### 🔐 **Security & Authentication**
+
+- ✅ **JWT Authentication** - Complete implementation with access & refresh
+  tokens
+- ✅ **Token Blacklisting** - Logout invalidates tokens server-side
+- ✅ **Session Management** - Multi-device tracking with IP & user agent
+- ✅ **Password Security** - Bcrypt hashing with strong validation (8+ chars,
+  uppercase, lowercase, numbers, special chars)
+- ✅ **Email Verification** - Crypto-based tokens for email confirmation
+- ✅ **Password Reset** - Secure forgot password flow
+- ✅ **Disposable Email Blocking** - Prevents spam registrations
+- ✅ **XSS & SQL Injection Protection** - Automatic input sanitization
+  middleware
+- ✅ **Refresh Token Rotation** - 15min access tokens, 7-day refresh tokens
+
+### 🚦 **API Protection & Monitoring**
+
+- ✅ **Rate Limiting** - Environment-configurable throttling (@nestjs/throttler)
+  - 🎯 Auth endpoints: 5 attempts per 15 minutes
+  - 🎯 General endpoints: 100 requests per minute
+  - 🎯 Custom limits per route
+- ✅ **Request Logging System** - PostgreSQL-backed with statistics dashboard
+  - 📊 Automatic logging of all HTTP requests
+  - 🗑️ Auto-cleanup via cron jobs (logs older than 24 hours)
+  - 🔒 Sensitive data sanitization (passwords, tokens redacted)
+  - 📈 Performance metrics (response time, error rates)
+  - 👤 User tracking (if authenticated)
+- ✅ **Correlation IDs** - Request tracking across services
+- ✅ **Error Monitoring** - Winston logging with multiple transports
+- ✅ **API Versioning** - URI & header-based versioning support
+- ✅ **Deprecation Headers** - Sunset dates for deprecated endpoints
+
+### 🧩 **Backend (NestJS)**
+
+- ✅ **TypeScript** - Strict type checking, zero `any` types allowed
+- ✅ **NestJS** - Progressive Node.js framework with modular architecture
+- ✅ **TypeORM** - Database ORM with migrations & seeders
 - ✅ **PostgreSQL** - Robust relational database
-- ✅ **Swagger** - Auto-generated API documentation
-- ✅ **Class Validator** - DTO validation
-- ✅ **Global Exception Filter** - Consistent error handling
+- ✅ **GraphQL** - Apollo Server v4 (coexists with REST API)
+  - Schema-first design with auto-generated types
+  - GraphQL Playground in development
+  - GqlAuthGuard for protected queries/mutations
+- ✅ **Caching Layer** - Redis-compatible cache manager (global)
+  - Environment-configurable TTL and max items
+  - Automatic cache invalidation on updates
+- ✅ **Swagger** - Complete API documentation with reusable decorators
+  - All endpoints documented with examples
+  - Automatic 401/400/404/500 response documentation
+- ✅ **Advanced Validation** - Class-validator with custom decorators
+  - @IsStrongPassword, @NoSqlInjection, @NoXss
+  - @IsValidUUID, @IsNotDisposableEmail
+  - Comprehensive DTO validation
+- ✅ **Error Handling** - 70+ standardized error codes
+  - Custom exception library (40+ exception classes)
+  - Global exception filter with environment-aware messages
+  - Operational vs non-operational error tracking
+- ✅ **Mail Service** - Configured with templates for email notifications
+- ✅ **Cron Jobs** - Scheduled tasks for cleanup operations
+  - Session cleanup (expired & inactive)
+  - Request log cleanup (older than 24 hours)
+- ✅ **Database Features** - Complete tooling
+  - Migration scripts (generate, run, rollback)
+  - Seeder system for development/testing
+  - Query performance logging with optimization suggestions
 - ✅ **Response Interceptor** - Standardized API responses
-- ✅ **Environment Validation** - Type-safe configuration
-- ✅ **Jest** - Unit and E2E testing
-- ✅ **ESLint & Prettier** - Code quality and formatting
+- ✅ **Environment Validation** - Type-safe configuration with class-validator
+- ✅ **Jest Testing** - Unit and E2E tests (80%+ coverage)
+- ✅ **ESLint & Prettier** - Zero-tolerance code quality
 
-### Frontend (Next.js)
-- ✅ **Next.js 16** - React framework with App Router
+### 🎨 **Frontend (Next.js)**
+
+- ✅ **Next.js 16** - React framework with App Router & Turbopack
 - ✅ **React 19** - Latest React features
-- ✅ **TypeScript** - Type safety
-- ✅ **Tailwind CSS** - Utility-first CSS
-- ✅ **API Client** - Type-safe API integration
-- ✅ **ESLint** - Code quality
-- ✅ **Prettier** - Code formatting
+- ✅ **TypeScript** - Strict type safety, no `any` types
+- ✅ **Tailwind CSS v4** - Utility-first CSS with dark mode
+- ✅ **Theme System** - Light/dark mode with next-themes
+- ✅ **Professional Admin UI** - Complete admin dashboards
+  - 📊 **User Management** - Full CRUD, bulk operations, statistics (810 lines)
+  - 📈 **Request Logs Dashboard** - Statistics cards, cleanup management
+  - 🎨 Reusable UI components (Table, Modal, Alert, Confirm, Sidebar)
+- ✅ **Toast Notifications** - Sonner with dark mode support
+  - Success, error, warning, info, loading states
+  - Promise-based with automatic state handling
+- ✅ **API Client** - Type-safe with automatic token refresh
+  - Request/response interceptors
+  - Token queue management (prevents duplicate refreshes)
+  - Automatic 401 handling
+- ✅ **Protected Routes** - Route guards with session validation
+- ✅ **Storage Utility** - Safe localStorage wrapper (handles strings & objects)
+- ✅ **Custom Hooks** - useAuth, useUsers for state management
+- ✅ **ESLint** - Zero-tolerance quality gates
+- ✅ **Prettier** - Consistent code formatting
 
-### Infrastructure
+### 🏗️ **Infrastructure & DevOps**
+
 - ✅ **Docker Compose** - PostgreSQL and pgAdmin setup
-- ✅ **AI Coding Instructions** - Comprehensive guidelines for Copilot, Cursor, and coding agents
-- ✅ **Code Quality Gates** - ESLint, Prettier, strict TypeScript, zero-tolerance policies
+- ✅ **AI Coding Instructions** - 1000+ line comprehensive guide
+  - Complete code standards and patterns
+  - Testing requirements (mandatory .spec.ts files)
+  - API response standards
+  - Error handling patterns
+  - UI component library documentation
+- ✅ **Code Quality Gates** - Multi-layered enforcement
+  - ESLint errors block commits
+  - TypeScript strict mode
+  - 80%+ test coverage requirement
+  - Unused variable/import detection
 - ✅ **Git Hooks** - Pre-commit quality checks
 - ✅ **Conventional Commits** - Standardized commit messages
-- ✅ **Automated Testing** - Pre-configured test patterns and coverage requirements
+- ✅ **Automated Testing** - Pre-configured patterns
+- ✅ **Comprehensive Documentation** - 12+ implementation guides
+  - API Security, Validation, Caching, Error Handling
+  - Request Logging, Session Management, Database Features
+  - GraphQL, Rate Limiting, and more
 
 ## 📦 Project Structure
 
@@ -294,29 +385,42 @@ fullstack-nnp-template/
 
 ## 🤖 AI-Assisted Development
 
-This template is **optimized for AI coding agents** with comprehensive instructions and standards pre-configured.
+This template is **optimized for AI coding agents** with comprehensive
+instructions and standards pre-configured.
 
 ### 📋 **AI Coding Guidelines**
 
-All guidelines are located in [`.github/copilot-instructions.md`](.github/copilot-instructions.md):
+All guidelines are located in
+[`.github/copilot-instructions.md`](.github/copilot-instructions.md):
 
-- **Code Standards**: TypeScript strict mode, zero `any` types, proper error handling
-- **File Organization**: Strict folder structure for interfaces, types, enums, services
-- **Testing Requirements**: Every controller/service must have `.spec.ts` tests (80%+ coverage)
-- **API Patterns**: Standardized response format, error handling, caching strategies
-- **UI Components**: Pre-built components (Modal, Alert, Table, Sidebar) with usage patterns
-- **Documentation**: JSDoc requirements, inline comments, architecture documentation
+- **Code Standards**: TypeScript strict mode, zero `any` types, proper error
+  handling
+- **File Organization**: Strict folder structure for interfaces, types, enums,
+  services
+- **Testing Requirements**: Every controller/service must have `.spec.ts` tests
+  (80%+ coverage)
+- **API Patterns**: Standardized response format, error handling, caching
+  strategies
+- **UI Components**: Pre-built components (Modal, Alert, Table, Sidebar) with
+  usage patterns
+- **Documentation**: JSDoc requirements, inline comments, architecture
+  documentation
 - **Validation**: ESLint rules, pre-commit hooks, zero-tolerance quality gates
 
 ### 🎯 **What AI Agents Get:**
 
-1. **Clear Patterns** - Consistent code structure for controllers, services, components
-2. **Type Safety** - Strict TypeScript with no `any` types, proper interfaces and types
-3. **Error Handling** - Standardized try-catch patterns with ApiResponse utilities
-4. **Testing Standards** - Pre-configured Jest with test patterns and coverage requirements
+1. **Clear Patterns** - Consistent code structure for controllers, services,
+   components
+2. **Type Safety** - Strict TypeScript with no `any` types, proper interfaces
+   and types
+3. **Error Handling** - Standardized try-catch patterns with ApiResponse
+   utilities
+4. **Testing Standards** - Pre-configured Jest with test patterns and coverage
+   requirements
 5. **Code Quality** - ESLint/Prettier rules that must pass before commits
 6. **UI Library** - Ready-to-use components with documented props and examples
-7. **API Standards** - Consistent request/response format with Swagger documentation
+7. **API Standards** - Consistent request/response format with Swagger
+   documentation
 8. **Real Examples** - Working user module demonstrating all patterns
 
 ### 🚀 **Supported AI Tools:**
@@ -327,31 +431,399 @@ All guidelines are located in [`.github/copilot-instructions.md`](.github/copilo
 - ✅ GPT-4 (via Copilot)
 - ✅ Any AI coding assistant that can read project instructions
 
-> 💡 **Tip**: Open [`.github/copilot-instructions.md`](.github/copilot-instructions.md) to see the complete guidelines that AI agents follow in this project.
+> 💡 **Tip**: Open
+> [`.github/copilot-instructions.md`](.github/copilot-instructions.md) to see
+> the complete guidelines that AI agents follow in this project.
 
-## 🚀 Quick Start
+## � **Professional Admin Dashboards**
+
+This template includes **production-ready admin interfaces** with complete CRUD
+operations, statistics, and monitoring.
+
+### 👥 **User Management Dashboard**
+
+**Location:** `/admin/users`
+
+**Features:**
+
+- 📋 **Complete CRUD Operations** - Create, Read, Update, Delete users
+- 🔍 **Advanced Search** - Search by email, name with live filtering
+- 📊 **Statistics Cards** - Total users, active, inactive, recent signups
+- ✅ **Bulk Operations** - Activate, deactivate, or delete multiple users
+- 📝 **Professional Dialogs** - ViewDialog (formatted data), EditDialog (forms),
+  Confirm (destructive actions)
+- 🎨 **Table Component** - Sortable columns, pagination, row selection
+- 🔐 **Protected Routes** - JWT authentication required
+- 🌙 **Dark Mode** - Full theme support
+
+**Implementation:**
+
+- 810 lines of production-ready code
+- Type-safe with proper interfaces
+- Error handling with toast notifications
+- Automatic token refresh on API calls
+
+### 📈 **Request Logs Dashboard**
+
+**Location:** `/admin/request-logs`
+
+**Features:**
+
+- 📊 **Statistics Cards** - Total requests, avg response time, success rate,
+  error rate, active users
+- 📋 **Log Viewing** - Paginated table with all request details
+- 🗑️ **Manual Cleanup** - Trigger cleanup of logs older than 24 hours
+- 🔍 **Filtering** - Search and filter logs by method, status, user
+- ⏱️ **Performance Metrics** - Response time tracking and analysis
+- 🎨 **Professional UI** - Consistent with user management
+- 🔐 **Admin Only** - Protected route with authentication
+
+**Backend Features:**
+
+- Automatic request logging middleware
+- PostgreSQL storage with indexes
+- Sensitive data sanitization (passwords/tokens redacted)
+- Cron job cleanup (daily at 2 AM)
+- Admin API endpoints for statistics and manual cleanup
+
+### 🎨 **UI Component Library**
+
+All admin dashboards use reusable, professionally designed components:
+
+#### Core Components
+
+- 📦 **Table** - Sortable, paginated, selectable rows with actions
+- 📝 **EditDialog** - Dynamic form dialog for create/update operations
+- 👁️ **ViewDialog** - Formatted data display with sections
+- ⚠️ **Confirm** - Confirmation dialog for destructive actions
+- 🔔 **Toast** - Success/error/warning/info notifications (Sonner)
+- 🎯 **Modal** - General purpose dialog with sizes
+- 🗂️ **Sidebar** - Professional navigation with multi-level menus
+- 📊 **Header** - App header with search, notifications, theme, user menu
+- ⚡ **LoadingSpinner** - Loading indicators
+- ❌ **ErrorMessage** - Error display component
+- 📄 **Pagination** - Pagination controls
+
+#### Theme System
+
+- 🌙 Dark/light mode with `next-themes`
+- 🎨 CSS variables for all colors
+- 🔄 No flash on page load (SSR-safe)
+- 🎯 ThemeSwitcher component included
+
+**All components:**
+
+- Fully typed with TypeScript interfaces
+- Dark mode support built-in
+- Keyboard accessible
+- Professional styling with Tailwind CSS v4
+- Documented with usage examples
+
+## 📚 **Complete Documentation**
+
+This template includes **comprehensive documentation** for every feature:
+
+### 📁 **Backend Documentation** (`server/docs/`)
+
+1. **API_SECURITY_IMPLEMENTATION_COMPLETE.md** - Complete JWT authentication
+   guide
+   - Protected vs public endpoints
+   - Token flow and refresh mechanism
+   - Testing with cURL, Swagger, Postman
+
+2. **VALIDATION_IMPLEMENTATION_COMPLETE.md** - Comprehensive validation system
+   - Custom validators (@IsStrongPassword, @NoSqlInjection, @NoXss)
+   - DTO validation patterns
+   - Error handling for validation failures
+
+3. **API_RESPONSE_DECORATORS.md** - Reusable Swagger decorators
+   - 8 standard response decorators
+   - DRY principle for API documentation
+   - Usage patterns and examples
+
+4. **REQUEST_LOGGING.md** - Request logging system
+   - Automatic logging middleware
+   - Database schema and indexes
+   - Sensitive data sanitization
+   - Cleanup cron jobs
+
+5. **SESSION_MANAGEMENT.md** - Session and token management
+   - Multi-device session tracking
+   - Token blacklisting
+   - Refresh token rotation
+
+6. **DATABASE_FEATURES.md** - Database tooling and features
+   - Migration scripts (generate, run, rollback)
+   - Seeder system for dev/test data
+   - Query performance logging
+
+7. **CACHING_IMPLEMENTATION.md** - Caching strategy
+   - Redis-compatible cache manager
+   - TTL and max items configuration
+   - Cache invalidation patterns
+
+8. **ERROR_HANDLING_AND_LOGGING.md** - Error infrastructure
+   - 70+ standardized error codes
+   - 40+ custom exception classes
+   - Winston logging with multiple transports
+   - Correlation IDs for request tracking
+
+9. **API_ENDPOINTS_AUTH.md** - API endpoint reference
+   - All authentication endpoints documented
+   - Request/response examples
+   - Rate limiting information
+
+10. **QUICK_REFERENCE_AUTH.md** - Quick start guide
+    - Common authentication patterns
+    - Testing workflows
+    - Troubleshooting tips
+
+### 📁 **Frontend Documentation** (`client/docs/`)
+
+1. **CLIENT_ARCHITECTURE.md** - Frontend architecture guide
+   - Folder structure and organization
+   - Component patterns
+   - State management
+   - API client usage
+
+2. **CODE_QUALITY.md** - Code quality standards
+   - ESLint rules (mandatory)
+   - TypeScript best practices
+   - Testing requirements
+   - Pre-commit checks
+
+3. **MODAL_COMPONENTS.md** - Dialog component guide
+   - Modal, Alert, Confirm usage
+   - EditDialog and ViewDialog patterns
+   - Configuration interfaces
+
+4. **SESSION_MANAGEMENT.md** - Client-side session handling
+   - Token storage and retrieval
+   - Automatic token refresh
+   - Protected route patterns
+
+5. **TOAST_SYSTEM.md** - Toast notification guide
+   - Success/error/warning/info patterns
+   - Promise-based toasts
+   - Best practices
+
+6. **REFRESH_TROUBLESHOOTING.md** - Token refresh debugging
+   - Common issues and solutions
+   - Request queue management
+
+### 📁 **Root Documentation**
+
+1. **.github/copilot-instructions.md** - Comprehensive AI coding guide (1000+
+   lines)
+   - Code standards and patterns
+   - File organization rules
+   - Testing requirements
+   - API response standards
+   - Error handling patterns
+   - UI component documentation
+   - Database best practices
+   - GraphQL patterns
+   - Rate limiting usage
+
+2. **QUICK_START.md** - Get started in 5 minutes
+3. **TESTING_GUIDE.md** - Complete testing guide
+4. **CONTRIBUTING.md** - Contribution guidelines
+5. **API_ENDPOINTS.md** - Complete API reference
+
+
+## 🎭 **GraphQL Support (Alongside REST)**
+
+This template provides **both REST and GraphQL APIs** running simultaneously for maximum flexibility.
+
+### ⚡ **Features**
+- ✅ **Apollo Server v4** - Latest GraphQL server
+- ✅ **Schema-First Design** - Write `.graphql` schemas, auto-generate TypeScript types
+- ✅ **GraphQL Playground** - Interactive query interface (development)
+- ✅ **Coexists with REST** - Both APIs work together
+- ✅ **JWT Authentication** - GqlAuthGuard for protected queries/mutations
+- ✅ **Reuses Services** - GraphQL resolvers use existing NestJS services (no code duplication)
+
+### 🔗 **API Endpoints**
+- **REST API**: `http://localhost:3001/api/v1/*`
+- **GraphQL API**: `http://localhost:3001/graphql`
+- **GraphQL Playground**: `http://localhost:3001/graphql` (dev only)
+
+### 📝 **Example GraphQL Query**
+```graphql
+query GetUsers {
+  users(page: 1, limit: 10) {
+    users {
+      id
+      email
+      firstName
+      lastName
+      isActive
+      createdAt
+    }
+    total
+    page
+    hasNext
+    hasPrevious
+  }
+}
+```
+
+### 📝 **Example GraphQL Mutation**
+```graphql
+mutation CreateUser {
+  createUser(
+    email: "user@example.com"
+    firstName: "John"
+    lastName: "Doe"
+    password: "SecurePass123!"
+  ) {
+    id
+    email
+    firstName
+    createdAt
+  }
+}
+```
+
+### 🔐 **Authentication**
+Add JWT token in HTTP Headers:
+```json
+{
+  "Authorization": "Bearer YOUR_JWT_TOKEN"
+}
+```
+
+### 🎯 **Use REST for:**
+- ✅ Simple CRUD operations
+- ✅ File uploads
+- ✅ Standard HTTP caching
+- ✅ Public APIs
+
+### 🎯 **Use GraphQL for:**
+- ✅ Complex data relationships
+- ✅ Flexible data fetching (avoid over-fetching)
+- ✅ Real-time subscriptions
+- ✅ Mobile/frontend apps with varying data needs
+
+**Documentation**: See `docs/GRAPHQL_AND_RATE_LIMITING.md` for comprehensive guide
+
+## 🛡️ **Advanced Rate Limiting**
+
+Protect your API from abuse with intelligent, environment-configurable rate limiting.
+
+### ⚙️ **Configuration**
+
+**Environment Variables:**
+```env
+# Rate Limiting Configuration
+RATE_LIMIT_ENABLED=true                # Enable/disable rate limiting
+RATE_LIMIT_TTL=60000                   # Default TTL (1 minute)
+RATE_LIMIT_MAX=100                     # Default max requests per TTL
+RATE_LIMIT_STRICT_TTL=60000            # Strict TTL (1 minute)
+RATE_LIMIT_STRICT_MAX=10               # Strict max requests
+RATE_LIMIT_AUTH_TTL=900000             # Auth TTL (15 minutes)
+RATE_LIMIT_AUTH_MAX=5                  # Auth max attempts
+```
+
+### 🎯 **Rate Limit Tiers**
+
+| Tier | TTL | Limit | Usage |
+|------|-----|-------|-------|
+| **Default** | 1 minute | 100 requests | General API endpoints |
+| **Strict** | 1 minute | 10 requests | Sensitive operations (delete, bulk) |
+| **Auth** | 15 minutes | 5 attempts | Login, register, password reset |
+| **Custom** | Configurable | Configurable | Per-route custom limits |
+
+### 🏷️ **Usage with Decorators**
+
+```typescript
+import {
+  AuthRateLimit,
+  StrictRateLimit,
+  PublicRateLimit,
+  RateLimit
+} from '../common/decorators';
+
+@Controller('auth')
+export class AuthController {
+  // Login: 5 attempts per 15 minutes
+  @Post('login')
+  @AuthRateLimit()
+  async login() { }
+
+  // Password reset: Custom limit
+  @Post('reset-password')
+  @RateLimit(300000, 3, 'Too many password reset attempts')
+  async resetPassword() { }
+}
+
+@Controller('users')
+export class UsersController {
+  // Public endpoint: 100 requests/minute
+  @Get()
+  @PublicRateLimit()
+  async findAll() { }
+
+  // Sensitive operation: 10 requests/minute
+  @Delete(':id')
+  @StrictRateLimit()
+  async remove() { }
+}
+```
+
+### 📊 **Response Headers**
+
+**Success Response (within limit):**
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1706371200
+```
+
+**Error Response (limit exceeded):**
+```
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1706371200
+Retry-After: 45
+```
+
+### 🎯 **Smart Tracking**
+- **Authenticated Users**: Rate limited by user ID (more accurate)
+- **Unauthenticated Users**: Rate limited by IP address
+- **RFC 6585 Compliant**: Standard rate limit headers
+- **Retry-After Header**: Tells clients when to retry
+
+**Documentation**: See `docs/GRAPHQL_AND_RATE_LIMITING.md` for complete guide
+## �🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js** 20+
 - **yarn** or **yarn**
 - **Docker** (for PostgreSQL)
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <your-repo-url> my-new-project
 cd my-new-project
 ```
 
 ### 2. Start Database
+
 ```bash
 docker-compose up -d
 ```
 
 This starts:
+
 - PostgreSQL on `localhost:5432`
 - pgAdmin on `http://localhost:5050` (admin@admin.com / admin)
 
 ### 3. Setup Backend
+
 ```bash
 cd server
 yarn install
@@ -367,10 +839,11 @@ yarn migration:run
 yarn start:dev
 ```
 
-Backend will run on `http://localhost:3001`
-Swagger docs: `http://localhost:3001/api/docs`
+Backend will run on `http://localhost:3001` Swagger docs:
+`http://localhost:3001/api/docs`
 
 ### 4. Setup Frontend
+
 ```bash
 cd client
 yarn install
@@ -387,6 +860,7 @@ Frontend will run on `http://localhost:3000`
 ## 🛠️ Development
 
 ### Backend Commands
+
 ```bash
 # Development
 yarn start:dev          # Start with hot-reload
@@ -413,6 +887,7 @@ yarn migration:revert   # Revert last migration
 ```
 
 ### Frontend Commands
+
 ```bash
 # Development
 yarn dev                # Start development server
@@ -429,6 +904,7 @@ yarn format             # Format code with Prettier
 ### Backend (NestJS)
 
 1. **Generate a new module:**
+
 ```bash
 cd server
 nest g module modules/posts
@@ -437,6 +913,7 @@ nest g service modules/posts
 ```
 
 2. **Create the entity:**
+
 ```typescript
 // src/modules/posts/entities/post.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
@@ -458,6 +935,7 @@ export class Post {
 ```
 
 3. **Create DTOs with validation:**
+
 ```typescript
 // src/modules/posts/dto/create-post.dto.ts
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
@@ -478,6 +956,7 @@ export class CreatePostDto {
 ```
 
 4. **Write tests:**
+
 ```typescript
 // src/modules/posts/posts.service.spec.ts
 describe('PostsService', () => {
@@ -490,6 +969,7 @@ describe('PostsService', () => {
 ### Frontend (Next.js)
 
 1. **Add API client methods:**
+
 ```typescript
 // lib/api.ts
 async getPosts(): Promise<Post[]> {
@@ -499,6 +979,7 @@ async getPosts(): Promise<Post[]> {
 ```
 
 2. **Create a page:**
+
 ```typescript
 // app/posts/page.tsx
 export default async function PostsPage() {
@@ -510,6 +991,7 @@ export default async function PostsPage() {
 ## 🔒 Environment Variables
 
 ### Backend (.env)
+
 ```env
 NODE_ENV=development
 PORT=3001
@@ -524,6 +1006,7 @@ CORS_ORIGIN=http://localhost:3000
 ```
 
 ### Frontend (.env.local)
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
@@ -531,6 +1014,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ## 📚 API Documentation
 
 Once the backend is running, visit:
+
 - **Swagger UI**: `http://localhost:3001/api/docs`
 - **JSON Schema**: `http://localhost:3001/api/docs-json`
 
@@ -539,11 +1023,14 @@ Once the backend is running, visit:
 ### Backend Testing
 
 #### Test Types
+
 The backend includes two types of tests:
+
 1. **Unit Tests** - Test individual services and controllers in isolation
 2. **E2E Tests** - Test the full application flow including database operations
 
 #### Running Tests
+
 ```bash
 cd server
 
@@ -559,8 +1046,8 @@ yarn test:e2e:setup          # Setup test database and run E2E tests
 
 #### Test Setup and Configuration
 
-**E2E Test Setup:**
-The E2E tests require a test database. The setup process:
+**E2E Test Setup:** The E2E tests require a test database. The setup process:
+
 1. Creates a PostgreSQL database named `test_db`
 2. Configures test environment variables
 3. Applies global prefix `/api/v1` to match production
@@ -568,14 +1055,16 @@ The E2E tests require a test database. The setup process:
 5. Runs all tests against real database
 
 **Setup Script:**
+
 ```bash
 # Setup test database (one-time setup)
 cd server
 ./test/setup-test-db.sh
 ```
 
-**Environment Variables for Testing:**
-Test environment variables are configured in `test/setup-e2e.ts`:
+**Environment Variables for Testing:** Test environment variables are configured
+in `test/setup-e2e.ts`:
+
 - `NODE_ENV=test`
 - `DATABASE_NAME=test_db`
 - Database auto-synchronization enabled
@@ -584,6 +1073,7 @@ Test environment variables are configured in `test/setup-e2e.ts`:
 #### Writing Unit Tests
 
 **Service Test Example:**
+
 ```typescript
 // src/users/users.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
@@ -628,12 +1118,12 @@ describe('UsersService', () => {
         email: 'test@example.com',
         firstName: 'John',
         lastName: 'Doe',
-        password: 'SecurePass123!'
+        password: 'SecurePass123!',
       };
       const mockUser = {
         id: '123',
         ...createDto,
-        isActive: true
+        isActive: true,
       };
 
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
@@ -666,6 +1156,7 @@ describe('UsersService', () => {
 ```
 
 **Controller Test Example:**
+
 ```typescript
 // src/users/users.controller.spec.ts
 describe('UsersController', () => {
@@ -709,6 +1200,7 @@ describe('UsersController', () => {
 #### Writing E2E Tests
 
 **E2E Test Example:**
+
 ```typescript
 // test/app.e2e-spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
@@ -769,6 +1261,7 @@ describe('API E2E Tests', () => {
 #### Test Standards and Best Practices
 
 **Mandatory Requirements:**
+
 - ✅ Every controller MUST have a `.controller.spec.ts` file
 - ✅ Every service MUST have a `.service.spec.ts` file
 - ✅ Test coverage should be >80%
@@ -776,6 +1269,7 @@ describe('API E2E Tests', () => {
 - ✅ Update tests when modifying services/controllers
 
 **Best Practices:**
+
 1. **Mock External Dependencies** - Database, HTTP requests, file system
 2. **Test Both Success and Error Cases** - Cover all code paths
 3. **Use Descriptive Test Names** - Clear what is being tested
@@ -784,6 +1278,7 @@ describe('API E2E Tests', () => {
 6. **Use Test Setup/Teardown** - beforeEach, afterEach, beforeAll, afterAll
 
 **API Response Format to Test:**
+
 ```typescript
 // Success Response Structure
 {
@@ -813,6 +1308,7 @@ describe('API E2E Tests', () => {
 ```
 
 **Important Notes:**
+
 - ⚠️ Password field must NEVER be returned in responses
 - ⚠️ All meta fields use snake_case (user_id, created_at, total_pages)
 - ⚠️ E2E tests use real database (test_db)
@@ -822,6 +1318,7 @@ describe('API E2E Tests', () => {
 ## 🎨 Code Style Guide
 
 ### General Rules
+
 - Use **TypeScript** for all code
 - Follow **functional programming** principles
 - Keep functions **small and focused**
@@ -830,7 +1327,9 @@ describe('API E2E Tests', () => {
 - **No `any` types** - use proper typing
 
 ### Commit Messages
+
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```
 feat(users): add user registration endpoint
 fix(auth): resolve token expiration issue
@@ -842,13 +1341,16 @@ refactor(api): improve error handling
 ## 🔍 Code Quality Checks
 
 ### Pre-commit Hooks
+
 The template includes Husky for running checks before commits:
+
 - ESLint validation
 - Prettier formatting
 - TypeScript compilation
 - Unit tests
 
 ### Manual Checks
+
 ```bash
 # Backend
 cd server
@@ -865,6 +1367,7 @@ yarn format
 ## 📖 Best Practices
 
 ### Backend
+
 1. **Always use DTOs** for request validation
 2. **Add Swagger decorators** to all endpoints
 3. **Handle errors** with proper HTTP exceptions
@@ -874,6 +1377,7 @@ yarn format
 7. **Log important operations** with appropriate log levels
 
 ### Frontend
+
 1. **Prefer Server Components** unless interactivity needed
 2. **Use the API client** for all backend communication
 3. **Type all props** and API responses
@@ -883,6 +1387,7 @@ yarn format
 7. **Avoid inline styles** when possible
 
 ### Database
+
 1. **Always use migrations** - never modify entities directly in production
 2. **Name migrations descriptively**
 3. **Use UUID** for primary keys
@@ -892,6 +1397,7 @@ yarn format
 ## 🚢 Deployment
 
 ### Backend
+
 ```bash
 cd server
 yarn build
@@ -899,6 +1405,7 @@ NODE_ENV=production yarn start:prod
 ```
 
 ### Frontend
+
 ```bash
 cd client
 yarn build
@@ -906,11 +1413,14 @@ yarn start
 ```
 
 ### Docker (Coming Soon)
+
 Production Docker configurations will be added in future updates.
 
 ## 🤝 Contributing
 
-**We love contributions!** 🎉 This project is open source and welcomes contributions from developers of all skill levels. Whether you're fixing a typo, adding a feature, or improving documentation - every contribution matters!
+**We love contributions!** 🎉 This project is open source and welcomes
+contributions from developers of all skill levels. Whether you're fixing a typo,
+adding a feature, or improving documentation - every contribution matters!
 
 ### 🌟 **Ways to Contribute**
 
@@ -922,6 +1432,7 @@ Production Docker configurations will be added in future updates.
 **Code Contributions**
 
 Add features, fix bugs, improve performance
+
 </td>
 <td width="33%" align="center">
 <img src="https://img.icons8.com/color/96/000000/document.png" width="50" />
@@ -929,6 +1440,7 @@ Add features, fix bugs, improve performance
 **Documentation**
 
 Improve docs, write tutorials, add examples
+
 </td>
 <td width="33%" align="center">
 <img src="https://img.icons8.com/color/96/000000/test-tube.png" width="50" />
@@ -936,6 +1448,7 @@ Improve docs, write tutorials, add examples
 **Testing**
 
 Write tests, report bugs, suggest improvements
+
 </td>
 </tr>
 </table>
@@ -960,7 +1473,8 @@ git checkout -b feature/your-feature-name
 #### **2️⃣ Making Changes**
 
 - ✅ Follow the existing code style and conventions
-- ✅ Write meaningful commit messages (use [Conventional Commits](https://www.conventionalcommits.org/))
+- ✅ Write meaningful commit messages (use
+  [Conventional Commits](https://www.conventionalcommits.org/))
 - ✅ Add tests for new features or bug fixes
 - ✅ Update documentation if needed
 - ✅ Run linting and tests before committing
@@ -990,7 +1504,8 @@ git push origin feature/your-feature-name
 
 ### 💻 **Commit Message Format**
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/) specification:
+We follow [Conventional Commits](https://www.conventionalcommits.org/)
+specification:
 
 ```
 <type>(<scope>): <description>
@@ -1000,6 +1515,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) specifica
 ```
 
 **Types:**
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -1009,6 +1525,7 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) specifica
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```bash
 feat(auth): add JWT authentication
 fix(users): resolve email validation issue
@@ -1018,7 +1535,9 @@ test(api): add e2e tests for user endpoints
 
 ### 🐛 **Reporting Bugs**
 
-Found a bug? Please [open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new) with:
+Found a bug? Please
+[open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new)
+with:
 
 - **Clear title** describing the issue
 - **Steps to reproduce** the bug
@@ -1028,7 +1547,9 @@ Found a bug? Please [open an issue](https://github.com/k-kaundal/fullstack-nnp-t
 
 ### 💡 **Feature Requests**
 
-Have an idea? [Open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new) with:
+Have an idea?
+[Open an issue](https://github.com/k-kaundal/fullstack-nnp-template/issues/new)
+with:
 
 - **Clear description** of the feature
 - **Use case** - why is this needed?
@@ -1037,14 +1558,17 @@ Have an idea? [Open an issue](https://github.com/k-kaundal/fullstack-nnp-templat
 
 ### 📖 **Development Resources**
 
-- [GitHub Copilot Instructions](.github/copilot-instructions.md) - AI-assisted development guide
+- [GitHub Copilot Instructions](.github/copilot-instructions.md) - AI-assisted
+  development guide
 - [Contributing Guide](CONTRIBUTING.md) - Detailed contribution guidelines
 - [Testing Guide](TESTING_GUIDE.md) - How to write and run tests
 - [API Documentation](API_ENDPOINTS.md) - Backend API reference
 
 ### 🎯 **Good First Issues**
 
-New to the project? Look for issues labeled [`good first issue`](https://github.com/k-kaundal/fullstack-nnp-template/labels/good%20first%20issue) - these are perfect for getting started!
+New to the project? Look for issues labeled
+[`good first issue`](https://github.com/k-kaundal/fullstack-nnp-template/labels/good%20first%20issue) -
+these are perfect for getting started!
 
 ### 🏆 **Contributors**
 
@@ -1056,9 +1580,12 @@ Thanks to all our amazing contributors! 🙏
 
 ### 📜 **Code of Conduct**
 
-This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcoming environment for everyone. By participating, you agree to abide by its terms.
+This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a
+welcoming environment for everyone. By participating, you agree to abide by its
+terms.
 
 **Our Pledge:**
+
 - 🤝 Be respectful and inclusive
 - 💬 Use welcoming and inclusive language
 - 🎯 Focus on what's best for the community
@@ -1068,15 +1595,18 @@ This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) to ensure a welcomi
 ### 💬 **Need Help?**
 
 - 📧 **Email**: Create an issue and we'll respond
-- 💬 **Discussions**: Use [GitHub Discussions](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
+- 💬 **Discussions**: Use
+  [GitHub Discussions](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
 - 🐦 **Twitter**: [@k_k_kaundal](https://x.com/k_k_kaundal)
-- 👥 **Community**: Join our [Facebook Community](https://www.facebook.com/groups/me.software.engineer)
+- 👥 **Community**: Join our
+  [Facebook Community](https://www.facebook.com/groups/me.software.engineer)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE)
+file for details.
 
 ```
 MIT License - Free to use, modify, and distribute
@@ -1092,6 +1622,7 @@ MIT License - Free to use, modify, and distribute
 <td width="50%">
 
 **📚 Documentation & Guides**
+
 - [Quick Start Guide](QUICK_START.md)
 - [API Endpoints](API_ENDPOINTS.md)
 - [Testing Guide](TESTING_GUIDE.md)
@@ -1101,6 +1632,7 @@ MIT License - Free to use, modify, and distribute
 <td width="50%">
 
 **🐛 Issues & Questions**
+
 - [Report a Bug](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=bug)
 - [Request a Feature](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=enhancement)
 - [Ask a Question](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
@@ -1113,6 +1645,7 @@ MIT License - Free to use, modify, and distribute
 ### **⭐ Show Your Support**
 
 If you find this project helpful:
+
 - ⭐ **Star this repository** on GitHub
 - 🔄 **Share it** with your network
 - 🤝 **Contribute** to make it better
@@ -1143,7 +1676,8 @@ If this project helped you, please consider:
 
 **Happy Coding! 🎉**
 
-*Built with ❤️ by [Kaundal](https://kaundal.vip) using NestJS, Next.js, and PostgreSQL*
+_Built with ❤️ by [Kaundal](https://kaundal.vip) using NestJS, Next.js, and
+PostgreSQL_
 
 **Open Source • Community Driven • Production Ready**
 

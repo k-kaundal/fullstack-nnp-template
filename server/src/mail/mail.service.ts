@@ -39,6 +39,10 @@ export class MailService {
     tempPassword: string,
   ): Promise<void> {
     try {
+      const clientUrl =
+        this.configService.get<string>('CORS_ORIGIN') ||
+        'http://localhost:3000';
+
       const mailOptions = {
         from: this.configService.get<string>('mail.from'),
         to,
@@ -93,7 +97,7 @@ export class MailService {
                 </div>
 
                 <center>
-                  <a href="http://localhost:3000/login" class="button">Login Now</a>
+                  <a href="${clientUrl}/auth/login" class="button">Login Now</a>
                 </center>
 
                 <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
@@ -135,7 +139,10 @@ export class MailService {
     verificationToken: string,
   ): Promise<void> {
     try {
-      const verificationUrl = `http://localhost:3000/auth/verify-email?token=${verificationToken}`;
+      const clientUrl =
+        this.configService.get<string>('CORS_ORIGIN') ||
+        'http://localhost:3000';
+      const verificationUrl = `${clientUrl}/auth/verify-email?token=${verificationToken}`;
 
       const mailOptions = {
         from: this.configService.get<string>('mail.from'),
@@ -220,7 +227,10 @@ export class MailService {
     resetToken: string,
   ): Promise<void> {
     try {
-      const resetUrl = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+      const clientUrl =
+        this.configService.get<string>('CORS_ORIGIN') ||
+        'http://localhost:3000';
+      const resetUrl = `${clientUrl}/auth/reset-password?token=${resetToken}`;
 
       const mailOptions = {
         from: this.configService.get<string>('mail.from'),

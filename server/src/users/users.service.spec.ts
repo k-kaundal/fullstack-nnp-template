@@ -30,10 +30,10 @@ describe('UsersService', () => {
     password: '$2b$10$hashedPassword',
     isActive: true,
     isEmailVerified: false,
-    emailVerificationToken: null,
-    emailVerificationExpires: null,
-    passwordResetToken: null,
-    passwordResetExpires: null,
+    emailVerificationToken: '',
+    emailVerificationExpires: undefined as any,
+    passwordResetToken: '',
+    passwordResetExpires: undefined as any,
     createdAt: new Date(),
     updatedAt: new Date(),
     hashPasswordBeforeInsert: async () => {},
@@ -107,7 +107,7 @@ describe('UsersService', () => {
       jest.spyOn(repository, 'create').mockReturnValue(mockUser as any);
       jest.spyOn(repository, 'save').mockResolvedValue(mockUser as any);
       jest.spyOn(cacheManager, 'del').mockResolvedValue(undefined);
-      jest.spyOn(mailService, 'sendWelcomeEmail').mockResolvedValue(undefined);
+      jest.spyOn(mailService, 'sendWelcomeEmail').mockResolvedValue();
 
       await service.create(createUserDto, mockResponse as Response);
 

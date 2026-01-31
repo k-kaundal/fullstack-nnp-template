@@ -1,0 +1,1797 @@
+openapi: 3.0.0
+paths:
+  /v1:
+    get:
+      operationId: getHello
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: API is running
+      summary: Health check endpoint
+      tags:
+        - health
+  /api/v1/favicon.ico:
+    get:
+      operationId: getFavicon
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        204:
+          description: No favicon available
+      summary: Favicon endpoint
+      tags:
+        - health
+  /api/v1/admin/request-logs:
+    get:
+      operationId: getRequestLogs
+      parameters:
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs
+      security:
+        - bearer:
+      summary: Get all request logs
+      tags:
+        - Request Logs
+  /api/v1/admin/request-logs/user:
+    get:
+      operationId: getUserRequestLogs
+      parameters:
+        - name: userId
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: page
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/user
+      security:
+        - bearer:
+      summary: Get request logs for specific user
+      tags:
+        - Request Logs
+  /api/v1/admin/request-logs/statistics:
+    get:
+      operationId: getStatistics
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/statistics
+      security:
+        - bearer:
+      summary: Get request log statistics
+      tags:
+        - Request Logs
+  /api/v1/admin/request-logs/cleanup/stats:
+    get:
+      operationId: getCleanupStats
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/cleanup/stats
+      security:
+        - bearer:
+      summary: Get cleanup statistics
+      tags:
+        - Request Logs
+  /api/v1/admin/request-logs/cleanup/trigger:
+    post:
+      operationId: triggerCleanup
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/TriggerCleanupDto
+      responses:
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/cleanup/trigger
+        403:
+          description: Forbidden - Insufficient permissions.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 403
+                  message: Forbidden resource
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/cleanup/trigger
+        500:
+          description: Internal Server Error - Unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 500
+                  message: Internal server error
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /admin/request-logs/cleanup/trigger
+      security:
+        - bearer:
+      summary: Manually trigger log cleanup
+      tags:
+        - Request Logs
+  /api/v1/users:
+    post:
+      description: Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires JWT authentication.
+      operationId: create
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/CreateUserDto
+      responses:
+        201:
+          description: User has been successfully created.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 201
+                  message: User created successfully
+                  data:
+                    id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    email: john.doe@example.com
+                    firstName: John
+                    lastName: Doe
+                    isActive: true
+                    createdAt: 2026-01-27T10:23:22.983Z
+                    updatedAt: 2026-01-27T10:23:22.983Z
+                  meta:
+                    user_id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    created_at: 2026-01-27T10:23:22.983Z
+                  timestamp: 2026-01-27T10:23:22.997Z
+                  path: /api/v1/users
+        400:
+          description: Bad Request - Validation failed.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 400
+                  message: Validation failed
+                  errors:
+                    - Field is required
+                    - Invalid format
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/users
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/users
+        409:
+          description: Conflict - Resource already exists.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 409
+                  message: User with this email already exists
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/users
+      security:
+        - bearer:
+      summary: Create a new user
+      tags:
+        - users
+    get:
+      description: Retrieves a paginated list of users. Use page and limit query parameters to control pagination.
+      operationId: findAll
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: Page number (default: 1)
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page (default: 10)
+          schema:
+            example: 10
+            type: number
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Return all users with pagination.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Users fetched successfully
+                  data:
+                    - id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                      email: john.doe@example.com
+                      firstName: John
+                      lastName: Doe
+                      isActive: true
+                      createdAt: 2026-01-27T10:23:22.983Z
+                      updatedAt: 2026-01-27T10:23:22.983Z
+                  meta:
+                    total: 25
+                    count: 10
+                    page: 2
+                    limit: 10
+                    total_pages: 3
+                    has_next: true
+                    has_previous: true
+                    timestamp: 2026-01-27T10:28:36.014Z
+                  timestamp: 2026-01-27T10:28:36.014Z
+                  path: /api/v1/users
+      security:
+        - bearer:
+      summary: Get all users with pagination
+      tags:
+        - users
+  /api/v1/users/{id}:
+    get:
+      description: Retrieves a single user by their UUID. Returns cached data if available.
+      operationId: findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: User UUID
+          schema:
+            example: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+            type: string
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Return the user.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: User fetched successfully
+                  data:
+                    id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    email: john.doe@example.com
+                    firstName: John
+                    lastName: Doe
+                    isActive: true
+                    createdAt: 2026-01-27T10:23:22.983Z
+                    updatedAt: 2026-01-27T10:23:22.983Z
+                  meta:
+                    cached: true
+                  timestamp: 2026-01-27T10:28:36.014Z
+                  path: /api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+        404:
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 404
+                  message: User not found
+                  timestamp: 2026-01-27T10:28:36.014Z
+                  path: /api/v1/users/invalid-id
+      security:
+        - bearer:
+      summary: Get a user by ID
+      tags:
+        - users
+    patch:
+      description: Updates an existing user. All fields are optional. Cache is invalidated after update.
+      operationId: update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: User UUID
+          schema:
+            example: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+            type: string
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/UpdateUserDto
+      responses:
+        200:
+          description: User has been successfully updated.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: User updated successfully
+                  data:
+                    id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    email: john.updated@example.com
+                    firstName: John
+                    lastName: Doe
+                    isActive: true
+                    createdAt: 2026-01-27T10:23:22.983Z
+                    updatedAt: 2026-01-27T10:30:00.000Z
+                  meta:
+                    user_id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    updated_at: 2026-01-27T10:30:00.000Z
+                  timestamp: 2026-01-27T10:30:00.015Z
+                  path: /api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+        400:
+          description: Bad Request - Validation failed.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 400
+                  message: Validation failed
+                  timestamp: 2026-01-27T10:30:00.015Z
+                  path: /api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+        404:
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 404
+                  message: User not found
+                  timestamp: 2026-01-27T10:30:00.015Z
+                  path: /api/v1/users/invalid-id
+        409:
+          description: Conflict - Email already exists.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 409
+                  message: Email already exists
+                  timestamp: 2026-01-27T10:30:00.015Z
+                  path: /api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+      security:
+        - bearer:
+      summary: Update a user
+      tags:
+        - users
+    delete:
+      description: Permanently deletes a user by their UUID. Cache is invalidated after deletion.
+      operationId: remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: User UUID
+          schema:
+            example: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+            type: string
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: User has been successfully deleted.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: User deleted successfully
+                  data: null
+                  meta:
+                    user_id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                    deleted_at: 2026-01-27T10:35:00.000Z
+                  timestamp: 2026-01-27T10:35:00.015Z
+                  path: /api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+        404:
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 404
+                  message: User not found
+                  timestamp: 2026-01-27T10:35:00.015Z
+                  path: /api/v1/users/invalid-id
+      security:
+        - bearer:
+      summary: Delete a user
+      tags:
+        - users
+  /api/v1/users/search/advanced:
+    get:
+      description: Search users with filters (search query, active status), sorting, and pagination.
+      operationId: search
+      parameters:
+        - name: search
+          required: false
+          in: query
+          description: Search query for name or email
+          schema:
+            example: john
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: true
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            enum:
+              - email
+              - firstName
+              - lastName
+              - createdAt
+              - isActive
+            type: string
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort direction
+          schema:
+            enum:
+              - asc
+              - desc
+            type: string
+        - name: page
+          required: false
+          in: query
+          description: Page number
+          schema:
+            minimum: 1
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: Items per page
+          schema:
+            minimum: 1
+            example: 10
+            type: number
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Users search results with filters and pagination.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Users searched successfully
+                  data:
+                    - id: 6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe
+                      email: john.doe@example.com
+                      firstName: John
+                      lastName: Doe
+                      isActive: true
+                      createdAt: 2026-01-27T10:23:22.983Z
+                      updatedAt: 2026-01-27T10:23:22.983Z
+                  meta:
+                    total: 15
+                    count: 10
+                    page: 1
+                    limit: 10
+                    total_pages: 2
+                    has_next: true
+                    has_previous: false
+                    search_query: john
+                    filters:
+                      isActive: true
+                    sort:
+                      field: email
+                      order: asc
+                  timestamp: 2026-01-27T10:40:00.000Z
+                  path: /api/v1/users/search/advanced
+      security:
+        - bearer:
+      summary: Advanced search for users
+      tags:
+        - users
+  /api/v1/users/bulk/activate:
+    post:
+      description: Activates multiple users by their IDs.
+      operationId: bulkActivate
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/BulkUserIdsDto
+      responses:
+        200:
+          description: Users have been successfully activated.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Successfully activated 5 user(s)
+                  data:
+                    affected: 5
+                  meta:
+                    requested: 5
+                    affected: 5
+                    operation: activate
+                  timestamp: 2026-01-27T10:45:00.000Z
+                  path: /api/v1/users/bulk/activate
+      security:
+        - bearer:
+      summary: Bulk activate users
+      tags:
+        - users
+  /api/v1/users/bulk/deactivate:
+    post:
+      description: Deactivates multiple users by their IDs.
+      operationId: bulkDeactivate
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/BulkUserIdsDto
+      responses:
+        200:
+          description: Users have been successfully deactivated.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Successfully deactivated 3 user(s)
+                  data:
+                    affected: 3
+                  meta:
+                    requested: 3
+                    affected: 3
+                    operation: deactivate
+                  timestamp: 2026-01-27T10:50:00.000Z
+                  path: /api/v1/users/bulk/deactivate
+      security:
+        - bearer:
+      summary: Bulk deactivate users
+      tags:
+        - users
+  /api/v1/users/bulk:
+    delete:
+      description: Permanently deletes multiple users by their IDs.
+      operationId: bulkDelete
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/BulkUserIdsDto
+      responses:
+        200:
+          description: Users have been successfully deleted.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Successfully deleted 2 user(s)
+                  data:
+                    affected: 2
+                  meta:
+                    requested: 2
+                    affected: 2
+                    operation: delete
+                  timestamp: 2026-01-27T10:55:00.000Z
+                  path: /api/v1/users/bulk
+      security:
+        - bearer:
+      summary: Bulk delete users
+      tags:
+        - users
+  /api/v1/auth/register:
+    post:
+      description: Creates a new user account and sends email verification link. Rate limited to 5 requests per minute.
+      operationId: register
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/RegisterDto
+      responses:
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 201
+                  message: Registration successful. Please check your email to verify your account.
+                  data:
+                    user:
+                      id: 123e4567-e89b-12d3-a456-426614174000
+                      email: john.doe@example.com
+                      firstName: John
+                      lastName: Doe
+                      isActive: true
+                      isEmailVerified: false
+                      createdAt: 2026-01-31T10:00:00.000Z
+                      updatedAt: 2026-01-31T10:00:00.000Z
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    created_at: 2026-01-31T10:00:00.000Z
+                    email_verification_required: true
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/register
+        400:
+          description: Bad Request - Validation failed.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 400
+                  message: Validation failed
+                  errors:
+                    - Field is required
+                    - Invalid format
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/register
+        409:
+          description: Conflict - Resource already exists.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 409
+                  message: User with this email already exists
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/register
+        429:
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 429
+                  message: ThrottlerException: Too Many Requests
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/register
+      summary: Register a new user
+      tags:
+        - auth
+  /api/v1/auth/login:
+    post:
+      description: Authenticate user with email and password. Rate limited to 10 requests per minute.
+      operationId: login
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/LoginDto
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Login successful
+                  data:
+                    user:
+                      id: 123e4567-e89b-12d3-a456-426614174000
+                      email: john.doe@example.com
+                      firstName: John
+                      lastName: Doe
+                      isActive: true
+                      isEmailVerified: true
+                      createdAt: 2026-01-31T10:00:00.000Z
+                      updatedAt: 2026-01-31T10:00:00.000Z
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    is_email_verified: true
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/login
+        400:
+          description: Bad Request - Validation failed.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 400
+                  message: Validation failed
+                  errors:
+                    - Field is required
+                    - Invalid format
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/login
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/login
+        429:
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 429
+                  message: ThrottlerException: Too Many Requests
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/login
+      summary: Login user
+      tags:
+        - auth
+  /api/v1/auth/logout:
+    post:
+      description: Blacklists the current access token and revokes all refresh tokens
+      operationId: logout
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Logout successful
+                  data: null
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    logged_out_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/logout
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/logout
+      security:
+        - bearer:
+      summary: Logout user
+      tags:
+        - auth
+  /api/v1/auth/refresh:
+    post:
+      description: Get a new access token using a valid refresh token. Rate limited to 20 requests per minute.
+      operationId: refreshToken
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/RefreshTokenDto
+      responses:
+        200:
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Token refreshed successfully
+                  data:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    refreshed_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/refresh
+        401:
+          description: Invalid or expired refresh token
+      summary: Refresh access token
+      tags:
+        - auth
+  /api/v1/auth/forgot-password:
+    post:
+      description: Sends password reset link to user email. Rate limited to 3 requests per hour.
+      operationId: forgotPassword
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/ForgotPasswordDto
+      responses:
+        200:
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: If an account with that email exists, a password reset link has been sent.
+                  data: null
+                  meta:
+                    email_sent_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/forgot-password
+      summary: Request password reset
+      tags:
+        - auth
+  /api/v1/auth/reset-password:
+    post:
+      description: Reset password using token from email. Rate limited to 5 requests per hour.
+      operationId: resetPassword
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/ResetPasswordDto
+      responses:
+        200:
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Password reset successful. Please login with your new password.
+                  data: null
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    password_reset_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/reset-password
+        400:
+          description: Invalid or expired reset token
+      summary: Reset password
+      tags:
+        - auth
+  /api/v1/auth/verify-email:
+    post:
+      description: Verify user email using token from email. Rate limited to 5 requests per hour.
+      operationId: verifyEmail
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/VerifyEmailDto
+      responses:
+        200:
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Email verified successfully
+                  data: null
+                  meta:
+                    user_id: 123e4567-e89b-12d3-a456-426614174000
+                    verified_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/verify-email
+        400:
+          description: Invalid or expired verification token
+      summary: Verify email
+      tags:
+        - auth
+  /api/v1/auth/resend-verification:
+    post:
+      description: Sends a new email verification link. Rate limited to 3 requests per hour.
+      operationId: resendVerification
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Verification email sent
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Verification email sent successfully
+                  data: null
+                  meta:
+                    email_sent_at: 2026-01-31T10:00:00.000Z
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/resend-verification
+      security:
+        - bearer:
+      summary: Resend email verification
+      tags:
+        - auth
+  /api/v1/auth/me:
+    get:
+      description: Returns the authenticated user profile
+      operationId: getCurrentUser
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: User profile retrieved successfully
+                  data:
+                    id: 123e4567-e89b-12d3-a456-426614174000
+                    email: john.doe@example.com
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/me
+      security:
+        - bearer:
+      summary: Get current user
+      tags:
+        - auth
+  /api/v1/auth/sessions:
+    get:
+      operationId: getSessions
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: List of active sessions retrieved successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Sessions retrieved successfully
+                  data:
+                    - id: 123e4567-e89b-12d3-a456-426614174000
+                      deviceName: Chrome on macOS
+                      deviceType: desktop
+                      ipAddress: 192.168.1.1
+                      lastActivityAt: 2026-01-31T10:00:00.000Z
+                      createdAt: 2026-01-31T09:00:00.000Z
+                      expiresAt: 2026-02-07T09:00:00.000Z
+                      isCurrent: true
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/sessions
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/sessions
+      security:
+        - bearer:
+      summary: Get all active sessions
+      tags:
+        - auth
+  /api/v1/auth/sessions/revoke:
+    delete:
+      operationId: revokeSession
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/RevokeSessionDto
+      responses:
+        200:
+          description: Session revoked successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Session revoked successfully
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/sessions/revoke
+        400:
+          description: Bad Request - Validation failed.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 400
+                  message: Validation failed
+                  errors:
+                    - Field is required
+                    - Invalid format
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/sessions/revoke
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/sessions/revoke
+      security:
+        - bearer:
+      summary: Revoke a specific session
+      tags:
+        - auth
+  /api/v1/auth/sessions/revoke-others:
+    delete:
+      operationId: revokeOtherSessions
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: #/components/schemas/RevokeOtherSessionsDto
+      responses:
+        200:
+          description: Other sessions revoked successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: All other sessions revoked successfully
+                  data:
+                    revoked_count: 3
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/sessions/revoke-others
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/sessions/revoke-others
+      security:
+        - bearer:
+      summary: Revoke all other sessions
+      tags:
+        - auth
+  /api/v1/auth/sessions/logout-all:
+    delete:
+      operationId: logoutAllDevices
+      parameters:
+        - name: X-API-Version
+          in: header
+          required: false
+          description: API version for header-based versioning
+          schema:
+            type: string
+            enum:
+              - 1
+              - 2
+            default: 1
+      responses:
+        200:
+          description: Logged out from all devices successfully
+          content:
+            application/json:
+              schema:
+                example:
+                  status: success
+                  statusCode: 200
+                  message: Logged out from all devices successfully
+                  data:
+                    revoked_count: 5
+                  timestamp: 2026-01-31T10:00:00.000Z
+                  path: /api/v1/auth/sessions/logout-all
+        401:
+          description: Unauthorized - Invalid or missing JWT token.
+          content:
+            application/json:
+              schema:
+                example:
+                  status: error
+                  statusCode: 401
+                  message: Unauthorized
+                  timestamp: 2026-01-31T19:20:00.000Z
+                  path: /api/v1/auth/sessions/logout-all
+      security:
+        - bearer:
+      summary: Logout from all devices
+      tags:
+        - auth
+info:
+  title: Fullstack NNP API
+  description: |
+    
+    # NestJS + Next.js + PostgreSQL Template API
+    
+    ## Overview
+    Production-ready RESTful API with comprehensive authentication, user management, and database features.
+    
+    ## Features
+    - 🔐 JWT Authentication (Access + Refresh tokens)
+    - 👤 User Management (CRUD operations)
+    - 🗄️ PostgreSQL Database with TypeORM
+    - 📧 Email Service (Password reset, verification)
+    - 🔒 Session Management (Multi-device support)
+    - 🛡️ Security (XSS, SQL injection prevention)
+    - ⚡ Performance (Query optimization, caching)
+    - 📊 Database Migrations & Seeding
+    - 🔄 API Versioning (URI & Header-based)
+    
+    ## Authentication
+    All protected endpoints require a valid JWT access token in the Authorization header:
+    
+    ```
+    Authorization: Bearer <your-access-token>
+    ```
+    
+    ### Token Lifecycle
+    - **Access Token**: 15 minutes expiry
+    - **Refresh Token**: 7 days expiry
+    - **Refresh Endpoint**: `POST /api/v1/auth/refresh`
+    
+    ## API Versioning
+    This API supports multiple versioning strategies:
+    
+    ### URI Versioning (Recommended)
+    ```
+    GET /api/v1/users
+    GET /api/v2/users
+    ```
+    
+    ### Header Versioning
+    ```
+    X-API-Version: 1
+    Accept-Version: 1
+    ```
+    
+    ## Deprecation Policy
+    Deprecated endpoints include warning headers:
+    - `X-API-Deprecated`: Indicates deprecation
+    - `X-API-Sunset`: Date when endpoint will be removed
+    - `X-API-Alternative`: Suggested alternative endpoint
+    
+    ## Error Handling
+    All errors follow a consistent format:
+    ```json
+    {
+      "status": "error",
+      "statusCode": 400,
+      "message": "Error description",
+      "errors": ["Detailed validation errors"],
+      "timestamp": "2026-01-31T20:00:00.000Z",
+      "path": "/api/v1/endpoint"
+    }
+    ```
+    
+    ## Rate Limiting
+    - **Default**: 100 requests per 15 minutes per IP
+    - **Authentication**: 5 failed attempts = 15 minute lockout
+    
+    ## Support
+    - **Documentation**: [GitHub Repository](https://github.com/k-kaundal/fullstack-nnp-template)
+    - **Issues**: [Report Issues](https://github.com/k-kaundal/fullstack-nnp-template/issues)
+        
+  version: 1.0.0
+  contact:
+    name: K K Kaundal
+    url: https://github.com/k-kaundal
+    email: kk@kaundal.vip
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: health
+    description: Health check endpoints
+  - name: auth
+    description: Authentication & Authorization endpoints
+  - name: users
+    description: User management endpoints
+  - name: sessions
+    description: Session management endpoints
+servers:
+  - url: http://localhost:3001
+    description: Local Development
+    variables: undefined
+  - url: https://your-api.vercel.app
+    description: Production
+    variables: undefined
+components:
+  securitySchemes:
+    JWT:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+      name: JWT
+      description: Enter your JWT access token
+      in: header
+    X-API-Key:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API Key for external integrations (optional)
+  schemas:
+    TriggerCleanupDto:
+      type: object
+      properties:
+        hours:
+          type: number
+          description: Hours threshold for deleting old logs
+          example: 24
+          default: 24
+          minimum: 1
+    CreateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+          description: User email address
+        firstName:
+          type: string
+          example: John
+          description: User first name
+          minLength: 2
+          maxLength: 50
+        lastName:
+          type: string
+          example: Doe
+          description: User last name
+          minLength: 2
+          maxLength: 50
+        password:
+          type: string
+          example: SecurePass123!
+          description: User password (optional - temporary password generated if not provided)
+          minLength: 8
+          maxLength: 100
+      required:
+        - email
+        - firstName
+        - lastName
+    UpdateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+          description: User email address
+        firstName:
+          type: string
+          example: John
+          description: User first name
+          minLength: 2
+          maxLength: 50
+        lastName:
+          type: string
+          example: Doe
+          description: User last name
+          minLength: 2
+          maxLength: 50
+        password:
+          type: string
+          example: SecurePass123!
+          description: User password (optional - temporary password generated if not provided)
+          minLength: 8
+          maxLength: 100
+        isActive:
+          type: boolean
+          example: true
+          description: User active status
+    BulkUserIdsDto:
+      type: object
+      properties:
+        ids:
+          example:
+            - 550e8400-e29b-41d4-a716-446655440000
+            - 550e8400-e29b-41d4-a716-446655440001
+          description: Array of user UUIDs
+          type: array
+          items:
+            type: string
+      required:
+        - ids
+    RegisterDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+          description: User email address
+        firstName:
+          type: string
+          example: John
+          description: User first name
+          minLength: 2
+          maxLength: 50
+        lastName:
+          type: string
+          example: Doe
+          description: User last name
+          minLength: 2
+          maxLength: 50
+        password:
+          type: string
+          example: SecurePass123!
+          description: User password (min 8 chars, must include uppercase, lowercase, number, and special character)
+          minLength: 8
+          maxLength: 100
+      required:
+        - email
+        - firstName
+        - lastName
+        - password
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+          description: User email address
+        password:
+          type: string
+          example: SecurePass123!
+          description: User password
+      required:
+        - email
+        - password
+    RefreshTokenDto:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: Valid refresh token
+      required:
+        - refreshToken
+    ForgotPasswordDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: john.doe@example.com
+          description: User email address for password reset
+      required:
+        - email
+    ResetPasswordDto:
+      type: object
+      properties:
+        token:
+          type: string
+          example: abc123def456ghi789
+          description: Password reset token received via email
+        newPassword:
+          type: string
+          example: NewSecurePass123!
+          description: New password (min 8 chars, must include uppercase, lowercase, number, and special character)
+          minLength: 8
+          maxLength: 100
+      required:
+        - token
+        - newPassword
+    VerifyEmailDto:
+      type: object
+      properties:
+        token:
+          type: string
+          example: abc123def456ghi789
+          description: Email verification token received via email
+      required:
+        - token
+    RevokeSessionDto:
+      type: object
+      properties:
+        sessionId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Session ID to revoke
+      required:
+        - sessionId
+    RevokeOtherSessionsDto:
+      type: object
+      properties:
+        currentSessionId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Current session ID to keep active (optional)

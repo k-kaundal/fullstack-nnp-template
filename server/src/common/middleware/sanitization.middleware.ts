@@ -11,7 +11,7 @@ export class SanitizationMiddleware implements NestMiddleware {
   /**
    * Sanitize request body, query params, and URL params
    */
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(req: Request, _res: Response, next: NextFunction): void {
     // Sanitize body
     if (req.body) {
       req.body = this.sanitizeObject(req.body) as Record<string, unknown>;

@@ -9,15 +9,31 @@
     "dev:client": "cd client && yarn dev",
     "build:server": "cd server && yarn build",
     "build:client": "cd client && yarn build",
+    "build:all": "yarn build:server && yarn build:client",
     "test:server": "cd server && yarn test",
+    "test:server:cov": "cd server && yarn test:cov",
+    "test:server:e2e": "cd server && yarn test:e2e",
+    "test:all": "yarn test:server",
+    "lint": "eslint . --ext .ts,.tsx",
     "lint:server": "cd server && yarn lint",
     "lint:client": "cd client && yarn lint",
+    "lint:all": "yarn lint:server && yarn lint:client",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:server": "cd server && yarn format",
     "format:client": "cd client && yarn format",
     "format:all": "yarn format:server && yarn format:client",
+    "type-check": "yarn type-check:server && yarn type-check:client",
+    "type-check:server": "cd server && yarn tsc --noEmit",
+    "type-check:client": "cd client && yarn tsc --noEmit",
     "db:start": "docker-compose up -d",
     "db:stop": "docker-compose down",
-    "db:reset": "docker-compose down -v && docker-compose up -d"
+    "db:reset": "docker-compose down -v && docker-compose up -d",
+    "audit:all": "yarn audit:server && yarn audit:client",
+    "audit:server": "cd server && yarn audit",
+    "audit:client": "cd client && yarn audit",
+    "prepare": "husky"
   },
   "keywords": [
     "fullstack",
@@ -52,5 +68,16 @@
   "engines": {
     "node": ">=18.0.0",
     "yarn": ">=1.22.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.0",
+    "@commitlint/config-conventional": "^20.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1"
   }
 }

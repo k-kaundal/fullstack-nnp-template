@@ -42,7 +42,7 @@ import {
 @ApiTags('users')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('users')
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

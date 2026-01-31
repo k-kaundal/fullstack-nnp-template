@@ -7,6 +7,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../../users/entities/user.entity';
 import { TokenBlacklist } from '../entities/token-blacklist.entity';
 import { JwtPayload } from '../interfaces/auth.interface';
+import { Request } from 'express';
 
 /**
  * JWT Authentication Strategy
@@ -16,7 +17,7 @@ import { JwtPayload } from '../interfaces/auth.interface';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(TokenBlacklist)
