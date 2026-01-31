@@ -15,7 +15,8 @@ export const graphqlConfig: ApolloDriverConfig = {
   driver: ApolloDriver,
 
   // Schema-first design: Define schema in .graphql files
-  typePaths: ['./**/*.graphql'],
+  // Use absolute path from process.cwd() to handle serverless environments
+  typePaths: [join(process.cwd(), 'src/graphql/schema/**/*.graphql')],
 
   // Auto-generate TypeScript definitions from schema
   definitions: {
