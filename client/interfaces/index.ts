@@ -5,6 +5,7 @@
 
 export * from './user.interface';
 export * from './auth.interface';
+export * from './session.interface';
 export * from './theme.interface';
 export * from './sidebar.interface';
 export * from './header.interface';
@@ -14,3 +15,4 @@ export * from './view-dialog.interface';
 export * from './edit-dialog.interface';
 export * from './ui-components.interface';
 export * from './layout.interface';
+export * from './request-log.interface';

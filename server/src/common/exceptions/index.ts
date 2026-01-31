@@ -1,3 +1,4 @@
+// Legacy custom exceptions (keep for backward compatibility)
 export {
   CustomException,
   NotFoundException,
@@ -7,3 +8,6 @@ export {
   ForbiddenException,
   InternalServerException,
 } from './custom-exception';
+
+// New comprehensive exception library
+export * from './custom-exceptions';

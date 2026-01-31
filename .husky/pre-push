@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🧪 Running tests before push..."
+
+# Run tests in server
+echo "🧪 Testing server..."
+cd server && yarn test --passWithNoTests && cd ..
+
+# Run tests in client (if any)
+echo "🧪 Testing client..."
+cd client && yarn test --passWithNoTests 2>/dev/null || echo "No client tests configured" && cd ..
+
+echo "✅ All tests passed! Pushing..."

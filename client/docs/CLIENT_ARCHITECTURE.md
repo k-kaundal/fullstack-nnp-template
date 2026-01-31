@@ -1,9 +1,11 @@
 # Client Architecture Documentation
 
 ## Overview
+
 This is a production-ready Next.js 16 frontend architecture with TypeScript, featuring a scalable folder structure, type-safe API client, and comprehensive component library.
 
 ## Technology Stack
+
 - **Framework**: Next.js 16 with App Router
 - **Language**: TypeScript 5.9+ (strict mode, no `any` types)
 - **Styling**: Tailwind CSS 4
@@ -78,6 +80,7 @@ client/
 ### 1. Layout Architecture
 
 **Admin Layout (`app/admin/layout.tsx`):**
+
 - Wraps all admin pages automatically
 - Includes sidebar navigation with menu items
 - Admin header with profile and logout buttons
@@ -85,17 +88,21 @@ client/
 - Dark sidebar with professional styling
 
 **Public Layout (Root `app/layout.tsx`):**
+
 - Wraps all public pages
 - Minimal navigation for unauthenticated users
 - No authentication required
 - Clean, simple design
 
 **Route Groups:**
+
 - `(public)` folder groups public pages without adding URL segment
 - `admin` folder adds `/admin` prefix to URLs
 
 ### 2. Type-Safe API Client
+
 The API client (`lib/api/client.ts`) provides:
+
 - Automatic token injection from localStorage
 - Request/response interceptors
 - Global error handling
@@ -103,6 +110,7 @@ The API client (`lib/api/client.ts`) provides:
 - Automatic redirect on 401 (unauthorized)
 
 **Example Usage:**
+
 ```typescript
 import { apiClient } from '@/lib/api';
 import { User } from '@/interfaces';
@@ -114,6 +122,7 @@ if (response.status === 'success') {
 ```
 
 ### 2. Service Layer
+
 Feature-specific services encapsulate API calls:
 
 ```typescript
@@ -123,6 +132,7 @@ const response = await usersService.getAll(1, 10);
 ```
 
 ### 3. Custom Hooks
+
 React hooks manage state and API operations:
 
 ```typescript
@@ -140,6 +150,7 @@ function UsersPage() {
 ```
 
 ### 4. Reusable Components
+
 UI components with TypeScript props:
 
 ```typescript
@@ -155,6 +166,7 @@ import { LoadingSpinner, ErrorMessage, Pagination } from '@/components/ui';
 All API responses follow a standardized format matching the backend:
 
 **Success Response:**
+
 ```typescript
 {
   status: 'success',
@@ -175,6 +187,7 @@ All API responses follow a standardized format matching the backend:
 ```
 
 **Error Response:**
+
 ```typescript
 {
   status: 'error',
@@ -189,6 +202,7 @@ All API responses follow a standardized format matching the backend:
 ## Type Safety
 
 ### No `any` Types
+
 The entire codebase uses strict TypeScript with **zero `any` types**:
 
 ```typescript
@@ -200,6 +214,7 @@ function fetchData<T>(): Promise<ApiSuccessResponse<T> | ApiErrorResponse> { ...
 ```
 
 ### Generic Types
+
 Use generics for flexibility:
 
 ```typescript
@@ -207,6 +222,7 @@ async get<T = ResponseBody>(url: string): Promise<ApiSuccessResponse<T> | ApiErr
 ```
 
 ### Type Guards
+
 Use type guards for runtime type checking:
 
 ```typescript
@@ -221,11 +237,13 @@ if (isSuccessResponse<User[]>(response)) {
 ## Environment Variables
 
 Create `.env.local` file:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
 
 Access in code:
+
 ```typescript
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 ```
@@ -307,12 +325,14 @@ app/
 ```
 
 **Layout Hierarchy:**
+
 - Public pages → Root layout
 - Admin pages → Root layout + Admin layout (nested)
 
 ## Best Practices
 
 ### 1. Component Organization
+
 - **UI components**: Generic, reusable (buttons, inputs, modals)
 - **Feature components**: Specific to a feature (UserCard, PostForm)
 - Always use TypeScript interfaces for props
@@ -320,6 +340,7 @@ app/
 - **Never use console.log in production code**
 
 ### 2. Server vs Client Components
+
 - **Default to Server Components** for better performance
 - Use 'use client' ONLY when you need:
   - State management (useState, useReducer)
@@ -329,17 +350,20 @@ app/
   - React hooks (useEffect, useCallback)
 
 ### 3. Layout Structure
+
 - Admin pages automatically get admin layout with sidebar
 - Public pages get minimal root layout
 - Use route groups `(public)` to organize without URL changes
 
 ### 2. State Management
+
 - Use `useState` for local state
 - Use custom hooks for shared logic
 - Keep state close to where it's used
 - Avoid prop drilling (consider Context API for deeply nested state)
 
 ### 3. Error Handling
+
 ```typescript
 try {
   const response = await apiClient.get('/users');
@@ -356,6 +380,7 @@ try {
 ```
 
 ### 4. Loading States
+
 Always show loading indicators:
 
 ```typescript
@@ -364,6 +389,7 @@ Always show loading indicators:
 ```
 
 ### 5. Barrel Exports
+
 Use `index.ts` files for cleaner imports:
 
 ```typescript
@@ -378,13 +404,16 @@ import { UserCard, UserForm } from '@/components/user';
 ## Code Standards
 
 ### ESLint & Prettier
+
 ```bash
 yarn lint          # Check for linting errors
 yarn format        # Format code with Prettier
 ```
 
 ### TypeScript Strict Mode
+
 `tsconfig.json` uses strict mode:
+
 ```json
 {
   "compilerOptions": {
@@ -396,9 +425,10 @@ yarn format        # Format code with Prettier
 ```
 
 ### Component Documentation
+
 Add JSDoc comments to exported components and functions:
 
-```typescript
+````typescript
 /**
  * User card component for displaying user information
  *
@@ -413,11 +443,12 @@ Add JSDoc comments to exported components and functions:
 export function UserCard({ user, onEdit }: UserCardProps) {
   // ...
 }
-```
+````
 
 ## Testing (Future)
 
 Recommended testing setup:
+
 - **Unit tests**: Jest + React Testing Library
 - **E2E tests**: Playwright or Cypress
 - Test API services with mocked responses
@@ -426,6 +457,7 @@ Recommended testing setup:
 ## Performance
 
 ### Code Splitting
+
 Next.js automatically code-splits pages. Use dynamic imports for heavy components:
 
 ```typescript
@@ -437,6 +469,7 @@ const HeavyComponent = dynamic(() => import('@/components/HeavyComponent'), {
 ```
 
 ### Memoization
+
 Use React.memo for expensive components:
 
 ```typescript
@@ -450,13 +483,16 @@ export const UserCard = memo(function UserCard({ user }: UserCardProps) {
 ## Deployment
 
 ### Build for Production
+
 ```bash
 yarn build         # Build optimized production bundle
 yarn start         # Start production server
 ```
 
 ### Environment Variables
+
 Set production environment variables:
+
 ```env
 NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
 ```
@@ -464,6 +500,7 @@ NEXT_PUBLIC_API_URL=https://api.yourdomain.com/api/v1
 ## Common Patterns
 
 ### Fetching Data in Server Components
+
 ```typescript
 // app/users/page.tsx (Server Component)
 import { usersService } from '@/lib/api';
@@ -480,6 +517,7 @@ export default async function UsersPage() {
 ```
 
 ### Client-Side Data Fetching
+
 ```typescript
 // Client Component with 'use client'
 'use client';
@@ -503,14 +541,17 @@ export default function UsersPage() {
 ### Common Issues
 
 **1. Module not found errors:**
+
 - Check `tsconfig.json` has correct path aliases
 - Ensure imports use `@/` prefix for absolute imports
 
 **2. Type errors:**
+
 - Never use `any` - use proper types or `unknown`
 - Use type guards for runtime type checking
 
 **3. API errors:**
+
 - Check `.env.local` has correct API URL
 - Verify backend server is running
 - Check network tab in browser DevTools

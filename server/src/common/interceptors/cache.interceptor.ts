@@ -11,6 +11,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Reflector } from '@nestjs/core';
 import { CACHE_KEY_METADATA } from '../decorators/cache-key.decorator';
+import { Request } from 'express';
 
 /**
  * Custom cache interceptor for caching service responses
@@ -64,7 +65,7 @@ export class HttpCacheInterceptor implements NestInterceptor {
    * @param request - Express request object
    * @returns Generated cache key
    */
-  private generateCacheKey(prefix: string, request: any): string {
+  private generateCacheKey(prefix: string, request: Request): string {
     const { url, params, query } = request;
     const paramsStr = JSON.stringify(params);
     const queryStr = JSON.stringify(query);

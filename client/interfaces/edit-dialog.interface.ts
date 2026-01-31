@@ -68,7 +68,12 @@ export interface EditField {
   min?: number | string; // For number/date inputs
   max?: number | string; // For number/date inputs
   step?: number | string; // For number input
-  render?: (field: EditField, value: unknown, onChange: (value: unknown) => void, error?: string) => ReactNode; // Custom render
+  render?: (
+    field: EditField,
+    value: unknown,
+    onChange: (value: unknown) => void,
+    error?: string
+  ) => ReactNode; // Custom render
   className?: string;
 }
 

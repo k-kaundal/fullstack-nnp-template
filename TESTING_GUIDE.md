@@ -28,6 +28,7 @@ cd server
 ## Test Architecture
 
 ### Unit Tests
+
 - **Location**: Co-located with source files (`*.spec.ts`)
 - **Purpose**: Test individual methods and business logic
 - **Speed**: Fast (milliseconds)
@@ -35,6 +36,7 @@ cd server
 - **Database**: Not used (mocked)
 
 ### E2E Tests
+
 - **Location**: `server/test/` directory
 - **Purpose**: Test complete request-response flows
 - **Speed**: Slower (seconds)
@@ -44,15 +46,15 @@ cd server
 ## Test Standards
 
 ### Mandatory Requirements
-✅ Every controller MUST have a `.controller.spec.ts` file
-✅ Every service MUST have a `.service.spec.ts` file
-✅ Test coverage must be >80%
-✅ All tests must pass before committing
-✅ Update tests when modifying code
+
+✅ Every controller MUST have a `.controller.spec.ts` file ✅ Every service MUST
+have a `.service.spec.ts` file ✅ Test coverage must be >80% ✅ All tests must
+pass before committing ✅ Update tests when modifying code
 
 ### API Response Format to Test
 
 **Success Response:**
+
 ```json
 {
   "status": "success",
@@ -71,6 +73,7 @@ cd server
 ```
 
 **Error Response:**
+
 ```json
 {
   "status": "error",
@@ -83,6 +86,7 @@ cd server
 ```
 
 ### Critical Checks
+
 - ✅ Password field NEVER in responses
 - ✅ Meta fields use snake_case (user_id, not userId)
 - ✅ Proper HTTP status codes
@@ -124,6 +128,7 @@ cd server
 ### Environment Configuration
 
 Test environment variables in `test/setup-e2e.ts`:
+
 ```typescript
 process.env.NODE_ENV = 'test';
 process.env.DATABASE_NAME = 'test_db';
@@ -131,11 +136,11 @@ process.env.DATABASE_HOST = 'localhost';
 ```
 
 Database auto-synchronization is enabled:
+
 ```typescript
 // src/app.module.ts
-synchronize:
-  configService.get('NODE_ENV') === 'development' ||
-  configService.get('NODE_ENV') === 'test'
+synchronize: configService.get('NODE_ENV') === 'development' ||
+  configService.get('NODE_ENV') === 'test';
 ```
 
 ## Writing Tests
@@ -181,7 +186,7 @@ describe('UsersService', () => {
     const createDto = {
       email: 'test@example.com',
       firstName: 'John',
-      lastName: 'Doe'
+      lastName: 'Doe',
     };
     const mockUser = { id: '123', ...createDto };
 
@@ -240,7 +245,7 @@ describe('Users E2E', () => {
 
   it('should create a user', () => {
     return request(app.getHttpServer())
-      .post('/api/v1/users')  // Note: includes /api/v1 prefix
+      .post('/api/v1/users') // Note: includes /api/v1 prefix
       .send({
         email: 'test@example.com',
         firstName: 'John',
@@ -261,25 +266,33 @@ describe('Users E2E', () => {
 ## Common Issues and Solutions
 
 ### Issue: Tests fail with 404 errors
+
 **Solution:** Add global prefix in test setup:
+
 ```typescript
 app.setGlobalPrefix('api/v1', { exclude: ['/'] });
 ```
 
 ### Issue: "relation does not exist" error
+
 **Solution:** Run test database setup:
+
 ```bash
 ./test/setup-test-db.sh
 ```
 
 ### Issue: Password field in response
+
 **Solution:** Add before returning user:
+
 ```typescript
 delete user.password;
 ```
 
 ### Issue: Tests expect user_id but get userId
+
 **Solution:** Use snake_case for ALL meta fields:
+
 ```typescript
 meta: {
   user_id: user.id,        // ✅ Correct
@@ -322,9 +335,7 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
 
     steps:
@@ -356,6 +367,7 @@ jobs:
 ---
 
 **Current Test Status:**
+
 - ✅ 15/15 E2E tests passing
 - ✅ 25/25 Unit tests passing
 - ✅ All security checks passing

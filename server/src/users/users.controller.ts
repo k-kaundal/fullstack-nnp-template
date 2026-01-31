@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   Res,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,6 +18,7 @@ import {
   ApiResponse as ApiResponseDecorator,
   ApiParam,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { UsersService } from './users.service';
@@ -24,13 +26,23 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUsersDto } from './dto/search-users.dto';
 import { BulkUserIdsDto } from './dto/bulk-user-ids.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import {
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+} from '../common/decorators';
 
 /**
  * Controller for managing user-related HTTP endpoints
  * Handles routing and delegates all business logic to UsersService
+ *
+ * @security JWT Authentication required for all endpoints
  */
 @ApiTags('users')
-@Controller('users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -45,7 +57,7 @@ export class UsersController {
   @ApiOperation({
     summary: 'Create a new user',
     description:
-      'Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character.',
+      'Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires JWT authentication.',
   })
   @ApiResponseDecorator({
     status: HttpStatus.CREATED,
@@ -73,33 +85,9 @@ export class UsersController {
       },
     },
   })
-  @ApiResponseDecorator({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Bad Request - Validation failed.',
-    schema: {
-      example: {
-        status: 'error',
-        statusCode: 400,
-        message: 'Validation failed',
-        errors: ['Email is required', 'Password must be at least 8 characters'],
-        timestamp: '2026-01-27T10:23:22.997Z',
-        path: '/api/v1/users',
-      },
-    },
-  })
-  @ApiResponseDecorator({
-    status: HttpStatus.CONFLICT,
-    description: 'Conflict - Email already exists.',
-    schema: {
-      example: {
-        status: 'error',
-        statusCode: 409,
-        message: 'User with this email already exists',
-        timestamp: '2026-01-27T10:23:22.997Z',
-        path: '/api/v1/users',
-      },
-    },
-  })
+  @ApiBadRequestResponse('/api/v1/users')
+  @ApiConflictResponse('User with this email already exists', '/api/v1/users')
+  @ApiUnauthorizedResponse('/api/v1/users')
   async create(
     @Body() createUserDto: CreateUserDto,
     @Res() res: Response,

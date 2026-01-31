@@ -8,6 +8,7 @@ export interface User {
   firstName: string;
   lastName: string;
   isActive: boolean;
+  isEmailVerified: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,23 +18,25 @@ export interface User {
  * Used for user registration/creation
  * Password is optional - if not provided, temporary password will be generated
  */
-export interface CreateUserDto extends Record<string, string | number | boolean | undefined> {
+export interface CreateUserDto {
   email: string;
   firstName: string;
   lastName: string;
   password?: string; // Optional - temp password generated if not provided
+  [key: string]: string | undefined; // Index signature for RequestBody compatibility
 }
 
 /**
  * User update data transfer object
  * All fields are optional for partial updates
  */
-export interface UpdateUserDto extends Record<string, string | number | boolean | undefined> {
+export interface UpdateUserDto {
   email?: string;
   firstName?: string;
   lastName?: string;
   password?: string;
   isActive?: boolean;
+  [key: string]: string | boolean | undefined; // Index signature for RequestBody compatibility
 }
 
 /**

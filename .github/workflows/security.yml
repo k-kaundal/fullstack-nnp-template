@@ -1,0 +1,168 @@
+name: Security Scanning
+
+on:
+  push:
+    branches:
+      [
+        main,
+        develop,
+        staging,
+        production,
+        release/*,
+        hotfix/*,
+        feature/*,
+        bugfix/*,
+        chore/*,
+        docs/*,
+        test/*,
+        ci/*,
+        perf/*,
+        refactor/*,
+        style/*,
+        build/*,
+        deps/*,
+        security/*,
+        workflow/*,
+        ci-cd/*,
+        release-candidate/*,
+        experimental/*,
+        spike/*,
+        core-foundations,
+      ]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+  schedule:
+    # Run security scan daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --all-projects --detection-depth=3
+
+      - name: Audit server dependencies
+        working-directory: ./server
+        run: |
+          yarn audit --level moderate --json > server-audit.json || true
+          cat server-audit.json
+
+      - name: Audit client dependencies
+        working-directory: ./client
+        run: |
+          yarn audit --level moderate --json > client-audit.json || true
+          cat client-audit.json
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-results
+          path: |
+            server/server-audit.json
+            client/client-audit.json
+
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript', 'typescript']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:${{matrix.language}}'
+
+  docker-scan:
+    name: Docker Image Security Scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for Dockerfile
+        id: check_dockerfile
+        run: |
+          if [ -f "./server/Dockerfile" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ No Dockerfile found in server/ - skipping Docker scan"
+          fi
+
+      - name: Build Docker image (server)
+        if: steps.check_dockerfile.outputs.exists == 'true'
+        run: docker build -t fullstack-server:latest ./server
+
+      - name: Run Trivy vulnerability scanner (server)
+        if: steps.check_dockerfile.outputs.exists == 'true'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'fullstack-server:latest'
+          format: 'sarif'
+          output: 'trivy-server-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Upload Trivy results to GitHub Security
+        if: steps.check_dockerfile.outputs.exists == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-server-results.sarif'
+        continue-on-error: true
+
+  secrets-scan:
+    name: Secrets Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified

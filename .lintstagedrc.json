@@ -1,0 +1,13 @@
+{
+  "*.{js,jsx,ts,tsx}": ["yarn format"],
+  "*.{json,md}": ["yarn format"],
+  "*.{css,scss}": ["yarn format"],
+  "server/**/*.{ts,tsx}": [
+    "cd server && yarn lint --fix",
+    "cd server && yarn format"
+  ],
+  "client/**/*.{ts,tsx}": [
+    "cd client && yarn lint --fix",
+    "cd client && yarn format"
+  ]
+}

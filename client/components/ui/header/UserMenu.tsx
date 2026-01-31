@@ -7,6 +7,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { UserMenuProps } from '@/interfaces';
 
 /**
@@ -40,9 +41,11 @@ export function UserMenu({ profile, menuItems }: UserMenuProps) {
       >
         {/* Avatar */}
         {profile.avatar ? (
-          <img
+          <Image
             src={profile.avatar}
             alt={profile.name}
+            width={36}
+            height={36}
             className="w-9 h-9 rounded-full object-cover ring-2 ring-white dark:ring-gray-800"
           />
         ) : (
@@ -72,9 +75,11 @@ export function UserMenu({ profile, menuItems }: UserMenuProps) {
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               {profile.avatar ? (
-                <img
+                <Image
                   src={profile.avatar}
                   alt={profile.name}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (

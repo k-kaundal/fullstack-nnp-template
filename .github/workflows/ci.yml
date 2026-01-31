@@ -2,9 +2,35 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      [
+        main,
+        develop,
+        staging,
+        production,
+        release/*,
+        hotfix/*,
+        feature/*,
+        bugfix/*,
+        chore/*,
+        docs/*,
+        test/*,
+        ci/*,
+        perf/*,
+        refactor/*,
+        style/*,
+        build/*,
+        deps/*,
+        security/*,
+        workflow/*,
+        ci-cd/*,
+        release-candidate/*,
+        experimental/*,
+        spike/*,
+        core-foundations,
+      ]
   pull_request:
-    branches: [main, develop]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
 
 jobs:
   # Backend Tests
@@ -34,8 +60,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: server/yarn.lock
 
       - name: Install dependencies
@@ -78,8 +104,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: client/yarn.lock
 
       - name: Install dependencies
@@ -124,8 +150,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: server/yarn.lock
 
       - name: Install backend dependencies
@@ -158,8 +184,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: |
             server/yarn.lock
             client/yarn.lock
@@ -185,8 +211,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "yarn"
+          node-version: '20'
+          cache: 'yarn'
           cache-dependency-path: |
             server/yarn.lock
             client/yarn.lock

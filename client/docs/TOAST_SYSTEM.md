@@ -1,17 +1,21 @@
 # Toast System Documentation
 
 ## Overview
+
 The toast system uses **[Sonner](https://sonner.emilkowal.ski/)** - a beautiful, accessible toast component library with excellent dark mode support and customization options.
 
 ## Setup
 
 ### Installation
+
 ```bash
 yarn add sonner
 ```
 
 ### Configuration
+
 The Toaster component is configured in the root layout (`app/layout.tsx`) with these settings:
+
 - **Position**: top-right
 - **Duration**: 4000ms (4 seconds)
 - **Rich Colors**: Enabled (color-coded toasts)
@@ -54,29 +58,24 @@ toast.error('Failed to create user', { id: toastId });
 ```
 
 ### Promise Toast
+
 Automatically handles loading → success/error states:
 
 ```typescript
 import { toast } from '@/lib/utils';
 
-await toast.promise(
-  createUser(userData),
-  {
-    loading: 'Creating user...',
-    success: 'User created successfully!',
-    error: 'Failed to create user'
-  }
-);
+await toast.promise(createUser(userData), {
+  loading: 'Creating user...',
+  success: 'User created successfully!',
+  error: 'Failed to create user',
+});
 
 // With dynamic messages
-await toast.promise(
-  fetchUser(id),
-  {
-    loading: 'Fetching user...',
-    success: (user) => `Welcome ${user.name}!`,
-    error: (err) => `Error: ${err.message}`
-  }
-);
+await toast.promise(fetchUser(id), {
+  loading: 'Fetching user...',
+  success: (user) => `Welcome ${user.name}!`,
+  error: (err) => `Error: ${err.message}`,
+});
 ```
 
 ### Custom Options
@@ -94,19 +93,20 @@ toast.success('User deleted', {
     onClick: () => {
       // Handle undo action
       restoreUser();
-    }
-  }
+    },
+  },
 });
 
 // Custom description
 toast.success('User created', {
-  description: 'John Doe has been added to the system'
+  description: 'John Doe has been added to the system',
 });
 ```
 
 ### Helper Functions
 
 #### Show API Error
+
 ```typescript
 import { showApiError } from '@/lib/utils';
 
@@ -118,12 +118,13 @@ try {
 ```
 
 #### Show Validation Errors
+
 ```typescript
 import { showValidationErrors } from '@/lib/utils';
 
 const errors = {
   email: 'Email is required',
-  password: 'Password must be at least 8 characters'
+  password: 'Password must be at least 8 characters',
 };
 
 showValidationErrors(errors);
@@ -146,6 +147,7 @@ toast.dismiss();
 ## Real-World Examples
 
 ### Form Submission
+
 ```typescript
 'use client';
 
@@ -177,6 +179,7 @@ export function UserForm() {
 ```
 
 ### API Call with Promise Toast
+
 ```typescript
 'use client';
 
@@ -206,6 +209,7 @@ export function DeleteButton({ userId }: { userId: string }) {
 ```
 
 ### Multiple Operations
+
 ```typescript
 'use client';
 
@@ -228,6 +232,7 @@ export function BulkActions() {
 ```
 
 ### Form Validation
+
 ```typescript
 'use client';
 
@@ -269,6 +274,7 @@ export function LoginForm() {
 ## Styling
 
 ### Custom Theme
+
 The toast component automatically adapts to dark mode and uses your app's color scheme defined in `globals.css`:
 
 - Success: Green tones
@@ -277,6 +283,7 @@ The toast component automatically adapts to dark mode and uses your app's color 
 - Info: Sky/Blue tones
 
 ### Custom Styles
+
 To customize toast appearance, update the CSS in `globals.css`:
 
 ```css
@@ -312,41 +319,50 @@ export default function DemoPage() {
 ## API Reference
 
 ### toast.success(message, options?)
+
 Show success toast
 
 ### toast.error(message, options?)
+
 Show error toast
 
 ### toast.warning(message, options?)
+
 Show warning toast
 
 ### toast.info(message, options?)
+
 Show info toast
 
 ### toast.loading(message, options?)
+
 Show loading toast (returns toast ID)
 
 ### toast.promise(promise, messages, options?)
+
 Track promise and show loading/success/error
 
 ### toast.dismiss(toastId?)
+
 Dismiss specific toast or all toasts
 
 ### toast.custom(message, options?)
+
 Show custom toast
 
 ## Options
 
 ```typescript
 interface ToastOptions {
-  duration?: number;           // Toast duration in ms (default: 4000)
-  position?: string;           // Position on screen
-  description?: string;        // Additional text below message
-  action?: {                   // Action button
+  duration?: number; // Toast duration in ms (default: 4000)
+  position?: string; // Position on screen
+  description?: string; // Additional text below message
+  action?: {
+    // Action button
     label: string;
     onClick: () => void;
   };
-  id?: string | number;        // Toast ID for updating
+  id?: string | number; // Toast ID for updating
 }
 ```
 

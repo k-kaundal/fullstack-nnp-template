@@ -165,43 +165,37 @@ export function useUsers(): UseUsersReturn {
    *
    * @returns Updated user or null if failed
    */
-  const updateUser = useCallback(
-    async (id: string, data: UpdateUserDto): Promise<User | null> => {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+  const updateUser = useCallback(async (id: string, data: UpdateUserDto): Promise<User | null> => {
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      try {
-        const response = await usersService.update(id, data);
+    try {
+      const response = await usersService.update(id, data);
 
-        if (isSuccessResponse<User>(response)) {
-          setState((prev) => ({
-            ...prev,
-            users: prev.users.map((user) =>
-              user.id === id ? response.data : user
-            ),
-            currentUser:
-              prev.currentUser?.id === id ? response.data : prev.currentUser,
-            isLoading: false,
-          }));
-          return response.data;
-        } else {
-          setState((prev) => ({
-            ...prev,
-            error: (response as ApiErrorResponse).message,
-            isLoading: false,
-          }));
-          return null;
-        }
-      } catch {
+      if (isSuccessResponse<User>(response)) {
         setState((prev) => ({
           ...prev,
-          error: 'Failed to update user',
+          users: prev.users.map((user) => (user.id === id ? response.data : user)),
+          currentUser: prev.currentUser?.id === id ? response.data : prev.currentUser,
+          isLoading: false,
+        }));
+        return response.data;
+      } else {
+        setState((prev) => ({
+          ...prev,
+          error: (response as ApiErrorResponse).message,
           isLoading: false,
         }));
         return null;
       }
-    },
-    []
-  );
+    } catch {
+      setState((prev) => ({
+        ...prev,
+        error: 'Failed to update user',
+        isLoading: false,
+      }));
+      return null;
+    }
+  }, []);
 
   /**
    * Deletes a user

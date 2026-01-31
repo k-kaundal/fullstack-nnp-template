@@ -1,7 +1,7 @@
 /**
  * API Client utility class
  * Provides type-safe HTTP methods with interceptors for authentication and error handling
- * Uses axios for HTTP requests
+ * Uses axios for HTTP requests with automatic token refresh and session management
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
@@ -15,6 +15,28 @@ import {
 import { API_CONFIG } from '@/constants';
 import { StorageKey } from '@/enums';
 import { makeApiErrorResponse } from '@/lib/utils/api-response';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/utils/storage';
+
+// Flag to prevent multiple simultaneous refresh requests
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+/**
+ * Subscribe to token refresh completion
+ * @param callback - Function to call when refresh completes
+ */
+function subscribeTokenRefresh(callback: (token: string) => void): void {
+  refreshSubscribers.push(callback);
+}
+
+/**
+ * Notify all subscribers that token refresh completed
+ * @param token - New access token
+ */
+function onTokenRefreshed(token: string): void {
+  refreshSubscribers.forEach((callback) => callback(token));
+  refreshSubscribers = [];
+}
 
 /**
  * Utility function to append query parameters to URL
@@ -64,7 +86,7 @@ export class ApiClient {
   /**
    * Sets up axios request and response interceptors
    * Request: Injects authentication token
-   * Response: Handles errors and unauthorized access
+   * Response: Handles errors and automatic token refresh with queue management
    *
    * @private
    */
@@ -72,12 +94,9 @@ export class ApiClient {
     // Request interceptor - Add auth token to headers
     this.client.interceptors.request.use(
       async (config) => {
-        let token: string | null = null;
-
-        // Get token from localStorage (client-side only)
-        if (typeof window !== 'undefined') {
-          token = localStorage.getItem(StorageKey.AUTH_TOKEN);
-        }
+        // Get token from storage (client-side only)
+        const token =
+          typeof window !== 'undefined' ? getStorageItem<string>(StorageKey.ACCESS_TOKEN) : null;
 
         // Inject token into Authorization header
         if (token) {
@@ -90,28 +109,114 @@ export class ApiClient {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - Handle errors globally
+    // Response interceptor - Handle errors and token refresh
     this.client.interceptors.response.use(
       (response: AxiosResponse<ApiSuccessResponse>) => response,
-      (error) => {
-        const apiError = this.handleError(error);
+      async (error: AxiosError<ApiErrorResponse>) => {
+        const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-        // Handle unauthorized access - clear token and redirect to login
-        if (error.response?.status === 401) {
-          if (typeof window !== 'undefined') {
-            localStorage.removeItem(StorageKey.AUTH_TOKEN);
-            localStorage.removeItem(StorageKey.USER_DATA);
+        // If 401 and we haven't tried to refresh yet, attempt token refresh
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          if (typeof window === 'undefined') {
+            return Promise.reject(error);
+          }
 
-            // Redirect to login if not already there
-            if (window.location.pathname !== '/login') {
-              window.location.href = '/login';
+          const refreshToken = getStorageItem<string>(StorageKey.REFRESH_TOKEN);
+
+          if (!refreshToken) {
+            // No refresh token - clear auth and redirect
+            this.clearAuthAndRedirect();
+            return Promise.reject(error);
+          }
+
+          originalRequest._retry = true;
+
+          // If already refreshing, queue this request
+          if (isRefreshing) {
+            return new Promise((resolve) => {
+              subscribeTokenRefresh((newToken: string) => {
+                if (originalRequest.headers) {
+                  originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                }
+                resolve(this.client(originalRequest));
+              });
+            });
+          }
+
+          isRefreshing = true;
+
+          try {
+            // Call refresh token endpoint
+            const response = await axios.post(
+              `${this.client.defaults.baseURL}/auth/refresh`,
+              { refreshToken },
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
+
+            const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+
+            // Store new tokens
+            setStorageItem(StorageKey.ACCESS_TOKEN, accessToken);
+            if (newRefreshToken) {
+              setStorageItem(StorageKey.REFRESH_TOKEN, newRefreshToken);
             }
+
+            // Update Authorization header for original request
+            if (originalRequest.headers) {
+              originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            }
+
+            // Notify all queued requests
+            onTokenRefreshed(accessToken);
+            isRefreshing = false;
+
+            // Retry original request with new token
+            return this.client(originalRequest);
+          } catch (refreshError) {
+            // Refresh failed - clear auth and redirect to login
+            isRefreshing = false;
+            refreshSubscribers = [];
+            this.clearAuthAndRedirect();
+            return Promise.reject(refreshError);
           }
         }
 
+        // For other errors or if retry failed, handle normally
+        const apiError = this.handleError(error);
         return Promise.reject(apiError);
       }
     );
+  }
+
+  /**
+   * Clear authentication data and redirect to login
+   * @private
+   */
+  private clearAuthAndRedirect(): void {
+    if (typeof window === 'undefined') return;
+
+    // Clear all auth data
+    removeStorageItem(StorageKey.ACCESS_TOKEN);
+    removeStorageItem(StorageKey.REFRESH_TOKEN);
+    removeStorageItem(StorageKey.USER_DATA);
+    removeStorageItem(StorageKey.SESSION_ID);
+
+    // Dispatch custom event for auth state change
+    window.dispatchEvent(new CustomEvent('auth:logout'));
+
+    // Redirect to login if not already there
+    const currentPath = window.location.pathname;
+    const publicPaths = ['/auth/login', '/auth/register', '/auth/forgot-password'];
+
+    if (!publicPaths.includes(currentPath)) {
+      // Store intended destination for redirect after login
+      sessionStorage.setItem('redirectAfterLogin', currentPath);
+      window.location.href = '/auth/login';
+    }
   }
 
   /**

@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+dist/
+build/
+.next/
+out/
+coverage/
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test artifacts
+*.snap
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Generated files
+*.d.ts.map
+*.js.map
+
+# Temp files
+*.tmp
+*.temp
+.DS_Store
+*.yaml

@@ -14,21 +14,25 @@ This is the Next.js frontend for the Fullstack NNP Template.
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 yarn install
 ```
 
 2. Copy environment variables:
+
 ```bash
 cp .env.example .env.local
 ```
 
 3. Configure your `.env.local` file:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
 
 4. Start the development server:
+
 ```bash
 yarn dev
 ```
@@ -120,9 +124,7 @@ This template uses Tailwind CSS v4:
 ```tsx
 export default function Button() {
   return (
-    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-      Click me
-    </button>
+    <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Click me</button>
   );
 }
 ```
@@ -136,6 +138,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ```
 
 Usage:
+
 ```typescript
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 ```
@@ -145,4 +148,3 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 - [Next.js Documentation](https://nextjs.org/docs)
 - [React Documentation](https://react.dev)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-

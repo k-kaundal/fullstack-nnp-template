@@ -18,9 +18,15 @@ export class AppService {
     try {
       // Prepare health check data with API information
       const healthData = {
-        message: 'Fullstack NNP API is running',
+        message: 'Fullstack NNP API is running!',
         version: '1.0.0',
+        status: 'healthy',
         timestamp: new Date().toISOString(),
+        endpoints: {
+          docs: '/api/docs',
+          v1: '/api/v1',
+          v2: '/api/v2',
+        },
       };
 
       // Return success response with health status and environment metadata
@@ -33,7 +39,7 @@ export class AppService {
           environment: process.env.NODE_ENV || 'development',
         },
       });
-    } catch (error) {
+    } catch {
       // Return error response if health check fails
       return ApiResponse.error(res, {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
