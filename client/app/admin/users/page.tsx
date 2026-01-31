@@ -404,16 +404,16 @@ export default function UsersPage() {
           // If either field has a value, both must be filled
           if (!password) {
             toast.error('Please enter a new password');
-            throw new Error('Password is required');
+            throw new Error('Password is required'); // NOSONAR - Validation error message
           }
           if (!confirmPassword) {
             toast.error('Please confirm your new password');
-            throw new Error('Password confirmation is required');
+            throw new Error('Password confirmation is required'); // NOSONAR - Validation error message
           }
           // Check if passwords match
           if (password !== confirmPassword) {
             toast.error('Passwords do not match');
-            throw new Error('Passwords do not match');
+            throw new Error('Passwords do not match'); // NOSONAR - Validation error message
           }
           // Validate password strength
           if (password.length < 8) {

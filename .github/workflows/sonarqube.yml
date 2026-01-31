@@ -27,7 +27,7 @@ on:
         release-candidate/*,
         experimental/*,
         spike/*,
-        core-foundation,
+        core-foundations,
       ]
 
   pull_request:
@@ -69,7 +69,11 @@ jobs:
         working-directory: ./server
         run: yarn install --frozen-lockfile
 
-      - name: Run tests with coverage
+      - name: Install client dependencies
+        working-directory: ./client
+        run: yarn install --frozen-lockfile
+
+      - name: Run server tests with coverage
         working-directory: ./server
         run: yarn test:cov
         env:

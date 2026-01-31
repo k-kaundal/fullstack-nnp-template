@@ -33,9 +33,9 @@ function ResetPasswordForm() {
     const newErrors: Record<string, string> = {};
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'Password is required'; // NOSONAR - This is a validation error message, not a hard-coded password
     } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = 'Password must be at least 8 characters'; // NOSONAR - Validation message
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(password)) {
       newErrors.password =
         'Password must contain uppercase, lowercase, number and special character';
