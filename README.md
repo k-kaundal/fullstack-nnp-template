@@ -336,13 +336,24 @@ and instructions pre-configured for seamless AI-assisted development.
   - API response standards
   - Error handling patterns
   - UI component library documentation
+- ✅ **Git Workflow & Quality Gates** - Automated enforcement
+  - 🎯 **Husky v10** - Git hooks (pre-commit, commit-msg)
+  - 🔍 **lint-staged** - Lint only staged files (ESLint + Prettier)
+  - ✅ **commitlint** - Enforces conventional commit format
+  - 🚫 **Zero-tolerance**: ESLint errors block commits
+  - 📝 **Required format**: `type: description` (e.g., `feat: add user auth`)
+  - ⚡ **Auto-fixes**: ESLint and Prettier run automatically on commit
+  - 🎯 **TypeScript checks**: Both server and client type-checked before commit
 - ✅ **Code Quality Gates** - Multi-layered enforcement
-  - ESLint errors block commits
-  - TypeScript strict mode
+  - ESLint 9 with @typescript-eslint v8
+  - TypeScript strict mode (no `any` types)
   - 80%+ test coverage requirement
   - Unused variable/import detection
-- ✅ **Git Hooks** - Pre-commit quality checks
-- ✅ **Conventional Commits** - Standardized commit messages
+  - Pre-commit hooks validate everything
+- ✅ **Monorepo Linting** - Workspace-specific configs
+  - Root: Prettier only (JSON, Markdown, YAML)
+  - Server: ESLint 9 + Prettier in server/ workspace
+  - Client: Separate ESLint config in client/ workspace
 - ✅ **Automated Testing** - Pre-configured patterns
 - ✅ **Comprehensive Documentation** - 12+ implementation guides
   - API Security, Validation, Caching, Error Handling
@@ -1521,34 +1532,47 @@ git push origin feature/your-feature-name
 
 ### 💻 **Commit Message Format**
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/)
-specification:
+We follow [Conventional Commits](https://www.conventionalcommits.org/) enforced
+by **commitlint** and **Husky**.
 
-```
-<type>(<scope>): <description>
+**✅ REQUIRED FORMAT:** `<type>: <description>`
 
-[optional body]
-[optional footer]
-```
+The **colon (`:`)** after the type is **mandatory**!
 
 **Types:**
 
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, semicolons, etc.)
-- `refactor`: Code refactoring
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `test:` - Adding or updating tests
+- `refactor:` - Code refactoring
+- `style:` - Code style changes (formatting)
+- `chore:` - Maintenance tasks
+- `ci:` - CI/CD changes
+- `perf:` - Performance improvements
 
 **Examples:**
 
 ```bash
-feat(auth): add JWT authentication
-fix(users): resolve email validation issue
-docs(readme): update installation instructions
-test(api): add e2e tests for user endpoints
+# ✅ Correct format (will pass commitlint)
+git commit -m "feat: add JWT authentication"
+git commit -m "fix: resolve email validation issue"
+git commit -m "docs: update installation instructions"
+git commit -m "test: add e2e tests for user endpoints"
+
+# ❌ Wrong format (will fail commitlint)
+git commit -m "add JWT authentication"       # Missing type and colon
+git commit -m "feat add authentication"      # Missing colon
 ```
+
+**📖 Complete Git Workflow Guide:** See [`GIT_WORKFLOW.md`](./GIT_WORKFLOW.md)
+for:
+
+- Detailed commit format examples
+- Pre-commit hook workflow
+- Troubleshooting common errors
+- Monorepo linting structure
+- Best practices and tips
 
 ### 🐛 **Reporting Bugs**
 

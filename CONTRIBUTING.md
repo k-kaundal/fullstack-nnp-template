@@ -33,7 +33,44 @@ applications. All contributions should maintain:
 
 ## 📝 Commit Guidelines
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
+We follow [Conventional Commits](https://www.conventionalcommits.org/) enforced
+by **commitlint** and **husky**.
+
+### Automated Git Hooks
+
+This project uses **Husky v10** for automated pre-commit and commit-msg
+validation:
+
+#### Pre-commit Hook
+
+- **Runs automatically** before each commit
+- **lint-staged**: Lints and formats only staged files
+- **TypeScript type checking**: Validates types in server and client
+- **Auto-fixes**: ESLint and Prettier run automatically
+
+#### Commit Message Hook
+
+- **Validates commit message format** using commitlint
+- **Enforces conventional commits** - commit will fail if format is wrong
+- **Required format**: `<type>: <description>`
+
+### Commit Format (REQUIRED)
+
+**✅ Correct Format:**
+
+```bash
+git commit -m "feat: add user authentication"
+git commit -m "fix: resolve token refresh bug"
+git commit -m "docs: update API documentation"
+```
+
+**❌ Incorrect Format (will fail):**
+
+```bash
+git commit -m "add user authentication"      # Missing type and colon
+git commit -m "feat add authentication"      # Missing colon
+git commit -m "Added new feature"            # Wrong format
+```
 
 ### Commit Types
 
@@ -43,18 +80,96 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `style:` - Code style changes (formatting, no logic change)
 - `refactor:` - Code refactoring
 - `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks
+- `chore:` - Maintenance tasks (dependencies, config)
 - `perf:` - Performance improvements
+- `ci:` - CI/CD changes
+- `build:` - Build system changes
+- `revert:` - Revert previous commit
 
-### Examples
+### Commit Message Examples
 
-```
+**With Scope (optional but recommended):**
+
+```bash
 feat(users): add email verification endpoint
 fix(auth): resolve token refresh race condition
 docs(readme): update installation instructions
 test(users): add integration tests for user service
 refactor(api): improve error handling consistency
+chore(deps): upgrade typescript to 5.3.3
+ci(github): add SonarQube analysis workflow
+perf(cache): optimize cache key generation
 ```
+
+**Without Scope:**
+
+```bash
+feat: add GraphQL support
+fix: resolve YAML syntax errors
+docs: add Git workflow documentation
+test: increase coverage to 85%
+```
+
+### Pre-commit Workflow
+
+When you run `git commit`:
+
+1. **lint-staged runs:**
+   - Server TypeScript files: `cd server && yarn lint --fix && yarn format`
+   - Client TypeScript files: `cd client && yarn lint --fix && yarn format`
+   - JSON/Markdown files: `yarn format` (Prettier)
+   - Auto-stages fixed files
+
+2. **TypeScript type check:**
+   - Server: `cd server && yarn tsc --noEmit`
+   - Client: `cd client && yarn tsc --noEmit`
+
+3. **Commit message validation:**
+   - commitlint checks format
+   - Fails if not conventional commit format
+
+4. **Commit succeeds if all pass ✅**
+
+### Bypassing Hooks (NOT RECOMMENDED)
+
+Only use in emergencies:
+
+```bash
+git commit --no-verify -m "emergency: fix critical production bug"
+```
+
+### Troubleshooting Commit Failures
+
+**Error: "subject may not be empty" or "type may not be empty"**
+
+- **Problem**: Missing colon (`:`) after type
+- **Solution**: Use format `type: description`
+
+```bash
+# ❌ Wrong
+git commit -m "fix bug"
+
+# ✅ Correct
+git commit -m "fix: resolve bug in authentication"
+```
+
+**Error: "Command 'eslint' not found"**
+
+- **Problem**: ESLint not installed in workspace
+- **Solution**: Run `yarn install` in server/ and client/
+
+**Error: "Type check failed"**
+
+- **Problem**: TypeScript errors in code
+- **Solution**: Fix TypeScript errors before committing
+
+### Best Practices
+
+1. **Commit often** - Small, focused commits
+2. **Clear messages** - Explain what and why, not how
+3. **Test first** - Run tests before committing
+4. **Atomic commits** - One logical change per commit
+5. **No WIP commits** - Finish work before committing to main branches
 
 ## 🧪 Testing Requirements
 
@@ -79,6 +194,40 @@ yarn test:cov
 - Integration tests for critical features
 
 ## ✅ Pull Request Process
+
+### Monorepo Structure & Linting
+
+This project uses a **monorepo structure** with workspace-specific linting:
+
+```
+root/                    # Only Prettier, lint-staged, husky
+├── server/              # ESLint 9 + @typescript-eslint v8
+└── client/              # ESLint 9 + separate config
+```
+
+**lint-staged Configuration (.lintstagedrc.json):**
+
+```json
+{
+  "*.{json,md,yml,yaml}": ["yarn prettier --write"],
+  "*.{css,scss}": ["yarn prettier --write"],
+  "server/**/*.{ts,tsx}": [
+    "cd server && yarn lint --fix",
+    "cd server && yarn format"
+  ],
+  "client/**/*.{ts,tsx}": [
+    "cd client && yarn lint --fix",
+    "cd client && yarn format"
+  ]
+}
+```
+
+**Key Points:**
+
+- Root-level files: Prettier only (JSON, Markdown, YAML)
+- Server TypeScript: ESLint + Prettier in server/ workspace
+- Client TypeScript: ESLint + Prettier in client/ workspace
+- Each workspace has its own ESLint config and dependencies
 
 1. **Update Documentation**
    - Update README.md if adding features

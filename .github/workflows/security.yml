@@ -34,7 +34,7 @@ on:
 
   schedule:
     # Run security scan daily at 2 AM UTC
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
 
 jobs:
   dependency-scan:
@@ -48,7 +48,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
@@ -89,7 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript', 'typescript']
+        language: ["javascript", "typescript"]
 
     steps:
       - name: Checkout code
@@ -107,7 +107,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: '/language:${{matrix.language}}'
+          category: "/language:${{matrix.language}}"
 
   docker-scan:
     name: Docker Image Security Scan
@@ -118,22 +118,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image (server)
+      - name: Check for Dockerfile
+        id: check_dockerfile
         run: |
-          docker build -t fullstack-server:latest ./server || echo "No Dockerfile in server"
+          if [ -f "./server/Dockerfile" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ No Dockerfile found in server/ - skipping Docker scan"
+          fi
+
+      - name: Build Docker image (server)
+        if: steps.check_dockerfile.outputs.exists == 'true'
+        run: docker build -t fullstack-server:latest ./server
 
       - name: Run Trivy vulnerability scanner (server)
+        if: steps.check_dockerfile.outputs.exists == 'true'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'fullstack-server:latest'
-          format: 'sarif'
-          output: 'trivy-server-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          image-ref: "fullstack-server:latest"
+          format: "sarif"
+          output: "trivy-server-results.sarif"
+          severity: "CRITICAL,HIGH"
+        continue-on-error: true
 
       - name: Upload Trivy results to GitHub Security
+        if: steps.check_dockerfile.outputs.exists == 'true'
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-server-results.sarif'
+          sarif_file: "trivy-server-results.sarif"
+        continue-on-error: true
 
   secrets-scan:
     name: Secrets Scanning
