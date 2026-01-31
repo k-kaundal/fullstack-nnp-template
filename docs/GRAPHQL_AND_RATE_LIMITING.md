@@ -693,7 +693,7 @@ server/src/
 Check logs for rate limit violations:
 
 ```bash
-tail -f logs/app.log | grep "Rate limit exceeded"
+tail -f server/src/logs/combined-*.log | grep "Rate limit exceeded"
 ```
 
 **Log Output**:

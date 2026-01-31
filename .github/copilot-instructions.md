@@ -1770,7 +1770,7 @@ documentation.
 
 #### Migrations - ALWAYS USE FOR SCHEMA CHANGES
 
-**Migration Scripts** (`server/scripts/`):
+**Migration Scripts** (`server/src/scripts/`):
 
 - `generate-migration.sh` - Auto-detect entity changes and generate migration
 - `create-migration.sh` - Create empty migration template for custom SQL
@@ -1782,16 +1782,16 @@ documentation.
 ```bash
 # Generate migration from entity changes
 cd server
-./scripts/generate-migration.sh AddUserRoles
+./src/scripts/generate-migration.sh AddUserRoles
 
 # Create empty migration for custom changes
-./scripts/create-migration.sh AddCustomIndexes
+./src/scripts/create-migration.sh AddCustomIndexes
 
 # Run pending migrations
-./scripts/run-migrations.sh
+./src/scripts/run-migrations.sh
 
 # Rollback last migration (data loss possible)
-./scripts/rollback-migration.sh
+./src/scripts/rollback-migration.sh
 ```
 
 **Migration Rules:**

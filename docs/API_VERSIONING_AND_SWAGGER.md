@@ -173,8 +173,8 @@ Production: https://your-api.vercel.app/api/docs
 
 **Auto-generated files** (development only):
 
-- `docs/api/openapi.json` - OpenAPI 3.0 JSON format
-- `docs/api/openapi.yaml` - OpenAPI 3.0 YAML format
+- `server/src/api-docs/openapi.json` - OpenAPI 3.0 JSON format
+- `server/src/api-docs/openapi.yaml` - OpenAPI 3.0 YAML format
 
 **Manual export:**
 
@@ -540,8 +540,8 @@ export class DeprecationAnalytics {
 3. `server/src/common/interceptors/versioning.interceptor.ts` - Deprecation
    interceptor
 4. `server/src/config/swagger.config.ts` - Advanced Swagger config
-5. `docs/api/openapi.json` - Auto-exported OpenAPI JSON
-6. `docs/api/openapi.yaml` - Auto-exported OpenAPI YAML
+5. `server/src/api-docs/openapi.json` - Auto-exported OpenAPI JSON
+6. `server/src/api-docs/openapi.yaml` - Auto-exported OpenAPI YAML
 
 ### Modified Files
 

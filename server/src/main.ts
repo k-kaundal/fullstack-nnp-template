@@ -45,6 +45,19 @@ async function createApp(): Promise<INestApplication> {
   app.enableCors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true,
+    exposedHeaders: [
+      'X-Correlation-Id', // For request tracking
+      'X-API-Version',
+      'X-API-Deprecated',
+      'X-API-Sunset',
+      'X-API-Alternative',
+      'Warning',
+      'X-RateLimit-Limit',
+      'X-RateLimit-Remaining',
+      'X-RateLimit-Reset',
+      'X-RateLimit-Policy',
+      'Retry-After',
+    ],
   });
 
   // Global sanitization middleware

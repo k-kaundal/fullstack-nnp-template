@@ -2,8 +2,8 @@
 
 ###############################################################################
 # Rollback Database Migrations Script
-# Usage: ./scripts/rollback-migration.sh [count]
-# Example: ./scripts/rollback-migration.sh 1
+# Usage: ./src/scripts/rollback-migration.sh [count]
+# Example: ./src/scripts/rollback-migration.sh 1
 ###############################################################################
 
 set -e  # Exit on error

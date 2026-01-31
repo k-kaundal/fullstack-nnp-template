@@ -40,7 +40,7 @@ export class LoggerService implements NestLoggerService {
   private createLogger(): winston.Logger {
     const env = this.configService.get('NODE_ENV', 'development');
     const logLevel = this.configService.get('LOG_LEVEL', 'info');
-    const logDir = this.configService.get('LOG_DIR', 'logs');
+    const logDir = this.configService.get('LOG_DIR', 'src/logs');
 
     const transports: winston.transport[] = [];
 

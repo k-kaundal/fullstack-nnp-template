@@ -12,7 +12,7 @@ coverage/
 
 # Logs
 *.log
-logs/
+server/src/logs/
 
 # Environment
 .env

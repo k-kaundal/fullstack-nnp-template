@@ -2,8 +2,8 @@
 
 ###############################################################################
 # Run Database Migrations Script
-# Usage: ./scripts/run-migrations.sh [environment]
-# Example: ./scripts/run-migrations.sh development
+# Usage: ./src/scripts/run-migrations.sh [environment]
+# Example: ./src/scripts/run-migrations.sh development
 ###############################################################################
 
 set -e  # Exit on error

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ###############################################################################
-# Create Empty Migration Script
-# Usage: ./scripts/create-migration.sh MigrationName
-# Example: ./scripts/create-migration.sh AddCustomIndexes
+# Generate TypeORM Migration Script
+# Usage: ./src/scripts/generate-migration.sh MigrationName
+# Example: ./src/scripts/generate-migration.sh AddUserRoleColumn
 ###############################################################################
 
 set -e  # Exit on error
@@ -17,27 +17,27 @@ NC='\033[0m' # No Color
 # Check if migration name is provided
 if [ -z "$1" ]; then
   echo -e "${RED}Error: Migration name is required${NC}"
-  echo "Usage: ./scripts/create-migration.sh MigrationName"
-  echo "Example: ./scripts/create-migration.sh AddCustomIndexes"
+  echo "Usage: ./src/scripts/generate-migration.sh MigrationName"
+  echo "Example: ./src/scripts/generate-migration.sh AddUserRoleColumn"
   exit 1
 fi
 
 MIGRATION_NAME=$1
 
-echo -e "${YELLOW}🔧 Creating empty migration: ${MIGRATION_NAME}${NC}"
+echo -e "${YELLOW}🔧 Generating migration: ${MIGRATION_NAME}${NC}"
 
-# Create empty migration
-yarn typeorm migration:create src/migrations/${MIGRATION_NAME}
+# Generate migration based on entity changes
+yarn typeorm migration:generate -d src/config/typeorm.config.ts src/migrations/${MIGRATION_NAME}
 
 if [ $? -eq 0 ]; then
-  echo -e "${GREEN}✅ Empty migration created successfully!${NC}"
+  echo -e "${GREEN}✅ Migration generated successfully!${NC}"
   echo -e "${GREEN}📁 Location: src/migrations/${MIGRATION_NAME}.ts${NC}"
   echo ""
   echo -e "${YELLOW}Next steps:${NC}"
-  echo "1. Edit the migration file and add your SQL"
+  echo "1. Review the generated migration file"
   echo "2. Run migration: yarn migration:run"
   echo "3. Rollback if needed: yarn migration:revert"
 else
-  echo -e "${RED}❌ Failed to create migration${NC}"
+  echo -e "${RED}❌ Failed to generate migration${NC}"
   exit 1
 fi

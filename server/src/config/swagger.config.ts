@@ -180,9 +180,9 @@ All errors follow a consistent format:
 
   // Export OpenAPI JSON and YAML
   if (process.env.NODE_ENV !== 'production') {
-    const outputPath = path.join(process.cwd(), 'docs', 'api');
+    const outputPath = path.join(process.cwd(), 'src', 'api-docs');
 
-    // Create docs directory if it doesn't exist
+    // Create api-docs directory if it doesn't exist
     if (!fs.existsSync(outputPath)) {
       fs.mkdirSync(outputPath, { recursive: true });
     }
@@ -197,7 +197,7 @@ All errors follow a consistent format:
     const yaml = convertToYaml(document);
     fs.writeFileSync(path.join(outputPath, 'openapi.yaml'), yaml);
 
-    console.log('📄 OpenAPI documentation exported to docs/api/');
+    console.log('📄 OpenAPI documentation exported to src/api-docs/');
   }
 }
 
