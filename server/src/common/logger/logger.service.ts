@@ -42,6 +42,12 @@ export class LoggerService implements NestLoggerService {
     const logLevel = this.configService.get('LOG_LEVEL', 'info');
     const logDir = this.configService.get('LOG_DIR', 'src/logs');
 
+    // Detect serverless environment (Vercel, AWS Lambda, etc.)
+    const isServerless =
+      process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.LAMBDA_TASK_ROOT;
+
     const transports: winston.transport[] = [];
 
     // Console transport (always enabled)
@@ -50,7 +56,7 @@ export class LoggerService implements NestLoggerService {
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.ms(),
-          env === 'production'
+          env === 'production' || isServerless
             ? winston.format.json()
             : winston.format.combine(
                 winston.format.colorize({ all: true }),
@@ -87,8 +93,10 @@ export class LoggerService implements NestLoggerService {
       }),
     );
 
-    // File transport - Error logs
-    if (env !== 'test') {
+    // File transport - Only in non-serverless environments
+    // Serverless platforms have read-only file systems (except /tmp)
+    // Logs are captured via stdout/stderr in serverless
+    if (env !== 'test' && !isServerless) {
       transports.push(
         new DailyRotateFile({
           level: 'error',
