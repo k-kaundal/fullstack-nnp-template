@@ -306,7 +306,7 @@ export class ApiClient {
    * });
    * ```
    */
-  async post<T = ResponseBody, D extends RequestBody = RequestBody>(
+  async post<T = ResponseBody, D = Record<string, unknown>>(
     url: string,
     data?: D,
     query?: QueryParams,
@@ -327,7 +327,7 @@ export class ApiClient {
    * @param config - Axios request configuration
    * @returns Promise resolving to ApiSuccessResponse or ApiErrorResponse
    */
-  async put<T = ResponseBody, D extends RequestBody = RequestBody>(
+  async put<T = ResponseBody, D = Record<string, unknown>>(
     url: string,
     data?: D,
     query?: QueryParams,
@@ -355,7 +355,7 @@ export class ApiClient {
    * });
    * ```
    */
-  async patch<T = ResponseBody, D extends RequestBody = RequestBody>(
+  async patch<T = ResponseBody, D = Record<string, unknown>>(
     url: string,
     data?: D,
     query?: QueryParams,

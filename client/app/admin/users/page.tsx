@@ -6,11 +6,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { User, CreateUserDto, UpdateUserDto } from '@/interfaces';
 import { isSuccessResponse, toast } from '@/lib/utils';
 import { LoadingSpinner, Pagination, Confirm, ViewDialog, EditDialog } from '@/components/ui';
 import { ViewDialogConfig, EditDialogConfig } from '@/interfaces';
 import { usersService } from '@/lib/api/users.service';
+import { AssignRolesDialog } from '@/components/admin/AssignRolesDialog';
 
 /**
  * Safely format date to locale string
@@ -37,6 +39,9 @@ interface UserStatistics {
 }
 
 export default function UsersPage() {
+  const searchParams = useSearchParams();
+  const statusParam = searchParams.get('status') as 'active' | 'inactive' | null;
+
   const [users, setUsers] = useState<User[]>([]);
   const [statistics, setStatistics] = useState<UserStatistics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +50,9 @@ export default function UsersPage() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>(
+    statusParam || 'all'
+  );
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [confirmAction, setConfirmAction] = useState<() => Promise<void>>(() => async () => {});
@@ -60,6 +67,17 @@ export default function UsersPage() {
   });
   const [viewDialogConfig, setViewDialogConfig] = useState<ViewDialogConfig | null>(null);
   const [editDialogConfig, setEditDialogConfig] = useState<EditDialogConfig | null>(null);
+  const [assignRolesDialogOpen, setAssignRolesDialogOpen] = useState(false);
+  const [selectedUserForRoles, setSelectedUserForRoles] = useState<User | null>(null);
+
+  // Update statusFilter when URL query parameter changes
+  useEffect(() => {
+    if (statusParam) {
+      setStatusFilter(statusParam);
+    } else {
+      setStatusFilter('all');
+    }
+  }, [statusParam]);
 
   useEffect(() => {
     fetchUsers();
@@ -93,25 +111,14 @@ export default function UsersPage() {
 
   const fetchStatistics = async () => {
     try {
-      // Calculate from all users
-      const response = await usersService.getAll(1, 10000);
-      if (isSuccessResponse<User[]>(response)) {
-        const allUsers = response.data;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
+      // Fetch statistics from dedicated API endpoint
+      const response = await usersService.getStatistics();
+      if (isSuccessResponse(response)) {
         setStatistics({
-          total: allUsers.length,
-          active: allUsers.filter((u) => u.isActive).length,
-          inactive: allUsers.filter((u) => !u.isActive).length,
-          todayRegistered: allUsers.filter((u) => {
-            try {
-              const createdDate = new Date(u.createdAt);
-              return !isNaN(createdDate.getTime()) && createdDate >= today;
-            } catch {
-              return false;
-            }
-          }).length,
+          total: response.data.total,
+          active: response.data.active,
+          inactive: response.data.inactive,
+          todayRegistered: response.data.todayRegistered,
         });
       }
     } catch {
@@ -220,6 +227,25 @@ export default function UsersPage() {
         },
       ],
       actions: [
+        {
+          id: 'assign-roles',
+          label: 'Assign Roles',
+          variant: 'primary',
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+          ),
+          onClick: () => {
+            setViewDialogConfig(null);
+            handleAssignRoles(user);
+          },
+        },
         {
           id: 'edit',
           label: 'Edit User',
@@ -483,6 +509,12 @@ export default function UsersPage() {
         },
       ],
     });
+  };
+
+  // Handle assign roles to user
+  const handleAssignRoles = (user: User) => {
+    setSelectedUserForRoles(user);
+    setAssignRolesDialogOpen(true);
   };
 
   const handleDelete = (user: User) => {
@@ -1034,6 +1066,13 @@ export default function UsersPage() {
                         View
                       </button>
                       <button
+                        onClick={() => handleAssignRoles(user)}
+                        className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+                        title="Assign Roles"
+                      >
+                        Roles
+                      </button>
+                      <button
                         onClick={() => handleEdit(user)}
                         className="text-yellow-600 hover:text-yellow-800 dark:text-yellow-400 dark:hover:text-yellow-300"
                       >
@@ -1092,6 +1131,24 @@ export default function UsersPage() {
         type={confirmConfig.type}
         onConfirm={confirmAction}
       />
+
+      {/* Assign Roles Dialog */}
+      {selectedUserForRoles && (
+        <AssignRolesDialog
+          isOpen={assignRolesDialogOpen}
+          onClose={() => {
+            setAssignRolesDialogOpen(false);
+            setSelectedUserForRoles(null);
+          }}
+          userId={selectedUserForRoles.id}
+          userEmail={selectedUserForRoles.email}
+          currentRoles={selectedUserForRoles.roles || []}
+          onSuccess={() => {
+            fetchUsers(); // Refresh user list
+            fetchStatistics(); // Refresh statistics
+          }}
+        />
+      )}
     </div>
   );
 }

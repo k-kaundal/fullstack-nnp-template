@@ -8,3 +8,6 @@ export * from './users.service';
 export * from './session.service';
 export * from './auth.service';
 export * from './request-logs.service';
+export * from './roles.service';
+export * from './permissions.service';
+export * from './newsletter.service';

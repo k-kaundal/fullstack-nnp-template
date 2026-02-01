@@ -6,13 +6,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Seeder } from './seeder.interface';
+import { UsersSeeder } from './users.seeder';
+import { RbacSeeder } from './rbac.seeder';
 
 @Injectable()
 export class SeederService {
   private readonly logger = new Logger(SeederService.name);
   private seeders: Map<string, Seeder> = new Map();
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly usersSeeder: UsersSeeder,
+    private readonly rbacSeeder: RbacSeeder,
+  ) {
+    // Register all seeders
+    this.register('rbac', this.rbacSeeder); // RBAC first (users depend on roles)
+    this.register('users', this.usersSeeder);
+  }
 
   /**
    * Register a seeder

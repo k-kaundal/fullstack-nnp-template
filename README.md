@@ -1,11 +1,16 @@
 <div align="center">
 
-# 🚀 Fullstack NNP Template
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=32&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&repeat=true&width=800&lines=Fullstack+NNP+Template;Production-Ready+Enterprise+Stack;NestJS+%2B+Next.js+%2B+PostgreSQL" alt="Typing SVG" />
 
-### _Production-Ready • Type-Safe • Modern Stack_
+<br/>
+<br/>
+
+# 🚀 Production-Ready Fullstack Template
 
 <p align="center">
-  <strong>Build enterprise-grade applications with NestJS, Next.js 16, and PostgreSQL</strong>
+  <strong>Enterprise-grade template with NestJS, Next.js 16, React 19, and PostgreSQL</strong>
+  <br/>
+  <em>Built for scale • Optimized for AI • Ready for production</em>
 </p>
 
 <br/>
@@ -14,15 +19,17 @@
 <p align="center">
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS" />
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Tailwind_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" />
   <img src="https://img.shields.io/badge/TypeORM-FE0902?style=for-the-badge&logo=typeorm&logoColor=white" alt="TypeORM" />
+  <img src="https://img.shields.io/badge/GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white" alt="GraphQL" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white" alt="Jest" />
 </p>
 
 <br/>
@@ -44,48 +51,62 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square" alt="Build" />
-  <img src="https://img.shields.io/badge/coverage-80%25-green?style=flat-square" alt="Coverage" />
-  <img src="https://img.shields.io/badge/code_quality-A-brightgreen?style=flat-square" alt="Quality" />
-  <img src="https://img.shields.io/github/last-commit/k-kaundal/fullstack-nnp-template?style=flat-square" alt="Last Commit" />
-  <a href="https://github.com/k-kaundal/fullstack-nnp-template/pulls">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome" />
-  </a>
-  <img src="https://img.shields.io/badge/contributions-welcome-orange.svg?style=flat-square" alt="Contributions Welcome" />
+  <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square&logo=github-actions" alt="Build" />
+  <img src="https://img.shields.io/badge/coverage-80%25+-green?style=flat-square&logo=codecov" alt="Coverage" />
+  <img src="https://img.shields.io/badge/code_quality-A-brightgreen?style=flat-square&logo=codacy" alt="Quality" />
+  <img src="https://img.shields.io/github/last-commit/k-kaundal/fullstack-nnp-template?style=flat-square&logo=github" alt="Last Commit" />
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square&logo=github" alt="PRs Welcome" />
+  <img src="https://img.shields.io/badge/maintained-yes-brightgreen?style=flat-square&logo=github" alt="Maintained" />
 </p>
 
 ---
 
 <br/>
 
-## 🌟 **What Makes This Special?**
+## ✨ **Key Features at a Glance**
 
 <table>
 <tr>
-<td width="33%" valign="top">
+<td width="50%" valign="top">
 
-### 🤖 **AI-First Architecture**
+### 🎯 **Backend Excellence**
 
-✨ Optimized for coding agents 📋 Comprehensive AI guidelines 🎯 Standardized
-code patterns 🔧 Pre-configured for Copilot 📚 Detailed documentation 🚀
-Ready-to-use base setup
+- ✅ **NestJS** with modular architecture
+- ✅ **PostgreSQL** + TypeORM with migrations
+- ✅ **JWT Authentication** with refresh tokens
+- ✅ **RBAC** (Role-Based Access Control)
+- ✅ **GraphQL** API with playground
+- ✅ **REST API** with Swagger documentation
+- ✅ **Rate Limiting** (IP & user-based)
+- ✅ **Email Service** with templates
+- ✅ **Newsletter System** with bulk sending
+- ✅ **Error Handling** (70+ custom error codes)
+- ✅ **Winston Logging** with rotation
+- ✅ **Sentry Integration** for monitoring
+- ✅ **Caching** with automatic invalidation
+- ✅ **Data Validation** & sanitization
+- ✅ **Session Management** multi-device
 
 </td>
-<td width="33%" valign="top">
+<td width="50%" valign="top">
 
-### 🎯 **Production Ready**
+### 💎 **Frontend Excellence**
 
-🏗️ Enterprise-grade architecture 🔒 Security best practices ✅ Zero-tolerance
-quality gates 🧪 80%+ test coverage ⚡ Optimized performance 📝 Complete API
-documentation
-
-</td>
-<td width="33%" valign="top">
-
-### 💎 **Developer Experience**
-
-🎨 Beautiful UI components 🌙 Dark mode support 🔥 Hot reload & Fast refresh 📦
-Pre-configured tooling 🎭 Type-safe throughout 🔍 ESLint + Prettier ready
+- ✅ **Next.js 16** with App Router
+- ✅ **React 19** with Server Components
+- ✅ **Tailwind CSS v4** with latest syntax
+- ✅ **Dark Mode** with persistence
+- ✅ **Authentication** with auto-refresh
+- ✅ **Protected Routes** with guards
+- ✅ **Toast Notifications** (Sonner)
+- ✅ **Modal/Dialog System** (10+ components)
+- ✅ **Dynamic Sidebar** with RBAC
+- ✅ **Advanced Tables** with sorting & filters
+- ✅ **Form Validation** with real-time feedback
+- ✅ **CSV Export** functionality
+- ✅ **Responsive Design** mobile-first
+- ✅ **Type-Safe** throughout
+- ✅ **ESLint** + Prettier configured
 
 </td>
 </tr>
@@ -93,26 +114,80 @@ Pre-configured tooling 🎭 Type-safe throughout 🔍 ESLint + Prettier ready
 
 <br/>
 
+## 🚀 **What Makes This Special?**
+
 <table>
 <tr>
-<td width="50%" valign="top">
+<td width="33%" valign="top" align="center">
 
-### 📐 **Code Standards**
+### 🤖 **AI-First Architecture**
 
-🚫 Zero `any` types allowed ✅ Strict TypeScript mode 🎯 Interface-first design
-📝 JSDoc required 🧹 Clean code principles 🔄 Consistent patterns
+<img src="https://img.icons8.com/fluency/96/000000/artificial-intelligence.png" width="64" alt="AI"/>
+
+Optimized for coding agents with comprehensive guidelines and standardized
+patterns
+
+**Features:**
+
+- 📋 Detailed AI instructions
+- 🎯 Consistent code patterns
+- 🔧 Pre-configured Copilot
+- 📚 Extensive documentation
+- 🚀 Ready-to-use setup
 
 </td>
-<td width="50%" valign="top">
+<td width="33%" valign="top" align="center">
 
-### 🛠️ **Built-in Features**
+### 🏗️ **Production Ready**
 
-🗄️ PostgreSQL + TypeORM 🔐 JWT Authentication ready 📊 Swagger API docs 🧪 Jest
-testing setup 🐳 Docker Compose 📬 Email service configured
+<img src="https://img.icons8.com/fluency/96/000000/rocket.png" width="64" alt="Production"/>
+
+Enterprise-grade architecture with security and performance best practices
+
+**Features:**
+
+- 🔒 Security hardening
+- ✅ Quality gates (0 errors)
+- 🧪 80%+ test coverage
+- ⚡ Performance optimized
+- 📝 Complete documentation
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 💻 **Developer Experience**
+
+<img src="https://img.icons8.com/fluency/96/000000/code.png" width="64" alt="DX"/>
+
+Modern tooling and beautiful UI components for rapid development
+
+**Features:**
+
+- 🎨 10+ UI components
+- 🌙 Beautiful dark mode
+- 🔥 Hot reload & Fast refresh
+- 📦 Pre-configured tools
+- 🎭 100% TypeScript
 
 </td>
 </tr>
 </table>
+
+<br/>
+
+## 📊 **Tech Stack Overview**
+
+```mermaid
+graph LR
+    A[Client] -->|HTTP/GraphQL| B[NestJS API]
+    B -->|TypeORM| C[PostgreSQL]
+    B -->|JWT| D[Auth Service]
+    B -->|SMTP| E[Email Service]
+    A -->|Next.js 16| F[React 19 UI]
+    F -->|Tailwind v4| G[Responsive Design]
+    B -->|Winston| H[Logging]
+    B -->|Sentry| I[Error Tracking]
+```
 
 <br/>
 
@@ -148,10 +223,10 @@ testing setup 🐳 Docker Compose 📬 Email service configured
 
 <p align="center">
   <a href="https://www.facebook.com/me.kaundal">
-    <img src="https://img.shields.io/badge/Facebook_Page-me.kaundal-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook Page" />
+    <img src="https://img.shields.io/badge/Facebook-me.kaundal-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook" />
   </a>
   <a href="https://www.facebook.com/groups/me.software.engineer">
-    <img src="https://img.shields.io/badge/FB_Community-Software_Engineers-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook Community" />
+    <img src="https://img.shields.io/badge/Community-Software_Engineers-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Community" />
   </a>
   <a href="https://x.com/i/communities/1826457685698441668">
     <img src="https://img.shields.io/badge/𝕏_Community-Tech_Talks-000000?style=for-the-badge&logo=x&logoColor=white" alt="X Community" />
@@ -164,7 +239,7 @@ testing setup 🐳 Docker Compose 📬 Email service configured
 
 <br/>
 
-## 📊 **GitHub Stats**
+## 📊 **Repository Stats**
 
 <p align="center">
   <img width="49%" src="https://github-readme-stats.vercel.app/api?username=k-kaundal&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&bg_color=0D1117&title_color=58A6FF&icon_color=58A6FF&text_color=C9D1D9" alt="GitHub Stats" />
@@ -185,18 +260,49 @@ testing setup 🐳 Docker Compose 📬 Email service configured
 
 <div align="left">
 
+## 📖 **Table of Contents**
+
+- [About This Template](#-about-this-template)
+- [Quick Start](#-quick-start)
+- [Features](#-features-in-detail)
+- [Architecture](#-architecture)
+- [Installation](#-installation-guide)
+- [Configuration](#-configuration)
+- [API Documentation](#-api-documentation)
+- [Testing](#-testing)
+- [Deployment](#-deployment)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+<br/>
+
 ## 📖 **About This Template**
 
 ### 🤖 **AI-Assisted Development Ready**
 
 This repository is **specifically designed and optimized for AI coding agents**
 like GitHub Copilot, Cursor, and other AI assistants. It serves as a
-**ready-to-use base setup** with comprehensive rules, regulations, validations,
-and instructions pre-configured for seamless AI-assisted development.
+**production-ready foundation** with comprehensive rules, validations, and
+instructions pre-configured for seamless AI-assisted development.
 
-> 🎯 **Purpose**: Provide a production-ready foundation where AI coding agents
-> can work efficiently with clear guidelines, best practices, and standardized
-> patterns already in place.
+> 🎯 **Purpose**: Provide a battle-tested fullstack template where AI coding
+> agents can work efficiently with clear guidelines, best practices, and
+> standardized patterns already in place.
+
+### 🌟 **Why Choose This Template?**
+
+| Feature               | This Template                       | Other Templates    |
+| --------------------- | ----------------------------------- | ------------------ |
+| **AI Optimization**   | ✅ Comprehensive AI instructions    | ❌ None            |
+| **Code Quality**      | ✅ Strict TypeScript, 0 `any` types | ⚠️ Partial         |
+| **Testing**           | ✅ 80%+ coverage                    | ⚠️ Basic or none   |
+| **Authentication**    | ✅ JWT + Refresh + RBAC             | ⚠️ Basic auth only |
+| **API Documentation** | ✅ Swagger + GraphQL playground     | ⚠️ Minimal         |
+| **Error Handling**    | ✅ 70+ custom error codes           | ❌ Generic errors  |
+| **UI Components**     | ✅ 10+ production-ready components  | ⚠️ Basic UI        |
+| **Dark Mode**         | ✅ Full support with persistence    | ❌ None            |
+| **Newsletter System** | ✅ Complete with templates          | ❌ None            |
+| **Rate Limiting**     | ✅ IP & user-based with tiers       | ❌ None            |
 
 ### ✨ **What's Included:**
 

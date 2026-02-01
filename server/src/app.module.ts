@@ -10,6 +10,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
+import { RbacModule } from './rbac/rbac.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 import { SeederModule } from './database/seeders/seeder.module';
 import { GraphqlAppModule } from './graphql/graphql.module';
 import { LoggerModule } from './common/logger/logger.module';
@@ -30,7 +32,7 @@ const isServerless =
   process.env.LAMBDA_TASK_ROOT;
 
 // Conditionally include GraphQL module (only in non-serverless environments)
-const conditionalImports: Array<any> = [
+const conditionalImports = [
   // Global configuration module
   ConfigModule.forRoot({
     isGlobal: true,
@@ -129,6 +131,8 @@ const conditionalImports: Array<any> = [
   MailModule,
   AuthModule,
   UsersModule,
+  RbacModule,
+  NewsletterModule,
   SeederModule,
 ];
 

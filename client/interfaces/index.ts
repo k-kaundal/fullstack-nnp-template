@@ -16,3 +16,5 @@ export * from './edit-dialog.interface';
 export * from './ui-components.interface';
 export * from './layout.interface';
 export * from './request-log.interface';
+export * from './rbac.interface';
+export * from './newsletter.interface';

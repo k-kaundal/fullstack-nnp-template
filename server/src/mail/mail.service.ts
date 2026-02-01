@@ -321,4 +321,34 @@ export class MailService {
       return false;
     }
   }
+
+  /**
+   * Send generic email
+   * @param options - Email options (to, subject, text, html)
+   */
+  async sendEmail(options: {
+    to: string;
+    subject: string;
+    text?: string;
+    html?: string;
+  }): Promise<void> {
+    try {
+      const mailOptions = {
+        from: this.configService.get<string>('mail.from'),
+        to: options.to,
+        subject: options.subject,
+        text: options.text,
+        html: options.html,
+      };
+
+      await this.transporter.sendMail(mailOptions);
+      this.logger.log(`Email sent successfully to ${options.to}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send email to ${options.to}:`,
+        error.message,
+      );
+      throw new Error(`Failed to send email: ${error.message}`);
+    }
+  }
 }

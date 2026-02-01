@@ -45,7 +45,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const request = ctx.getRequest<Request & { correlationId?: string }>();
 
     const correlationId = request.correlationId || 'N/A';
     const path = request.url;

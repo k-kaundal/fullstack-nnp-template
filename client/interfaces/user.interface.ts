@@ -9,6 +9,11 @@ export interface User {
   lastName: string;
   isActive: boolean;
   isEmailVerified: boolean;
+  roles?: Array<{
+    id: string;
+    name: string;
+    description?: string;
+  }>;
   createdAt: string;
   updatedAt: string;
 }

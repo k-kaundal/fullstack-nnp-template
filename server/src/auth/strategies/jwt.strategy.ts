@@ -57,9 +57,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Token has been revoked');
     }
 
-    // Verify user exists and is active
+    // Verify user exists and is active (load with roles for RBAC)
     const user = await this.userRepository.findOne({
       where: { id: payload.sub },
+      relations: ['roles', 'roles.permissions'], // Load roles and permissions
     });
 
     if (!user) {
@@ -74,6 +75,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       sub: payload.sub,
       email: payload.email,
+      roles: user.roles, // Include roles for guards
     };
   }
 }

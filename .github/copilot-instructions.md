@@ -2988,6 +2988,901 @@ documentation including:
 - Performance optimization tips
 - Troubleshooting common issues
 
+### Role-Based Access Control (RBAC) - PRODUCTION READY
+
+**Complete RBAC system with roles, permissions, guards, and dynamic UI.**
+
+#### RBAC Architecture
+
+**File Structure:**
+
+```
+server/src/
+  roles/
+    dto/
+      create-role.dto.ts
+      update-role.dto.ts
+    entities/
+      role.entity.ts
+    roles.controller.ts
+    roles.service.ts
+    roles.module.ts
+  permissions/
+    dto/
+      create-permission.dto.ts
+      update-permission.dto.ts
+    entities/
+      permission.entity.ts
+    permissions.controller.ts
+    permissions.service.ts
+    permissions.module.ts
+  auth/
+    decorators/
+      roles.decorator.ts        # @Roles('admin', 'user')
+      permissions.decorator.ts   # @RequirePermissions('users.read')
+    guards/
+      roles.guard.ts
+      permissions.guard.ts
+  users/
+    entities/
+      user.entity.ts            # ManyToMany relation with roles
+```
+
+**Client Structure:**
+
+```
+client/
+  app/admin/
+    roles/
+      page.tsx                  # Roles management
+      create/
+        page.tsx                # Create role form
+    permissions/
+      page.tsx                  # Permissions management
+  constants/
+    admin-sidebar-dynamic.tsx   # Dynamic sidebar based on permissions
+  lib/api/
+    roles.service.ts
+    permissions.service.ts
+```
+
+#### Database Schema
+
+**Roles Table:**
+
+```typescript
+@Entity('roles')
+export class Role {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  name: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @ManyToMany(() => Permission, (permission) => permission.roles, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'role_permissions',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
+  })
+  permissions: Permission[];
+
+  @ManyToMany(() => User, (user) => user.roles)
+  users: User[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+```
+
+**Permissions Table:**
+
+```typescript
+@Entity('permissions')
+export class Permission {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  name: string;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column({ nullable: true })
+  resource: string;
+
+  @Column({ nullable: true })
+  action: string;
+
+  @ManyToMany(() => Role, (role) => role.permissions)
+  roles: Role[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+```
+
+**User-Role Relation:**
+
+```typescript
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @ManyToMany(() => Role, (role) => role.users, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  })
+  roles: Role[];
+}
+```
+
+#### RBAC Guards & Decorators
+
+**1. Roles Guard:**
+
+```typescript
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { ROLES_KEY } from '../decorators/roles.decorator';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (!requiredRoles) {
+      return true; // No roles required
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    return requiredRoles.some((role) =>
+      user.roles?.some((userRole) => userRole.name === role),
+    );
+  }
+}
+```
+
+**2. Permissions Guard:**
+
+```typescript
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { PERMISSIONS_KEY } from '../decorators/permissions.decorator';
+
+@Injectable()
+export class PermissionsGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      PERMISSIONS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
+    if (!requiredPermissions) {
+      return true; // No permissions required
+    }
+
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    const userPermissions = user.roles?.flatMap(
+      (role) => role.permissions?.map((p) => p.name) || [],
+    );
+
+    return requiredPermissions.every((permission) =>
+      userPermissions.includes(permission),
+    );
+  }
+}
+```
+
+**3. Decorators:**
+
+```typescript
+// roles.decorator.ts
+import { SetMetadata } from '@nestjs/common';
+
+export const ROLES_KEY = 'roles';
+export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
+
+// permissions.decorator.ts
+import { SetMetadata } from '@nestjs/common';
+
+export const PERMISSIONS_KEY = 'permissions';
+export const RequirePermissions = (...permissions: string[]) =>
+  SetMetadata(PERMISSIONS_KEY, permissions);
+```
+
+#### Using RBAC in Controllers
+
+**Role-Based Protection:**
+
+```typescript
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+
+@Controller('admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
+export class AdminController {
+  @Get('dashboard')
+  @Roles('admin', 'manager')
+  async getDashboard() {
+    return { message: 'Admin dashboard' };
+  }
+
+  @Post('users/delete')
+  @Roles('admin')
+  async deleteUser() {
+    return { message: 'User deleted' };
+  }
+}
+```
+
+**Permission-Based Protection:**
+
+```typescript
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+
+@Controller('users')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+export class UsersController {
+  @Get()
+  @RequirePermissions('users.read')
+  async findAll() {
+    return this.usersService.findAll();
+  }
+
+  @Post()
+  @RequirePermissions('users.create')
+  async create() {
+    return this.usersService.create();
+  }
+
+  @Delete(':id')
+  @RequirePermissions('users.delete')
+  async delete() {
+    return this.usersService.delete();
+  }
+}
+```
+
+**Combined Guards:**
+
+```typescript
+@Controller('sensitive')
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+export class SensitiveController {
+  @Get('data')
+  @Roles('admin')
+  @RequirePermissions('sensitive.read')
+  async getSensitiveData() {
+    // Only admins with 'sensitive.read' permission can access
+    return { data: 'sensitive information' };
+  }
+}
+```
+
+#### Dynamic Sidebar Based on Roles
+
+**File: `client/constants/admin-sidebar-dynamic.tsx`**
+
+```typescript
+'use client';
+
+import { useAuthContext } from '@/lib/providers/auth-provider';
+import { SidebarConfig } from '@/interfaces';
+
+export const useAdminSidebarConfig = (): SidebarConfig => {
+  const { user } = useAuthContext();
+
+  const hasRole = (role: string): boolean => {
+    return user?.roles?.some((r) => r.name === role) || false;
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    const userPermissions = user?.roles?.flatMap(
+      (role) => role.permissions?.map((p) => p.name) || []
+    );
+    return userPermissions?.includes(permission) || false;
+  };
+
+  const items: SidebarItem[] = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      href: '/admin',
+      icon: <DashboardIcon />,
+    },
+  ];
+
+  // Only show Users menu if user has permission
+  if (hasPermission('users.read')) {
+    items.push({
+      id: 'users',
+      label: 'Users',
+      href: '/admin/users',
+      icon: <UsersIcon />,
+    });
+  }
+
+  // Only show Roles menu for admins
+  if (hasRole('admin')) {
+    items.push({
+      id: 'roles',
+      label: 'Roles',
+      href: '/admin/roles',
+      icon: <ShieldIcon />,
+    });
+  }
+
+  // Only show Permissions menu for admins
+  if (hasRole('admin')) {
+    items.push({
+      id: 'permissions',
+      label: 'Permissions',
+      href: '/admin/permissions',
+      icon: <KeyIcon />,
+    });
+  }
+
+  return {
+    header: {
+      title: 'Admin Panel',
+      logo: <LogoIcon />,
+    },
+    items,
+  };
+};
+```
+
+#### RBAC Environment Configuration
+
+**File: `.env`**
+
+```env
+# RBAC (Role-Based Access Control)
+RBAC_ENABLED=true  # Enable/disable RBAC system
+```
+
+#### RBAC API Endpoints
+
+**Roles:**
+
+- `GET /api/v1/roles` - Get all roles
+- `GET /api/v1/roles/:id` - Get role by ID
+- `POST /api/v1/roles` - Create new role
+- `PATCH /api/v1/roles/:id` - Update role
+- `DELETE /api/v1/roles/:id` - Delete role
+- `POST /api/v1/roles/:id/permissions` - Assign permissions to role
+
+**Permissions:**
+
+- `GET /api/v1/permissions` - Get all permissions
+- `GET /api/v1/permissions/:id` - Get permission by ID
+- `POST /api/v1/permissions` - Create new permission
+- `PATCH /api/v1/permissions/:id` - Update permission
+- `DELETE /api/v1/permissions/:id` - Delete permission
+
+**User Roles:**
+
+- `GET /api/v1/users/:id/roles` - Get user's roles
+- `POST /api/v1/users/:id/roles` - Assign roles to user
+- `DELETE /api/v1/users/:id/roles/:roleId` - Remove role from user
+
+#### RBAC Best Practices
+
+1. ✅ **Use permission-based access for fine-grained control**
+2. ✅ **Use role-based access for broad categorization**
+3. ✅ **Combine guards when needed** (JwtAuthGuard + RolesGuard +
+   PermissionsGuard)
+4. ✅ **Always validate permissions on backend** - Never trust frontend
+5. ✅ **Cache user roles/permissions** - Included in JWT payload
+6. ✅ **Use eager loading** for roles and permissions to avoid N+1 queries
+7. ✅ **Seed default roles/permissions** in database migrations
+8. ✅ **Dynamic UI based on roles** - Hide/show menu items dynamically
+
+#### RBAC Testing
+
+```typescript
+describe('RolesGuard', () => {
+  it('should allow access for users with required role', () => {
+    const user = { roles: [{ name: 'admin' }] };
+    const guard = new RolesGuard(reflector);
+    expect(guard.canActivate(context)).toBe(true);
+  });
+
+  it('should deny access for users without required role', () => {
+    const user = { roles: [{ name: 'user' }] };
+    const guard = new RolesGuard(reflector);
+    expect(guard.canActivate(context)).toBe(false);
+  });
+});
+```
+
+---
+
+### Newsletter System - PRODUCTION READY
+
+**Complete newsletter system with subscriptions, management, templates, and bulk
+sending.**
+
+#### Newsletter Architecture
+
+**Backend Structure:**
+
+```
+server/src/newsletter/
+  dto/
+    subscribe-newsletter.dto.ts
+    send-newsletter.dto.ts
+  entities/
+    newsletter-subscriber.entity.ts
+  newsletter.controller.ts
+  newsletter.service.ts
+  newsletter.module.ts
+```
+
+**Frontend Structure:**
+
+```
+client/
+  app/admin/newsletter/
+    page.tsx                    # Redirects to subscribers
+    subscribers/
+      page.tsx                  # Subscribers management (540 lines)
+    send/
+      page.tsx                  # Newsletter composer (430 lines)
+  components/newsletter/
+    NewsletterSubscription.tsx  # Public subscription form
+  lib/api/
+    newsletter.service.ts
+  interfaces/
+    newsletter.interface.ts
+```
+
+#### Database Schema
+
+**Newsletter Subscribers Table:**
+
+```typescript
+@Entity('newsletter_subscribers')
+export class NewsletterSubscriber {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ nullable: true })
+  firstName: string;
+
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @CreateDateColumn()
+  subscribedAt: Date;
+
+  @Column({ nullable: true })
+  unsubscribedAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+```
+
+#### Newsletter DTOs
+
+**Subscribe DTO:**
+
+```typescript
+export class SubscribeNewsletterDto {
+  @ApiProperty({ example: 'user@example.com' })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty({ example: 'John', required: false })
+  @IsString()
+  @IsOptional()
+  firstName?: string;
+
+  @ApiProperty({ example: 'Doe', required: false })
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+}
+```
+
+**Send Newsletter DTO:**
+
+```typescript
+export class SendNewsletterDto {
+  @ApiProperty({ example: 'Monthly Update - January 2026' })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(200)
+  subject: string;
+
+  @ApiProperty({ example: '<h1>Hello!</h1><p>Newsletter content...</p>' })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(10)
+  content: string;
+}
+```
+
+#### Newsletter Service
+
+```typescript
+@Injectable()
+export class NewsletterService {
+  constructor(
+    @InjectRepository(NewsletterSubscriber)
+    private readonly subscriberRepository: Repository<NewsletterSubscriber>,
+    private readonly mailService: MailService,
+    private readonly logger: LoggerService,
+  ) {}
+
+  /**
+   * Subscribe to newsletter
+   */
+  async subscribe(dto: SubscribeNewsletterDto, res: Response) {
+    try {
+      // Check if already subscribed
+      const existing = await this.subscriberRepository.findOne({
+        where: { email: dto.email },
+      });
+
+      if (existing && existing.isActive) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.CONFLICT,
+          message: 'Already subscribed to newsletter',
+        });
+      }
+
+      // Reactivate if previously unsubscribed
+      if (existing && !existing.isActive) {
+        existing.isActive = true;
+        existing.unsubscribedAt = null;
+        await this.subscriberRepository.save(existing);
+
+        return ApiResponse.success(res, {
+          statusCode: HttpStatus.OK,
+          data: existing,
+          message: 'Resubscribed successfully',
+        });
+      }
+
+      // Create new subscriber
+      const subscriber = this.subscriberRepository.create(dto);
+      const saved = await this.subscriberRepository.save(subscriber);
+
+      this.logger.log(`New newsletter subscriber: ${saved.email}`);
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.CREATED,
+        data: saved,
+        message: 'Subscribed successfully',
+      });
+    } catch (error) {
+      this.logger.error('Newsletter subscription failed', error.stack);
+      return ApiResponse.error(res, {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to subscribe',
+      });
+    }
+  }
+
+  /**
+   * Send newsletter to all active subscribers
+   */
+  async sendNewsletter(dto: SendNewsletterDto, res: Response) {
+    try {
+      const subscribers = await this.subscriberRepository.find({
+        where: { isActive: true },
+      });
+
+      if (subscribers.length === 0) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'No active subscribers',
+        });
+      }
+
+      let sent = 0;
+      let failed = 0;
+
+      // Send to all subscribers
+      for (const subscriber of subscribers) {
+        try {
+          await this.mailService.sendMail({
+            to: subscriber.email,
+            subject: dto.subject,
+            html: dto.content,
+          });
+          sent++;
+        } catch (error) {
+          this.logger.error(
+            `Failed to send to ${subscriber.email}`,
+            error.stack,
+          );
+          failed++;
+        }
+      }
+
+      this.logger.log(`Newsletter sent: ${sent} delivered, ${failed} failed`);
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: { sent, failed, total: subscribers.length },
+        message: `Newsletter sent to ${sent} subscribers`,
+        meta: { sent, failed },
+      });
+    } catch (error) {
+      this.logger.error('Newsletter sending failed', error.stack);
+      return ApiResponse.error(res, {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to send newsletter',
+      });
+    }
+  }
+
+  /**
+   * Get newsletter statistics
+   */
+  async getStatistics(res: Response) {
+    try {
+      const [total, active, inactive] = await Promise.all([
+        this.subscriberRepository.count(),
+        this.subscriberRepository.count({ where: { isActive: true } }),
+        this.subscriberRepository.count({ where: { isActive: false } }),
+      ]);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const todaySubscribed = await this.subscriberRepository.count({
+        where: {
+          subscribedAt: MoreThanOrEqual(today),
+        },
+      });
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: { total, active, inactive, todaySubscribed },
+        message: 'Statistics fetched successfully',
+      });
+    } catch (error) {
+      this.logger.error('Failed to fetch statistics', error.stack);
+      return ApiResponse.error(res, {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch statistics',
+      });
+    }
+  }
+}
+```
+
+#### Newsletter Admin Pages
+
+**1. Subscribers Management (`/admin/newsletter/subscribers`):**
+
+Features:
+
+- Statistics cards (Total, Active, Inactive, Today's subscriptions)
+- Search by email/name with real-time filtering
+- Status filter dropdown (All/Active/Inactive)
+- Advanced table with:
+  - Bulk selection checkboxes
+  - Email, Name, Status, Subscribed Date columns
+  - Actions (View, Edit, Delete)
+- Bulk delete with confirmation dialog
+- Export to CSV functionality
+- Pagination (20 items per page)
+- Empty states and loading spinners
+- Responsive design
+
+**2. Newsletter Composer (`/admin/newsletter/send`):**
+
+Features:
+
+- Subscriber count info banner
+- Subject line input (validates length)
+- HTML content textarea (16 rows, monospace)
+- Live preview toggle button
+- Template sidebar (sticky on scroll) with 3 templates:
+  - **Welcome Email**: Purple gradient header, friendly tone
+  - **Monthly Update**: Blue header, feature announcements
+  - **Announcement**: Red header, urgent styling
+- Send button with double confirmation
+- Tips section with best practices
+- Toast notifications for feedback
+- Validates content before sending
+
+**3. Public Subscription Form:**
+
+Features:
+
+- Clean card design matching homepage theme
+- Email icon in gray circle
+- Email, First Name, Last Name fields
+- Visible labels (accessible)
+- Submit button with loading state
+- Toast notifications (success/error)
+- Privacy notice with lock icon
+- Full dark mode support
+- Responsive design
+
+#### Newsletter Email Templates
+
+**Template 1: Welcome Email**
+
+```html
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <div
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; text-align: center; border-radius: 8px 8px 0 0;"
+  >
+    <h1 style="color: white; margin: 0;">Welcome! 🎉</h1>
+  </div>
+  <div style="padding: 40px; background: #f9f9f9;">
+    <h2>Thanks for subscribing!</h2>
+    <p style="font-size: 16px; line-height: 1.6; color: #333;">
+      We're excited to have you on board. You'll receive updates about our
+      latest features and news.
+    </p>
+  </div>
+</div>
+```
+
+**Template 2: Monthly Update**
+
+```html
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <div style="background: #2563eb; padding: 40px; text-align: center;">
+    <h1 style="color: white;">Monthly Update 📰</h1>
+  </div>
+  <div style="padding: 40px; background: white;">
+    <h2>What's New This Month</h2>
+    <ul style="font-size: 16px; line-height: 1.8;">
+      <li>New feature releases</li>
+      <li>Performance improvements</li>
+      <li>Bug fixes</li>
+    </ul>
+  </div>
+</div>
+```
+
+**Template 3: Announcement**
+
+```html
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <div style="background: #dc2626; padding: 40px; text-align: center;">
+    <h1 style="color: white;">Important Announcement ⚠️</h1>
+  </div>
+  <div
+    style="padding: 40px; background: white; border-left: 4px solid #dc2626;"
+  >
+    <p style="font-size: 18px; font-weight: bold;">Urgent Update</p>
+    <p style="font-size: 16px; line-height: 1.6;">
+      This is an important message that requires your attention.
+    </p>
+  </div>
+</div>
+```
+
+#### Newsletter API Endpoints
+
+- `POST /api/v1/newsletter/subscribe` - Subscribe to newsletter
+- `POST /api/v1/newsletter/unsubscribe` - Unsubscribe from newsletter
+- `GET /api/v1/newsletter/subscribers` - Get all subscribers (admin only)
+- `GET /api/v1/newsletter/subscribers/:id` - Get subscriber by ID
+- `DELETE /api/v1/newsletter/subscribers/:id` - Delete subscriber
+- `POST /api/v1/newsletter/send` - Send newsletter to all active subscribers
+- `GET /api/v1/newsletter/statistics` - Get subscription statistics
+
+#### Newsletter Sidebar Navigation
+
+```typescript
+{
+  id: 'newsletter',
+  label: 'Newsletter',
+  icon: <NewsletterIcon />,
+  children: [
+    {
+      id: 'newsletter-subscribers',
+      label: 'Subscribers',
+      href: '/admin/newsletter/subscribers',
+    },
+    {
+      id: 'newsletter-send',
+      label: 'Send Newsletter',
+      href: '/admin/newsletter/send',
+    },
+  ],
+}
+```
+
+#### Newsletter Best Practices
+
+1. ✅ **Always validate email addresses** - Use class-validator @IsEmail()
+2. ✅ **Allow resubscription** - Don't delete, mark as inactive
+3. ✅ **Batch email sending** - Send in chunks to avoid rate limits
+4. ✅ **Track send statistics** - Store sent/failed counts
+5. ✅ **Log all operations** - Subscribe, unsubscribe, send
+6. ✅ **Use HTML templates** - Professional formatting
+7. ✅ **Include unsubscribe link** - GDPR compliance
+8. ✅ **Test emails before bulk send** - Send test to yourself
+9. ✅ **Handle errors gracefully** - Continue on single failure
+10. ✅ **Export functionality** - Allow CSV download for backups
+
+#### Newsletter CSV Export
+
+```typescript
+const exportToCSV = () => {
+  const csv = [
+    ['Email', 'First Name', 'Last Name', 'Status', 'Subscribed At'],
+    ...subscribers.map((s) => [
+      s.email,
+      s.firstName || '',
+      s.lastName || '',
+      s.isActive ? 'Active' : 'Inactive',
+      new Date(s.subscribedAt).toLocaleDateString(),
+    ]),
+  ]
+    .map((row) => row.map((cell) => `"${cell}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `newsletter-subscribers-${Date.now()}.csv`;
+  a.click();
+};
+```
+
+---
+
 ### Frontend (Next.js) Standards
 
 #### Theme System
@@ -3018,8 +3913,10 @@ documentation including:
 
 #### Modal/Dialog/Alert Standards
 
-- **NEVER use native alert(), confirm(), or prompt()** - These are forbidden in
+- **NEVER use native JavaScript dialogs** - `alert()`, `confirm()`, `prompt()`,
+  `window.alert()`, `window.confirm()`, `window.prompt()` are FORBIDDEN in
   production code
+- **NEVER use window.\* dialog methods** - Always use custom components instead
 - **Custom Components**: Use `<Modal>`, `<Alert>`, `<Confirm>` from
   `@/components/ui`
 - **Modal**: General purpose dialog with customizable size, header, footer,
@@ -4242,8 +5139,12 @@ try {
 
 - **CRITICAL: NEVER use console.log, console.error, console.warn in production
   code**
+- **CRITICAL: NEVER use window.alert(), window.confirm(), window.prompt() or
+  their global aliases**
 - Remove all debugging console statements before committing
 - Use proper error handling and user-facing error messages instead
+- Always use custom UI components for user interactions (Modal, Alert, Confirm,
+  Toast)
 - **All interfaces MUST be in `interfaces/` folder with `.interface.ts` suffix**
 - **All services MUST be in `lib/api/` folder with `.service.ts` suffix**
 - **Server Components (default)**: No 'use client', for data fetching and static

@@ -202,6 +202,103 @@ export class UsersService {
   ): Promise<ApiSuccessResponse<{ affected: number }> | ApiErrorResponse> {
     return apiClient.delete<{ affected: number }>('/users/bulk', { ids });
   }
+
+  /**
+   * Assign roles to user (Admin only)
+   *
+   * @param userId - User UUID
+   * @param roleIds - Array of role UUIDs to assign
+   * @returns Promise with updated user including roles
+   *
+   * @example
+   * ```typescript
+   * const response = await usersService.assignRoles('user-uuid', [
+   *   'admin-role-uuid',
+   *   'editor-role-uuid'
+   * ]);
+   * if (response.status === 'success') {
+   *   console.log('Roles assigned:', response.data.roles);
+   * }
+   * ```
+   */
+  async assignRoles(
+    userId: string,
+    roleIds: string[]
+  ): Promise<ApiSuccessResponse<User> | ApiErrorResponse> {
+    return apiClient.post<User>(`/users/${userId}/roles`, { roleIds });
+  }
+
+  /**
+   * Get user's assigned roles
+   *
+   * @param userId - User UUID
+   * @returns Promise with user's roles
+   *
+   * @example
+   * ```typescript
+   * const response = await usersService.getUserRoles('user-uuid');
+   * if (response.status === 'success') {
+   *   console.log('User roles:', response.data);
+   * }
+   * ```
+   */
+  async getUserRoles(
+    userId: string
+  ): Promise<
+    ApiSuccessResponse<Array<{ id: string; name: string; description: string }>> | ApiErrorResponse
+  > {
+    return apiClient.get(`/users/${userId}/roles`);
+  }
+
+  /**
+   * Remove specific role from user (Admin only)
+   *
+   * @param userId - User UUID
+   * @param roleId - Role UUID to remove
+   * @returns Promise with success message
+   *
+   * @example
+   * ```typescript
+   * const response = await usersService.removeRole('user-uuid', 'role-uuid');
+   * if (response.status === 'success') {
+   *   console.log('Role removed');
+   * }
+   * ```
+   */
+  async removeRole(
+    userId: string,
+    roleId: string
+  ): Promise<ApiSuccessResponse<void> | ApiErrorResponse> {
+    return apiClient.delete<void>(`/users/${userId}/roles/${roleId}`);
+  }
+
+  /**
+   * Get user statistics for dashboard
+   *
+   * @returns Promise with user statistics or error
+   *
+   * @example
+   * ```typescript
+   * const response = await usersService.getStatistics();
+   * if (response.status === 'success') {
+   *   console.log('Total users:', response.data.total);
+   *   console.log('Active users:', response.data.active);
+   *   console.log('Inactive users:', response.data.inactive);
+   * }
+   * ```
+   */
+  async getStatistics(): Promise<
+    | ApiSuccessResponse<{
+        total: number;
+        active: number;
+        inactive: number;
+        pending: number;
+        todayRegistered: number;
+      }>
+    | ApiErrorResponse
+  > {
+    return apiClient.get('/users/statistics');
+  }
 }
 
 // Export singleton instance

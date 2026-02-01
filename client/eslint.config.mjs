@@ -21,6 +21,10 @@ const eslintConfig = defineConfig([
       // Console and debugger
       'no-console': 'error',
       'no-debugger': 'error',
+      'no-alert': 'error',
+      'no-var': 'error',
+      'prefer-const': 'error',
+      'no-const-assign': 'error',
 
       // React hooks
       'react-hooks/exhaustive-deps': 'error',

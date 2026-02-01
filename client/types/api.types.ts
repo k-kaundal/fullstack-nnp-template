@@ -25,6 +25,8 @@ export interface ApiMeta extends Record<string, unknown> {
   updated_at?: string;
   deleted_at?: string;
   cached?: boolean;
+  sent?: number;
+  failed?: number;
   [key: string]: string | number | boolean | undefined;
 }
 

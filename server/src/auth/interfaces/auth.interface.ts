@@ -14,6 +14,11 @@ export interface JwtPayload {
   email: string;
 
   /**
+   * User roles for RBAC
+   */
+  roles?: Array<{ id: string; name: string }>;
+
+  /**
    * Token issued at timestamp
    */
   iat?: number;
