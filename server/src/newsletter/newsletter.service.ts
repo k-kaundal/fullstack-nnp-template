@@ -231,7 +231,7 @@ export class NewsletterService {
 
       const todaySubscribed = await this.newsletterRepository.count({
         where: {
-          subscribedAt: todayStart as any,
+          subscribedAt: todayStart,
         },
       });
 
