@@ -21,7 +21,7 @@ export interface SidebarItem {
   /** Badge text (e.g., "New", "5") */
   badge?: string;
   /** Badge color variant */
-  badgeVariant?: 'primary' | 'success' | 'warning' | 'danger';
+  badgeVariant?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
   /** Submenu items */
   children?: SidebarItem[];
   /** Whether this item is disabled */

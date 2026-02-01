@@ -18,3 +18,5 @@ export * from './layout.interface';
 export * from './request-log.interface';
 export * from './rbac.interface';
 export * from './newsletter.interface';
+export * from './analytics.interface';
+export * from './contact.interface';

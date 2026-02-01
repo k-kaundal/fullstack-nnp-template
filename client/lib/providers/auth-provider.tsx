@@ -145,16 +145,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await authService.getCurrentUser();
       if (isSuccessResponse<User>(response)) {
+        // Update user data if changed
         setUser(response.data);
         setStorageItem(StorageKey.USER_DATA, response.data);
         return true;
       } else {
-        clearAuth();
-        return false;
+        // Only clear auth if it's a 401/403 (unauthorized)
+        // Don't clear on network errors or other temporary issues
+        if (response.statusCode === 401 || response.statusCode === 403) {
+          clearAuth();
+          return false;
+        }
+        // Keep current session for other errors (network issues, etc.)
+        return true;
       }
     } catch {
-      clearAuth();
-      return false;
+      // Don't clear auth on network errors
+      // Just return false to indicate validation failed
+      return true; // Keep session active despite validation error
     }
   }, [clearAuth]);
 
@@ -347,10 +355,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         toast.success('Login successful!');
 
-        // Redirect to intended page or dashboard
-        const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/admin';
+        // Check if user has system role for admin access
+        const systemRoles = ['Admin', 'Moderator', 'Editor', 'User'];
+        const hasSystemRole = userData.roles?.some((role) => systemRoles.includes(role.name));
+
+        // Redirect based on role: system roles → /admin, others → /
+        const redirectPath = sessionStorage.getItem('redirectAfterLogin');
         sessionStorage.removeItem('redirectAfterLogin');
-        router.push(redirectPath);
+
+        if (redirectPath) {
+          router.push(redirectPath);
+        } else {
+          router.push(hasSystemRole ? '/admin' : '/');
+        }
 
         return { success: true };
       } else {

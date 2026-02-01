@@ -16,7 +16,22 @@ export class RequestLoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
     const startTime = Date.now();
 
-    // Capture response finish event
+    // Skip analytics tracking endpoint to prevent log pollution
+    if (req.originalUrl.includes('/analytics/track')) {
+      next();
+      return;
+    }
+
+    // Only track POST and PATCH requests
+    const shouldTrack = req.method === 'POST' || req.method === 'PATCH';
+
+    if (!shouldTrack) {
+      // Skip logging for GET, DELETE, PUT, etc.
+      next();
+      return;
+    }
+
+    // Capture response finish event (only for POST and PATCH)
     res.on('finish', () => {
       const responseTime = Date.now() - startTime;
 
@@ -33,7 +48,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
       });
     });
 
-    // Capture errors
+    // Capture errors (only for POST and PATCH)
     res.on('error', (error: Error) => {
       const responseTime = Date.now() - startTime;
 

@@ -267,6 +267,17 @@ export class RbacSeeder implements Seeder {
       editorPermissions,
       true,
     );
+
+    // Subscriber role - no admin access, only basic read permissions
+    const subscriberPermissions = await this.permissionRepository.find({
+      where: [{ name: 'posts:read' }],
+    });
+    await this.createRoleWithPermissions(
+      'Subscriber',
+      'Basic subscriber with limited permissions',
+      subscriberPermissions,
+      false,
+    );
   }
 
   /**

@@ -13,6 +13,7 @@ import { LoadingSpinner } from '@/components/ui';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireEmailVerification?: boolean;
+  requireAdminAccess?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({
   children,
   requireEmailVerification = false,
+  requireAdminAccess = false,
 }: ProtectedRouteProps) {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, resendVerification } = useAuth();
@@ -47,6 +49,55 @@ export function ProtectedRoute({
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return null;
+  }
+
+  // Check admin access if required
+  if (requireAdminAccess && user) {
+    const systemRoles = ['Admin', 'Moderator', 'Editor', 'User'];
+    const hasSystemRole = user.roles?.some((role) => systemRoles.includes(role.name));
+
+    if (!hasSystemRole) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+          <div className="max-w-md w-full">
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+              <div className="flex items-start">
+                <svg
+                  className="h-6 w-6 text-red-600 dark:text-red-400 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <div className="ml-3 flex-1">
+                  <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
+                    Access Denied
+                  </h3>
+                  <p className="mt-2 text-sm text-red-700 dark:text-red-300">
+                    You do not have permission to access the admin panel. Please contact an
+                    administrator if you need access.
+                  </p>
+                  <div className="mt-4">
+                    <button
+                      onClick={() => router.push('/')}
+                      className="text-sm font-medium text-red-800 dark:text-red-200 hover:text-red-900 dark:hover:text-red-100 underline"
+                    >
+                      Go to Home
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
   }
 
   // Show email verification notice if required

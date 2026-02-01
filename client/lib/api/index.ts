@@ -11,3 +11,4 @@ export * from './request-logs.service';
 export * from './roles.service';
 export * from './permissions.service';
 export * from './newsletter.service';
+export * from './contact.service';

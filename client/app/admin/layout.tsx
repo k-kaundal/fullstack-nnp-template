@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const dynamicSidebarConfig = useAdminSidebarConfig();
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requireAdminAccess={true}>
       <div className="h-screen flex bg-gray-50 dark:bg-gray-900 overflow-hidden">
         {/* Professional Sidebar with Real Data */}
         <Sidebar config={dynamicSidebarConfig} />

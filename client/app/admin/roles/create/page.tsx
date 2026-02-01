@@ -31,8 +31,8 @@ export default function CreateRolePage() {
       setIsLoading(true);
       const response = await permissionsService.getAll();
       if (isSuccessResponse(response)) {
-        // Response data is already Permission[] array
-        const data = Array.isArray(response.data) ? response.data : [];
+        // Response data contains { permissions, grouped }
+        const data = response.data?.permissions || [];
         setPermissions(data);
       } else {
         toast.error('Failed to load permissions');

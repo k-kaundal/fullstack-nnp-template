@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=32&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&repeat=true&width=800&lines=Fullstack+NNP+Template;Production-Ready+Enterprise+Stack;NestJS+%2B+Next.js+%2B+PostgreSQL" alt="Typing SVG" />
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=32&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&repeat=true&width=800&lines=Fullstack+NNP+Template;Production-Ready+Enterprise+Stack;NestJS+%2B+Next.js+%2B+PostgreSQL;Built+for+AI+•+Ready+for+Production" alt="Typing SVG" />
 
 <br/>
 <br/>
@@ -8,14 +8,14 @@
 # 🚀 Production-Ready Fullstack Template
 
 <p align="center">
-  <strong>Enterprise-grade template with NestJS, Next.js 16, React 19, and PostgreSQL</strong>
+  <strong>The Ultimate Enterprise Fullstack Template</strong>
   <br/>
-  <em>Built for scale • Optimized for AI • Ready for production</em>
+  <em>Built for Scale • Optimized for AI Agents • Production Ready from Day One</em>
 </p>
 
 <br/>
 
-<!-- Hero Badges -->
+<!-- Hero Badges - Modern Tech Stack -->
 <p align="center">
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js 16" />
@@ -53,17 +53,112 @@
 <p align="center">
   <img src="https://img.shields.io/badge/build-passing-brightgreen?style=flat-square&logo=github-actions" alt="Build" />
   <img src="https://img.shields.io/badge/coverage-80%25+-green?style=flat-square&logo=codecov" alt="Coverage" />
-  <img src="https://img.shields.io/badge/code_quality-A-brightgreen?style=flat-square&logo=codacy" alt="Quality" />
+  <img src="https://img.shields.io/badge/code_quality-A+-brightgreen?style=flat-square&logo=codacy" alt="Quality" />
   <img src="https://img.shields.io/github/last-commit/k-kaundal/fullstack-nnp-template?style=flat-square&logo=github" alt="Last Commit" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square&logo=github" alt="PRs Welcome" />
-  <img src="https://img.shields.io/badge/maintained-yes-brightgreen?style=flat-square&logo=github" alt="Maintained" />
+  <img src="https://img.shields.io/badge/maintained-actively-brightgreen?style=flat-square&logo=github" alt="Maintained" />
+  <img src="https://img.shields.io/badge/AI-optimized-blueviolet?style=flat-square&logo=openai" alt="AI Optimized" />
+</p>
+
+<p align="center">
+  <a href="https://fullstack-nnp-template.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🌐_Live_Demo-Visit_Now-blue?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+  </a>
 </p>
 
 ---
 
 <br/>
 
-## ✨ **Key Features at a Glance**
+## 📸 **Preview**
+
+<div align="center">
+  <img src="./client/public/homepage-preview.png" alt="Fullstack NNP Template - Homepage Preview" width="100%" style="border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" />
+
+  <br/>
+  <br/>
+
+  <p>
+    <em>✨ Modern, responsive design with dark/light mode • Professional UI components • Production-ready dashboards</em>
+  </p>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+## 🌟 **Why Choose This Template?**
+
+<table>
+<tr>
+<td width="33%" align="center" valign="top">
+
+### 🤖 **AI-First Development**
+
+<br/>
+
+**The world's first fullstack template built specifically for AI coding agents**
+
+<br/>
+
+🎯 **1000+ lines** of comprehensive AI coding instructions 🔧 **Zero-tolerance**
+code quality gates 📋 **Standardized patterns** for consistent AI output 🧪
+**Mandatory testing** with 80%+ coverage 📚 **Complete documentation** for every
+feature
+
+<br/>
+
+> **Perfect for**: GitHub Copilot, Cursor AI, Claude, GPT-4
+
+</td>
+<td width="33%" align="center" valign="top">
+
+### 🏗️ **Production Ready**
+
+<br/>
+
+**Enterprise-grade architecture with battle-tested best practices**
+
+<br/>
+
+🔒 **Security hardened** - XSS, SQL injection, CSRF protection ⚡ **Performance
+optimized** - Caching, rate limiting, monitoring ✅ **Quality gates** - ESLint,
+Prettier, TypeScript strict mode 🧪 **80%+ test coverage** - Unit, integration,
+E2E tests 📈 **Monitoring built-in** - Winston logging, Sentry, request tracking
+
+<br/>
+
+> **Perfect for**: Startups to enterprise applications
+
+</td>
+<td width="33%" align="center" valign="top">
+
+### 💻 **Developer Experience**
+
+<br/>
+
+**Modern tooling and beautiful UI for rapid development**
+
+<br/>
+
+🎨 **10+ UI components** - Modal, Table, Sidebar, Forms 🌙 **Beautiful dark
+mode** - Persistent theme system 🔥 **Hot reload** - Turbopack & Fast refresh 📦
+**Everything configured** - No setup needed 🎭 **100% TypeScript** - Type-safe
+throughout
+
+<br/>
+
+> **Perfect for**: Learning, prototyping, shipping fast
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+## ⚡ **Key Features at a Glance**
 
 <table>
 <tr>
@@ -71,42 +166,104 @@
 
 ### 🎯 **Backend Excellence**
 
-- ✅ **NestJS** with modular architecture
-- ✅ **PostgreSQL** + TypeORM with migrations
-- ✅ **JWT Authentication** with refresh tokens
-- ✅ **RBAC** (Role-Based Access Control)
-- ✅ **GraphQL** API with playground
-- ✅ **REST API** with Swagger documentation
-- ✅ **Rate Limiting** (IP & user-based)
-- ✅ **Email Service** with templates
-- ✅ **Newsletter System** with bulk sending
-- ✅ **Error Handling** (70+ custom error codes)
-- ✅ **Winston Logging** with rotation
-- ✅ **Sentry Integration** for monitoring
-- ✅ **Caching** with automatic invalidation
-- ✅ **Data Validation** & sanitization
-- ✅ **Session Management** multi-device
+<br/>
+
+**🏗️ Architecture & Core**
+
+- ✅ **NestJS** - Progressive Node.js framework, modular architecture
+- ✅ **PostgreSQL** + **TypeORM** - Migrations, seeders, auto-seeding on startup
+- ✅ **TypeScript Strict Mode** - Zero `any` types, 100% type-safe
+- ✅ **Monorepo Structure** - Organized for scalability
+
+**🔐 Security & Authentication**
+
+- ✅ **JWT Authentication** - Access (15min) + Refresh tokens (7 days)
+- ✅ **RBAC** (Role-Based Access Control) - Dynamic permissions system
+- ✅ **Session Management** - Multi-device tracking with IP/user agent
+- ✅ **Email Verification** - Crypto-based secure tokens
+- ✅ **Password Security** - Bcrypt + strong validation rules
+- ✅ **Token Blacklisting** - Server-side logout invalidation
+- ✅ **XSS & SQL Injection Protection** - Automatic sanitization
+- ✅ **Disposable Email Blocking** - Spam prevention
+
+**🚦 API & Monitoring**
+
+- ✅ **REST API** - Swagger docs with reusable decorators
+- ✅ **GraphQL API** - Apollo Server v4, schema-first design
+- ✅ **Rate Limiting** - IP & user-based (configurable tiers)
+- ✅ **Request Logging** - PostgreSQL-backed with auto-cleanup
+- ✅ **API Versioning** - URI & header-based with deprecation headers
+- ✅ **Correlation IDs** - Request tracking across services
+- ✅ **Winston Logging** - Multiple transports, daily rotation
+- ✅ **Sentry Integration** - Error monitoring & performance tracking
+
+**🛠️ Advanced Features**
+
+- ✅ **Error Handling** - 70+ standardized error codes, 40+ exception classes
+- ✅ **Caching Layer** - Redis-compatible with auto-invalidation
+- ✅ **Email Service** - SMTP with templates
+- ✅ **Newsletter System** - Subscription + bulk sending with templates
+- ✅ **Contact Form** - Public form with admin management & email notifications
+- ✅ **Visitor Analytics** - IP tracking, geolocation, device info, Google
+  Analytics-style charts
+- ✅ **Request Logging** - HTTP request tracking with performance metrics &
+  cleanup
+- ✅ **Cron Jobs** - Scheduled cleanup tasks
+- ✅ **Data Validation** - 10+ custom decorators (@IsStrongPassword, @NoXss)
+- ✅ **Database Migrations** - Complete tooling (generate, run, rollback)
 
 </td>
 <td width="50%" valign="top">
 
 ### 💎 **Frontend Excellence**
 
-- ✅ **Next.js 16** with App Router
-- ✅ **React 19** with Server Components
-- ✅ **Tailwind CSS v4** with latest syntax
-- ✅ **Dark Mode** with persistence
-- ✅ **Authentication** with auto-refresh
-- ✅ **Protected Routes** with guards
-- ✅ **Toast Notifications** (Sonner)
-- ✅ **Modal/Dialog System** (10+ components)
-- ✅ **Dynamic Sidebar** with RBAC
-- ✅ **Advanced Tables** with sorting & filters
-- ✅ **Form Validation** with real-time feedback
-- ✅ **CSV Export** functionality
-- ✅ **Responsive Design** mobile-first
-- ✅ **Type-Safe** throughout
-- ✅ **ESLint** + Prettier configured
+<br/>
+
+**🎨 Modern Stack**
+
+- ✅ **Next.js 16** - App Router + Turbopack for blazing speed
+- ✅ **React 19** - Server Components + latest features
+- ✅ **Tailwind CSS v4** - Latest syntax with dark mode
+- ✅ **TypeScript** - Strict mode, zero `any` types
+- ✅ **next-themes** - Persistent theme system
+
+**🔐 Authentication & Security**
+
+- ✅ **JWT Auth Flow** - Automatic token refresh (queue management)
+- ✅ **Protected Routes** - Route guards with session validation
+- ✅ **Session Persistence** - No logout on page refresh
+- ✅ **Multi-tab Sync** - Auth state synchronized across tabs
+- ✅ **Storage Utility** - Safe localStorage wrapper
+
+**🎨 UI Components Library**
+
+- ✅ **Modal/Dialog System** - ViewDialog, EditDialog, Confirm
+- ✅ **Toast Notifications** - Sonner with promise support
+- ✅ **Advanced Tables** - Sorting, pagination, bulk actions, CSV export
+- ✅ **Dynamic Sidebar** - RBAC-aware navigation
+- ✅ **Form Components** - Real-time validation
+- ✅ **Theme Switcher** - Light/dark mode toggle
+- ✅ **Loading States** - Spinners, skeletons
+- ✅ **Error Boundaries** - Graceful error handling
+
+**📊 Admin Dashboards**
+
+- ✅ **User Management** - Full CRUD, bulk ops, statistics (810 lines)
+- ✅ **Visitor Analytics** - Google Analytics-style dashboard with charts
+  (Recharts)
+- ✅ **Request Logs** - Performance metrics, cleanup management
+- ✅ **Newsletter Admin** - Subscriber management, bulk send
+- ✅ **Contact Messages** - Admin dashboard for contact form submissions
+- ✅ **Role Management** - RBAC administration
+- ✅ **Statistics Cards** - Real-time metrics
+
+**🛠️ Developer Tools**
+
+- ✅ **API Client** - Type-safe with interceptors
+- ✅ **Custom Hooks** - useAuth, useUsers, useTheme
+- ✅ **Type Guards** - Runtime type checking
+- ✅ **ESLint + Prettier** - Zero-tolerance quality gates
+- ✅ **Responsive Design** - Mobile-first approach
 
 </td>
 </tr>
@@ -114,60 +271,83 @@
 
 <br/>
 
-## 🚀 **What Makes This Special?**
+## 🎯 **What Makes This Special?**
 
 <table>
 <tr>
-<td width="33%" valign="top" align="center">
+<td width="50%" valign="top">
 
-### 🤖 **AI-First Architecture**
+### 🤖 **Built for AI Coding Agents**
 
-<img src="https://img.icons8.com/fluency/96/000000/artificial-intelligence.png" width="64" alt="AI"/>
+This is **the world's first fullstack template specifically designed for
+AI-assisted development**. Unlike other templates that are just code
+repositories, this one teaches AI agents how to write production-grade code.
 
-Optimized for coding agents with comprehensive guidelines and standardized
-patterns
+**🎓 Comprehensive AI Instructions:**
 
-**Features:**
+- 📋 **1000+ lines** of detailed coding guidelines in
+  `.github/copilot-instructions.md`
+- 🎯 **Standardized patterns** for controllers, services, components, and hooks
+- ✅ **Zero-tolerance rules** - No `any` types, no console.log, mandatory tests
+- 📚 **Complete examples** - Working user module demonstrating all patterns
+- 🧪 **Testing standards** - Every controller/service must have .spec.ts tests
 
-- 📋 Detailed AI instructions
-- 🎯 Consistent code patterns
-- 🔧 Pre-configured Copilot
-- 📚 Extensive documentation
-- 🚀 Ready-to-use setup
+**🔧 What AI Agents Get:**
+
+- Clear patterns for consistent code structure
+- Type-safe development with proper interfaces
+- Standardized error handling with ApiResponse utilities
+- Pre-configured testing with patterns and coverage requirements
+- UI component library with documented props and examples
+- API standards with Swagger documentation
+
+**💡 Supported AI Tools:**
+
+- ✅ GitHub Copilot (optimized)
+- ✅ Cursor AI
+- ✅ Claude (via Copilot)
+- ✅ GPT-4 (via Copilot)
+- ✅ Any AI assistant that reads project instructions
+
+> **Result:** AI generates code that passes all quality gates, follows best
+> practices, and is production-ready from day one.
 
 </td>
-<td width="33%" valign="top" align="center">
+<td width="50%" valign="top">
 
-### 🏗️ **Production Ready**
+### 🏆 **Production-Grade Quality**
 
-<img src="https://img.icons8.com/fluency/96/000000/rocket.png" width="64" alt="Production"/>
+This template enforces **enterprise-level standards** that most templates skip.
 
-Enterprise-grade architecture with security and performance best practices
+**🚫 Zero-Tolerance Quality Gates:**
 
-**Features:**
+- ❌ **No `any` types** - Strict TypeScript throughout
+- ❌ **No console.log** - Proper logging only (Winston/Logger)
+- ❌ **No window.alert()** - Professional UI components (Modal, Toast)
+- ❌ **No ESLint errors** - Must be 0 errors to commit
+- ❌ **No failing tests** - 80%+ coverage required
+- ❌ **No inline interfaces** - Organized in dedicated folders
 
-- 🔒 Security hardening
-- ✅ Quality gates (0 errors)
-- 🧪 80%+ test coverage
-- ⚡ Performance optimized
-- 📝 Complete documentation
+**✅ Automated Enforcement:**
 
-</td>
-<td width="33%" valign="top" align="center">
+- 🎯 **Husky v10** - Git hooks (pre-commit, commit-msg)
+- 🔍 **lint-staged** - Auto-fix ESLint + Prettier on commit
+- ✅ **commitlint** - Conventional commit format enforced
+- 🧪 **Jest** - Tests run automatically
+- 📝 **TypeScript checks** - Both server & client validated
 
-### 💻 **Developer Experience**
+**🎨 Professional Features:**
 
-<img src="https://img.icons8.com/fluency/96/000000/code.png" width="64" alt="DX"/>
+- 📊 **Admin dashboards** - User management (810 lines), request logs,
+  newsletter
+- 🎨 **10+ UI components** - Production-ready with dark mode
+- 📈 **Monitoring** - Winston logs, Sentry, request tracking, performance
+  metrics
+- 🔒 **Security** - XSS protection, SQL injection prevention, rate limiting
+- 📧 **Complete email system** - Verification, password reset, newsletters
 
-Modern tooling and beautiful UI components for rapid development
-
-**Features:**
-
-- 🎨 10+ UI components
-- 🌙 Beautiful dark mode
-- 🔥 Hot reload & Fast refresh
-- 📦 Pre-configured tools
-- 🎭 100% TypeScript
+> **Result:** Code quality that matches enterprise standards, enforced
+> automatically.
 
 </td>
 </tr>
@@ -175,7 +355,160 @@ Modern tooling and beautiful UI components for rapid development
 
 <br/>
 
-## 📊 **Tech Stack Overview**
+## � **Quick Start - Get Running in 5 Minutes**
+
+### 🎯 **Try it Live First!**
+
+👉 **[View Live Demo](https://fullstack-nnp-template.vercel.app/)** - See the
+template in action before installing
+
+<details>
+<summary>📸 <strong>What you'll see in the live demo</strong></summary>
+
+<br/>
+
+- ✅ **Homepage** with modern design and theme switcher
+- ✅ **Admin Dashboard** (Login with demo credentials below)
+- ✅ **User Management** with full CRUD operations
+- ✅ **Newsletter System** with bulk sending
+- ✅ **Role-Based Access Control (RBAC)**
+- ✅ **Request Logs Dashboard** with metrics
+- ✅ **Dark/Light mode** throughout the app
+
+</details>
+
+<br/>
+
+### Prerequisites
+
+- **Node.js** 18+
+- **Yarn** (recommended) or npm
+- **PostgreSQL** 14+
+- **Git**
+
+### 🎯 **Option 1: Use GitHub Template (Recommended)**
+
+1. **Click "Use this template"** button at the top of this repository
+2. **Create your repository** from the template
+3. **Clone your new repository**:
+   ```bash
+   git clone https://github.com/k-kaundal/fullstack-nnp-template.git
+   cd fullstack-nnp-template
+   ```
+
+### 🎯 **Option 2: Clone Directly**
+
+```bash
+git clone https://github.com/k-kaundal/fullstack-nnp-template.git
+cd fullstack-nnp-template
+```
+
+### ⚡ **One-Command Setup**
+
+```bash
+chmod +x setup.sh && ./setup.sh
+```
+
+This will:
+
+- ✅ Install all dependencies (client + server)
+- ✅ Start PostgreSQL via Docker
+- ✅ Create database and run migrations
+- ✅ Seed initial data (admin user, roles, permissions)
+- ✅ Start both frontend and backend in dev mode
+
+### 🎮 **Manual Setup (Alternative)**
+
+<details>
+<summary><b>Click to expand manual setup instructions</b></summary>
+
+<br/>
+
+**1. Install Dependencies**
+
+```bash
+# Install root dependencies (Husky, lint-staged, commitlint)
+yarn install
+
+# Install server dependencies
+cd server && yarn install
+
+# Install client dependencies
+cd ../client && yarn install
+```
+
+**2. Setup Database**
+
+```bash
+# Start PostgreSQL via Docker
+docker-compose up -d
+
+# Or use your local PostgreSQL and create database
+createdb your_database_name
+```
+
+**3. Configure Environment**
+
+```bash
+# Server configuration
+cd server
+cp .env.example .env
+# Edit .env with your database credentials
+
+# Client configuration
+cd ../client
+cp .env.local.example .env.local
+# Edit .env.local with your API URL
+```
+
+**4. Run Migrations & Seed Data**
+
+```bash
+cd server
+
+# Run database migrations
+yarn migration:run
+
+# Seed initial data (optional but recommended)
+yarn seed
+```
+
+**5. Start Development Servers**
+
+```bash
+# Terminal 1 - Start backend (http://localhost:3001)
+cd server
+yarn start:dev
+
+# Terminal 2 - Start frontend (http://localhost:3000)
+cd client
+yarn dev
+```
+
+</details>
+
+### 🎉 **Access the Application**
+
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:3001/api/v1](http://localhost:3001/api/v1)
+- **Swagger Docs**: [http://localhost:3001/api](http://localhost:3001/api)
+- **GraphQL Playground**:
+  [http://localhost:3001/graphql](http://localhost:3001/graphql)
+
+### 🔐 **Default Credentials**
+
+```
+Email: admin@example.com
+Password: Admin@123
+```
+
+> **🎯 Pro Tip:** After setup, check out the
+> [User Management Dashboard](http://localhost:3000/admin/users) to see all
+> features in action!
+
+<br/>
+
+## �📊 **Tech Stack Overview**
 
 ```mermaid
 graph LR
@@ -188,6 +521,227 @@ graph LR
     B -->|Winston| H[Logging]
     B -->|Sentry| I[Error Tracking]
 ```
+
+<br/>
+
+## 📦 **What You Get Out of the Box**
+
+### 🎨 **Pre-Built Admin Dashboards**
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+#### 👥 **User Management**
+
+**Route:** `/admin/users` | **Lines:** 810
+
+**Features:**
+
+- ✅ Full CRUD operations (Create, Update, Delete)
+- ✅ Advanced search & filtering (email, name, status)
+- ✅ Statistics cards (Total, Active, Inactive, New)
+- ✅ Bulk operations (Activate, Deactivate, Delete)
+- ✅ Professional dialogs (View, Edit, Confirm)
+- ✅ Sortable table with pagination
+- ✅ CSV export functionality
+- ✅ Real-time toast notifications
+- ✅ Dark mode support
+
+**UI Components Used:**
+
+- Table (sortable, paginated)
+- ViewDialog (formatted data display)
+- EditDialog (form with validation)
+- Confirm (destructive action prompts)
+- Toast (success/error feedback)
+
+</td>
+<td width="50%" valign="top">
+
+#### 📧 **Newsletter System**
+
+**Route:** `/admin/newsletter` | **Lines:** 540+
+
+**Features:**
+
+- ✅ Subscriber management with search
+- ✅ Statistics dashboard
+- ✅ Bulk email sending
+- ✅ HTML email templates (3 pre-built)
+- ✅ Live preview before sending
+- ✅ CSV export subscribers
+- ✅ Bulk operations (activate, delete)
+- ✅ Public subscription form
+
+**Email Templates:**
+
+- Welcome Email (purple gradient)
+- Monthly Update (blue header)
+- Announcement (red alert style)
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+#### 📈 **Request Logs Dashboard**
+
+**Route:** `/admin/request-logs`
+
+**Features:**
+
+- ✅ Real-time request tracking
+- ✅ Performance metrics (avg response time)
+- ✅ Success/error rate statistics
+- ✅ Active users tracking
+- ✅ Manual log cleanup
+- ✅ Automatic cleanup via cron (24h)
+- ✅ Sensitive data sanitization
+- ✅ Filter by method, status, user
+
+**Metrics Tracked:**
+
+- Total requests
+- Average response time
+- Success rate percentage
+- Error rate percentage
+- Active users count
+
+</td>
+<td width="50%" valign="top">
+
+#### 🔐 **Role & Permission Management**
+
+**Route:** `/admin/roles`, `/admin/permissions`
+
+**Features:**
+
+- ✅ Dynamic RBAC system
+- ✅ Create/Edit/Delete roles
+- ✅ Assign permissions to roles
+- ✅ User role assignment
+- ✅ Permission management
+- ✅ Dynamic sidebar (role-aware)
+- ✅ Fine-grained access control
+
+**Default Roles:**
+
+- Admin (full access)
+- Manager (moderate access)
+- Editor (content access)
+- User (basic access)
+
+**Permission Categories:**
+
+- Users (CRUD)
+- Roles (CRUD)
+- Content (CRUD)
+
+</td>
+</tr>
+</table>
+
+### 🧩 **UI Component Library (10+ Components)**
+
+All components support **dark mode** and are **fully type-safe**.
+
+<details>
+<summary><b>📋 Click to see all available components</b></summary>
+
+<br/>
+
+| Component          | Purpose             | Key Features                                  |
+| ------------------ | ------------------- | --------------------------------------------- |
+| **Modal**          | General dialog      | Size variants, closable overlay, ESC support  |
+| **Alert**          | Information dialog  | 4 types (info/success/warning/error)          |
+| **Confirm**        | Confirmation prompt | 3 types (info/warning/danger), async handling |
+| **Toast**          | Notifications       | Promise support, loading states, auto-dismiss |
+| **Table**          | Data tables         | Sorting, pagination, selection, actions       |
+| **ViewDialog**     | Data display        | Multi-section, formatted fields, copy support |
+| **EditDialog**     | Forms               | Multi-section, validation, real-time errors   |
+| **Sidebar**        | Navigation          | Multi-level, collapsible, active detection    |
+| **Header**         | App header          | User menu, notifications, theme switcher      |
+| **ThemeSwitcher**  | Theme toggle        | Persistent, smooth transition                 |
+| **LoadingSpinner** | Loading states      | Size variants (sm/md/lg)                      |
+| **ErrorMessage**   | Error display       | Formatted, dismissible                        |
+| **Pagination**     | Page navigation     | First/last/prev/next, page numbers            |
+
+**Usage Example:**
+
+```tsx
+import { Modal, Alert, Toast, Table } from '@/components/ui';
+
+// Modal
+<Modal isOpen={open} onClose={handleClose} title="My Modal">
+  Content here
+</Modal>
+
+// Toast notifications
+toast.success('Operation successful!');
+toast.error('Something went wrong');
+toast.promise(apiCall(), {
+  loading: 'Processing...',
+  success: 'Done!',
+  error: 'Failed!'
+});
+
+// Table with advanced features
+<Table
+  data={users}
+  columns={columns}
+  pagination={{ page, limit, total }}
+  onSort={handleSort}
+  onSelect={handleSelect}
+  actions={{ view, edit, delete }}
+/>
+```
+
+</details>
+
+### 🔐 **Complete Authentication System**
+
+- ✅ **Registration** - Email verification required
+- ✅ **Login** - JWT with refresh tokens
+- ✅ **Email Verification** - Crypto-secure tokens
+- ✅ **Password Reset** - Forgot password flow
+- ✅ **Protected Routes** - Route guards
+- ✅ **Auto Token Refresh** - Queue management (no duplicate refreshes)
+- ✅ **Multi-Device Sessions** - Track IP, user agent
+- ✅ **Logout** - Server-side token blacklisting
+- ✅ **Session Persistence** - No logout on page refresh
+
+### 📚 **Comprehensive Documentation (15+ Guides)**
+
+All documentation is in `server/docs/` and `client/docs/`:
+
+**Backend Docs:**
+
+- API Security Implementation
+- Authentication & Authorization
+- Database Features (Migrations, Seeders)
+- Error Handling & Logging (70+ error codes)
+- Validation Implementation
+- Request Logging System
+- Session Management
+- GraphQL & Rate Limiting
+- API Versioning & Swagger
+
+**Client Docs:**
+
+- Client Architecture
+- Code Quality Standards
+- Modal Components Guide
+- Session Management
+- Toast System
+- Refresh Troubleshooting
+
+**Root Docs:**
+
+- Quick Start Guide
+- Testing Guide
+- CI/CD Implementation
+- Contributing Guidelines
 
 <br/>
 
@@ -239,7 +793,7 @@ graph LR
 
 <br/>
 
-## 📊 **Repository Stats**
+## 📊 **Repository Stats & Activity**
 
 <p align="center">
   <img width="49%" src="https://github-readme-stats.vercel.app/api?username=k-kaundal&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&bg_color=0D1117&title_color=58A6FF&icon_color=58A6FF&text_color=C9D1D9" alt="GitHub Stats" />
@@ -252,6 +806,46 @@ graph LR
 
 <br/>
 
+## 👨‍💻 **Connect With the Creator**
+
+<p align="center">
+  <a href="https://kaundal.vip">
+    <img src="https://img.shields.io/badge/🌐_Website-kaundal.vip-4285F4?style=for-the-badge&logoColor=white" alt="Website" />
+  </a>
+  <a href="https://blog.kaundal.vip">
+    <img src="https://img.shields.io/badge/📝_Blog-blog.kaundal.vip-FF5722?style=for-the-badge&logoColor=white" alt="Blog" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://x.com/k_k_kaundal">
+    <img src="https://img.shields.io/badge/𝕏_Twitter-@k__k__kaundal-1DA1F2?style=for-the-badge&logo=x&logoColor=white" alt="Twitter" />
+  </a>
+  <a href="https://www.linkedin.com/in/kaundal/">
+    <img src="https://img.shields.io/badge/LinkedIn-kaundal-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="https://www.instagram.com/k.k.kaundal/">
+    <img src="https://img.shields.io/badge/Instagram-@k.k.kaundal-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram" />
+  </a>
+  <a href="https://www.threads.com/@k.k.kaundal">
+    <img src="https://img.shields.io/badge/Threads-@k.k.kaundal-000000?style=for-the-badge&logo=threads&logoColor=white" alt="Threads" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.facebook.com/me.kaundal">
+    <img src="https://img.shields.io/badge/Facebook-me.kaundal-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook" />
+  </a>
+  <a href="https://www.facebook.com/groups/me.software.engineer">
+    <img src="https://img.shields.io/badge/Community-Software_Engineers-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Community" />
+  </a>
+  <a href="https://x.com/i/communities/1826457685698441668">
+    <img src="https://img.shields.io/badge/𝕏_Community-Tech_Talks-000000?style=for-the-badge&logo=x&logoColor=white" alt="X Community" />
+  </a>
+</p>
+
+<br/>
+
 ---
 
 <br/>
@@ -259,6 +853,136 @@ graph LR
 </div>
 
 <div align="left">
+
+## 📖 **Table of Contents**
+
+- [🌟 Why Choose This Template?](#-why-choose-this-template)
+- [⚡ Key Features at a Glance](#-key-features-at-a-glance)
+- [🎯 What Makes This Special?](#-what-makes-this-special)
+- [🚀 Quick Start - Get Running in 5 Minutes](#-quick-start---get-running-in-5-minutes)
+- [📦 What You Get Out of the Box](#-what-you-get-out-of-the-box)
+- [📊 Tech Stack Details](#-tech-stack-details)
+- [🏗️ Project Structure](#️-project-structure)
+- [🧪 Testing Strategy](#-testing-strategy)
+- [🚀 Deployment Guide](#-deployment-guide)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+- [⭐ Show Your Support](#-show-your-support)
+
+<br/>
+
+## 📊 **Tech Stack Details**
+
+### **Backend Stack**
+
+| Technology        | Version | Purpose                       |
+| ----------------- | ------- | ----------------------------- |
+| **NestJS**        | Latest  | Progressive Node.js framework |
+| **TypeScript**    | 5.3+    | Type-safe development         |
+| **PostgreSQL**    | 14+     | Relational database           |
+| **TypeORM**       | Latest  | Database ORM                  |
+| **Apollo Server** | v4      | GraphQL server                |
+| **JWT**           | Latest  | Authentication tokens         |
+| **Bcrypt**        | Latest  | Password hashing              |
+| **Winston**       | Latest  | Logging system                |
+| **Sentry**        | Latest  | Error monitoring              |
+| **Jest**          | Latest  | Testing framework             |
+
+### **Frontend Stack**
+
+| Technology       | Version | Purpose             |
+| ---------------- | ------- | ------------------- |
+| **Next.js**      | 16      | React framework     |
+| **React**        | 19      | UI library          |
+| **TypeScript**   | 5.3+    | Type safety         |
+| **Tailwind CSS** | v4      | Utility-first CSS   |
+| **next-themes**  | Latest  | Theme management    |
+| **Sonner**       | Latest  | Toast notifications |
+| **Axios**        | Latest  | HTTP client         |
+
+### **DevOps & Tools**
+
+| Technology      | Purpose                       |
+| --------------- | ----------------------------- |
+| **Docker**      | Containerization (PostgreSQL) |
+| **Husky**       | Git hooks                     |
+| **ESLint**      | Code linting                  |
+| **Prettier**    | Code formatting               |
+| **lint-staged** | Staged file linting           |
+| **commitlint**  | Commit message validation     |
+
+<br/>
+
+## 🏗️ **Project Structure**
+
+```
+fullstack-nnp-template/
+│
+├── 📁 client/                          # Next.js Frontend
+│   ├── app/                            # App Router pages
+│   │   ├── (public)/                   # Public pages (route group)
+│   │   ├── admin/                      # Admin dashboards
+│   │   │   ├── users/                  # User management (810 lines)
+│   │   │   ├── request-logs/           # Request logging dashboard
+│   │   │   ├── newsletter/             # Newsletter management
+│   │   │   └── roles/                  # RBAC management
+│   │   ├── auth/                       # Auth pages (login, register)
+│   │   ├── layout.tsx                  # Root layout
+│   │   ├── page.tsx                    # Homepage
+│   │   └── globals.css                 # Global styles + theme
+│   │
+│   ├── components/                     # React components
+│   │   ├── ui/                         # Reusable UI (Modal, Table, Toast)
+│   │   ├── auth/                       # Auth components
+│   │   └── user/                       # User components
+│   │
+│   ├── lib/                            # Core library
+│   │   ├── api/                        # API services
+│   │   ├── providers/                  # React Context providers
+│   │   └── utils/                      # Utilities
+│   │
+│   ├── interfaces/                     # TypeScript interfaces
+│   ├── types/                          # TypeScript types
+│   ├── enums/                          # TypeScript enums
+│   ├── hooks/                          # Custom React hooks
+│   ├── constants/                      # App constants
+│   └── docs/                           # Client documentation
+│
+├── 📁 server/                          # NestJS Backend
+│   ├── src/
+│   │   ├── common/                     # Shared code
+│   │   │   ├── decorators/             # Custom decorators
+│   │   │   ├── filters/                # Exception filters
+│   │   │   ├── guards/                 # Auth guards
+│   │   │   ├── middleware/             # Middleware
+│   │   │   ├── exceptions/             # 40+ custom exceptions
+│   │   │   ├── enums/                  # 70+ error codes
+│   │   │   └── utils/                  # Utilities
+│   │   │
+│   │   ├── config/                     # Configuration
+│   │   ├── database/                   # Migrations & seeders
+│   │   ├── auth/                       # Authentication
+│   │   ├── users/                      # Users module
+│   │   ├── roles/                      # RBAC roles
+│   │   ├── permissions/                # RBAC permissions
+│   │   ├── sessions/                   # Session management
+│   │   ├── newsletter/                 # Newsletter system
+│   │   └── graphql/                    # GraphQL
+│   │
+│   ├── test/                           # E2E tests
+│   ├── docs/                           # Backend docs (15+ guides)
+│   ├── scripts/                        # Utility scripts
+│   └── logs/                           # Winston logs
+│
+├── 📁 docs/                            # Root documentation
+├── 📁 .github/                         # GitHub config
+│   ├── copilot-instructions.md         # 1000+ lines AI guidelines
+│   └── workflows/                      # CI/CD pipelines
+│
+├── docker-compose.yml                  # PostgreSQL + pgAdmin
+├── setup.sh                            # One-command setup
+└── package.json                        # Root package
+```
 
 ## 📖 **Table of Contents**
 
@@ -941,7 +1665,7 @@ Retry-After: 45
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url> my-new-project
+git clone https://github.com/k-kaundal/fullstack-nnp-template.git my-new-project
 cd my-new-project
 ```
 
@@ -1151,6 +1875,276 @@ Once the backend is running, visit:
 
 - **Swagger UI**: `http://localhost:3001/api/docs`
 - **JSON Schema**: `http://localhost:3001/api/docs-json`
+
+## 🧪 **Testing Strategy**
+
+This template implements **comprehensive testing** with **80%+ coverage
+requirement** and **automated quality gates**.
+
+### **Test Types & Structure**
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### **Backend Testing (NestJS + Jest)**
+
+**📝 Test Requirements:**
+
+- ✅ **Every controller** must have `.controller.spec.ts`
+- ✅ **Every service** must have `.service.spec.ts`
+- ✅ **Minimum 80% coverage** required
+- ✅ **Tests must pass** before commits (Husky hook)
+
+**Test Types:**
+
+1. **Unit Tests** - Test individual methods in isolation
+2. **E2E Tests** - Test complete API flows with real database
+
+**Running Tests:**
+
+```bash
+cd server
+
+# Unit tests (fast)
+yarn test
+
+# Tests in watch mode
+yarn test:watch
+
+# Test coverage
+yarn test:cov
+
+# E2E tests (slower, uses test database)
+yarn test:e2e
+```
+
+**Test Structure Example:**
+
+```typescript
+describe('UsersService', () => {
+  let service: UsersService;
+  let repository: Repository<User>;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        { provide: getRepositoryToken(User), useValue: mockRepository },
+      ],
+    }).compile();
+  });
+
+  it('should create a user', async () => {
+    // Arrange
+    const dto = { email: 'test@example.com' };
+
+    // Act
+    const result = await service.create(dto, mockResponse);
+
+    // Assert
+    expect(result.status).toBe('success');
+  });
+});
+```
+
+</td>
+<td width="50%" valign="top">
+
+### **Frontend Testing (Coming Soon)**
+
+**📝 Recommended Tools:**
+
+- **Vitest** or **Jest** - Unit testing
+- **React Testing Library** - Component testing
+- **Playwright** or **Cypress** - E2E testing
+
+**Planned Coverage:**
+
+- Component unit tests
+- Hook testing
+- Integration tests for API calls
+- E2E tests for critical flows
+
+</td>
+</tr>
+</table>
+
+### **Quality Gates - Enforced Automatically**
+
+Every commit triggers these checks via **Husky** and **lint-staged**:
+
+1. ✅ **TypeScript compilation** - Both server & client
+2. ✅ **ESLint validation** - Must have 0 errors
+3. ✅ **Prettier formatting** - Auto-formatted on commit
+4. ✅ **Commit message format** - Conventional commits enforced
+5. ✅ **Unit tests** - Optional but recommended
+
+**Pre-commit Hook Example:**
+
+```json
+{
+  "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+  "*.{json,md}": ["prettier --write"]
+}
+```
+
+<br/>
+
+## 🚀 **Deployment Guide**
+
+### **Prerequisites**
+
+- Node.js 18+ installed on server
+- PostgreSQL 14+ database
+- Domain name with SSL certificate (recommended)
+- Environment variables configured
+
+### **Deployment Options**
+
+<details>
+<summary><b>1️⃣ Docker Deployment (Recommended)</b></summary>
+
+<br/>
+
+**Coming soon:** Docker containerization for both frontend and backend.
+
+For now, use Docker only for PostgreSQL:
+
+```bash
+docker-compose up -d
+```
+
+</details>
+
+<details>
+<summary><b>2️⃣ Manual Deployment (VPS/Cloud)</b></summary>
+
+<br/>
+
+**Backend Deployment:**
+
+```bash
+# 1. Clone repository on server
+git clone https://github.com/k-kaundal/fullstack-nnp-template.git
+cd fullstack-nnp-template/server
+
+# 2. Install dependencies
+yarn install --production
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env with production values
+
+# 4. Run migrations
+yarn migration:run
+
+# 5. Build application
+yarn build
+
+# 6. Start with PM2 (recommended)
+pm2 start dist/main.js --name "api-server"
+pm2 save
+pm2 startup
+```
+
+**Frontend Deployment:**
+
+```bash
+cd client
+
+# 1. Install dependencies
+yarn install
+
+# 2. Configure environment
+cp .env.local.example .env.local
+# Edit .env.local with production API URL
+
+# 3. Build for production
+yarn build
+
+# 4. Start production server
+yarn start
+
+# Or with PM2
+pm2 start "yarn start" --name "web-app"
+```
+
+</details>
+
+<details>
+<summary><b>3️⃣ Vercel Deployment (Next.js only)</b></summary>
+
+<br/>
+
+The client is **Vercel-ready** with `vercel.json` configuration.
+
+**Deploy to Vercel:**
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+cd client
+vercel
+
+# Production deployment
+vercel --prod
+```
+
+**Environment Variables in Vercel:**
+
+- Add `NEXT_PUBLIC_API_URL` in Vercel dashboard
+- Point to your production backend URL
+
+**Note:** Backend must be deployed separately (VPS, Heroku, Railway, etc.)
+
+</details>
+
+<details>
+<summary><b>4️⃣ Cloud Platforms</b></summary>
+
+<br/>
+
+**Backend Options:**
+
+- **Heroku** - Easy deployment with PostgreSQL add-on
+- **Railway.app** - Modern platform with great DX
+- **DigitalOcean App Platform** - Simple and affordable
+- **AWS Elastic Beanstalk** - Scalable enterprise option
+- **Google Cloud Run** - Serverless containers
+
+**Frontend Options:**
+
+- **Vercel** - Optimized for Next.js (recommended)
+- **Netlify** - Great for static sites
+- **Railway.app** - Deploy both frontend & backend
+- **Cloudflare Pages** - Fast global CDN
+
+</details>
+
+### **Production Checklist**
+
+Before deploying to production:
+
+- [ ] Change all default passwords and secrets
+- [ ] Set `NODE_ENV=production`
+- [ ] Disable Swagger in production (`NODE_ENV !== 'development'`)
+- [ ] Disable GraphQL Playground in production
+- [ ] Configure CORS for your production domain only
+- [ ] Set up proper logging (Winston to file/service)
+- [ ] Configure Sentry for error tracking
+- [ ] Set up database backups
+- [ ] Enable SSL/TLS (HTTPS)
+- [ ] Configure rate limiting for production traffic
+- [ ] Test email functionality
+- [ ] Run database migrations
+- [ ] Seed initial data (admin user, roles)
+- [ ] Test authentication flow end-to-end
+- [ ] Monitor application logs and errors
+
+<br/>
 
 ## 🧪 Testing
 
@@ -1593,7 +2587,7 @@ Write tests, report bugs, suggest improvements
 
 ```bash
 # Fork the repository on GitHub
-# Clone your fork
+# Clone your fork (replace YOUR_USERNAME with your GitHub username)
 git clone https://github.com/YOUR_USERNAME/fullstack-nnp-template.git
 cd fullstack-nnp-template
 
@@ -1810,22 +2804,222 @@ If you find this project helpful:
 
 <div align="center">
 
-## 🌟 **Show Your Support**
+<br/>
 
-If this project helped you, please consider:
+## ⭐ **Show Your Support**
 
-[![Star on GitHub](https://img.shields.io/github/stars/k-kaundal/fullstack-nnp-template?style=social)](https://github.com/k-kaundal/fullstack-nnp-template)
-[![Follow on Twitter](https://img.shields.io/twitter/follow/k_k_kaundal?style=social)](https://x.com/k_k_kaundal)
+<br/>
 
-**Thank you for being part of our community!** 🙏
+**If this project helped you, please consider:**
+
+<br/>
+
+<table>
+<tr>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/star.png" width="64" alt="Star"/>
+<br/><br/>
+<strong>Star on GitHub</strong>
+<br/><br/>
+<a href="https://github.com/k-kaundal/fullstack-nnp-template">
+<img src="https://img.shields.io/github/stars/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=github&color=yellow" alt="Star"/>
+</a>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/share.png" width="64" alt="Share"/>
+<br/><br/>
+<strong>Share with Friends</strong>
+<br/><br/>
+<p>Spread the word about this template on social media</p>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/code.png" width="64" alt="Contribute"/>
+<br/><br/>
+<strong>Contribute</strong>
+<br/><br/>
+<a href="https://github.com/k-kaundal/fullstack-nnp-template/blob/main/CONTRIBUTING.md">
+Contribution Guide
+</a>
+</td>
+<td align="center" width="25%">
+<img src="https://img.icons8.com/fluency/96/000000/twitter.png" width="64" alt="Follow"/>
+<br/><br/>
+<strong>Follow for Updates</strong>
+<br/><br/>
+<a href="https://x.com/k_k_kaundal">
+<img src="https://img.shields.io/twitter/follow/k_k_kaundal?style=for-the-badge&logo=x&color=1DA1F2" alt="Follow"/>
+</a>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
 
 ---
 
-**Happy Coding! 🎉**
+<br/>
 
-_Built with ❤️ by [Kaundal](https://kaundal.vip) using NestJS, Next.js, and
-PostgreSQL_
+## 🎓 **Learn More**
 
-**Open Source • Community Driven • Production Ready**
+**Official Documentation:**
+
+- 📚 [NestJS Documentation](https://docs.nestjs.com/) - Backend framework
+- 📘 [Next.js Documentation](https://nextjs.org/docs) - Frontend framework
+- 🗄️ [TypeORM Documentation](https://typeorm.io/) - Database ORM
+- 🐘 [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Database
+- 🎨 [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Styling
+- 🔐 [JWT Documentation](https://jwt.io/) - Authentication
+
+**Project Documentation:**
+
+- 📖 [Quick Start Guide](QUICK_START.md) - Get started in 5 minutes
+- 🧪 [Testing Guide](TESTING_GUIDE.md) - Write and run tests
+- 🚀 [CI/CD Implementation](CI_CD_IMPLEMENTATION.md) - Deployment automation
+- 🤝 [Contributing Guide](CONTRIBUTING.md) - How to contribute
+- 🤖 [AI Copilot Instructions](.github/copilot-instructions.md) - AI coding
+  guidelines
+
+<br/>
+
+---
+
+<br/>
+
+## 📊 **Project Stats**
+
+<p align="center">
+  <img src="https://img.shields.io/github/repo-size/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=github&label=Repo%20Size" alt="Repo Size" />
+  <img src="https://img.shields.io/github/languages/count/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=typescript&label=Languages" alt="Languages" />
+  <img src="https://img.shields.io/github/commit-activity/m/k-kaundal/fullstack-nnp-template?style=for-the-badge&logo=git&label=Commits" alt="Commits" />
+</p>
+
+<br/>
+
+---
+
+<br/>
+
+## 📝 **License**
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE)
+file for details.
+
+<br/>
+
+**What this means:**
+
+- ✅ **Free to use** for personal and commercial projects
+- ✅ **Modify and distribute** as you like
+- ✅ **Private use** allowed
+- ⚠️ **No warranty** provided
+- 📄 **License and copyright** notice required
+
+<br/>
+
+---
+
+<br/>
+
+## 💬 **Feedback & Support**
+
+<table align="center">
+<tr>
+<td align="center" width="50%">
+
+### 🐛 **Found a Bug?**
+
+[Report it here](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=bug&template=bug_report.md)
+
+We'll fix it as soon as possible!
+
+</td>
+<td align="center" width="50%">
+
+### 💡 **Have an Idea?**
+
+[Request a Feature](https://github.com/k-kaundal/fullstack-nnp-template/issues/new?labels=enhancement&template=feature_request.md)
+
+We're always looking to improve!
+
+</td>
+</tr>
+<tr>
+<td align="center" width="50%">
+
+### ❓ **Need Help?**
+
+[Start a Discussion](https://github.com/k-kaundal/fullstack-nnp-template/discussions)
+
+Our community is here to help!
+
+</td>
+<td align="center" width="50%">
+
+### 📧 **Contact**
+
+Reach out on [Twitter](https://x.com/k_k_kaundal) or
+[LinkedIn](https://www.linkedin.com/in/kaundal/)
+
+Let's connect!
+
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+---
+
+<br/>
+
+## 🙏 **Acknowledgments**
+
+**Special thanks to:**
+
+- 🎉 All
+  [contributors](https://github.com/k-kaundal/fullstack-nnp-template/graphs/contributors)
+  who help improve this project
+- 💪 The amazing open-source community
+- 🛠️ Creators of NestJS, Next.js, and all the tools we use
+- 🤖 GitHub Copilot for making this AI-optimized template possible
+
+<br/>
+
+**Built with love using:**
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=ts,nodejs,nestjs,nextjs,react,postgres,docker,tailwind,graphql,jest,vscode,github" alt="Tech Stack" />
+</p>
+
+<br/>
+<br/>
+
+---
+
+<br/>
+<br/>
+
+<img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=24&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&repeat=true&width=800&lines=Thank+you+for+checking+out+this+project!;Happy+Coding!+%F0%9F%9A%80;Star+%E2%AD%90+if+this+helped+you!;Let's+build+amazing+things+together!" alt="Thank You" />
+
+<br/>
+<br/>
+
+**Made with ❤️ by [Kaundal](https://kaundal.vip)**
+
+**Open Source • Community Driven • Production Ready • AI Optimized**
+
+<br/>
+
+[![Star on GitHub](https://img.shields.io/github/stars/k-kaundal/fullstack-nnp-template?style=social)](https://github.com/k-kaundal/fullstack-nnp-template)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/k_k_kaundal?style=social)](https://x.com/k_k_kaundal)
+[![LinkedIn](https://img.shields.io/badge/Connect-LinkedIn-blue?style=social&logo=linkedin)](https://www.linkedin.com/in/kaundal/)
+
+<br/>
+
+---
+
+**© 2026 Kaundal. All rights reserved.**
 
 </div>
