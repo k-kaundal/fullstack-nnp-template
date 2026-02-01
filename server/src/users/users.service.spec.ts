@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
+import { Role } from '../rbac/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailService } from '../mail/mail.service';
@@ -34,6 +35,7 @@ describe('UsersService', () => {
     emailVerificationExpires: undefined,
     passwordResetToken: '',
     passwordResetExpires: undefined,
+    roles: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     hashPasswordBeforeInsert: async () => {},
@@ -61,6 +63,14 @@ describe('UsersService', () => {
             findOne: jest.fn(),
             findAndCount: jest.fn(),
             remove: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Role),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            findByIds: jest.fn(),
           },
         },
         {

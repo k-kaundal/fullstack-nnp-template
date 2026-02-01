@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Role } from '../rbac/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUsersDto } from './dto/search-users.dto';
@@ -26,6 +27,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
     private readonly mailService: MailService,
@@ -663,6 +666,250 @@ export class UsersService {
       return ApiResponse.error(res, {
         statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message || 'Failed to delete users',
+      });
+    }
+  }
+
+  /**
+   * Assign roles to a user
+   *
+   * @param userId - User ID
+   * @param roleIds - Array of role IDs to assign
+   * @param res - Express response object
+   * @returns Promise<Response> - HTTP response with updated user
+   */
+  async assignRoles(
+    userId: string,
+    roleIds: string[],
+    res: Response,
+  ): Promise<Response> {
+    try {
+      this.logger.log(`Assigning roles to user: ${userId}`);
+
+      // Find user
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+        relations: ['roles'],
+      });
+
+      if (!user) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        });
+      }
+
+      // Find roles
+      const roles = await this.roleRepository.find({
+        where: { id: In(roleIds) },
+      });
+
+      if (roles.length !== roleIds.length) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'One or more roles not found',
+        });
+      }
+
+      // Assign roles (replace existing roles)
+      user.roles = roles;
+      const updatedUser = await this.usersRepository.save(user);
+
+      // Invalidate cache
+      await this.cacheManager.del(`${this.CACHE_PREFIX}_${userId}`);
+      await this.cacheManager.del(`${this.CACHE_PREFIX}_list`);
+
+      this.logger.log(`Roles assigned to user: ${userId}`);
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: updatedUser,
+        message: 'Roles assigned successfully',
+        meta: {
+          user_id: updatedUser.id,
+          roles_count: updatedUser.roles.length,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to assign roles to user ${userId}: ${error.message}`,
+        error.stack,
+      );
+
+      return ApiResponse.error(res, {
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Failed to assign roles',
+      });
+    }
+  }
+
+  /**
+   * Get user roles
+   *
+   * @param userId - User ID
+   * @param res - Express response object
+   * @returns Promise<Response> - HTTP response with user roles
+   */
+  async getUserRoles(userId: string, res: Response): Promise<Response> {
+    try {
+      this.logger.log(`Fetching roles for user: ${userId}`);
+
+      // Find user with roles
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+        relations: ['roles', 'roles.permissions'],
+      });
+
+      if (!user) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        });
+      }
+
+      this.logger.log(`Roles fetched for user: ${userId}`);
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: user.roles,
+        message: 'User roles fetched successfully',
+        meta: {
+          user_id: user.id,
+          roles_count: user.roles.length,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch roles for user ${userId}: ${error.message}`,
+        error.stack,
+      );
+
+      return ApiResponse.error(res, {
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Failed to fetch user roles',
+      });
+    }
+  }
+
+  /**
+   * Remove a role from user
+   *
+   * @param userId - User ID
+   * @param roleId - Role ID to remove
+   * @param res - Express response object
+   * @returns Promise<Response> - HTTP response
+   */
+  async removeRole(
+    userId: string,
+    roleId: string,
+    res: Response,
+  ): Promise<Response> {
+    try {
+      this.logger.log(`Removing role ${roleId} from user: ${userId}`);
+
+      // Find user with roles
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+        relations: ['roles'],
+      });
+
+      if (!user) {
+        return ApiResponse.error(res, {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'User not found',
+        });
+      }
+
+      // Remove role
+      user.roles = user.roles.filter((role) => role.id !== roleId);
+      const updatedUser = await this.usersRepository.save(user);
+
+      // Invalidate cache
+      await this.cacheManager.del(`${this.CACHE_PREFIX}_${userId}`);
+      await this.cacheManager.del(`${this.CACHE_PREFIX}_list`);
+
+      this.logger.log(`Role removed from user: ${userId}`);
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: updatedUser,
+        message: 'Role removed successfully',
+        meta: {
+          user_id: updatedUser.id,
+          roles_count: updatedUser.roles.length,
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to remove role from user ${userId}: ${error.message}`,
+        error.stack,
+      );
+
+      return ApiResponse.error(res, {
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Failed to remove role',
+      });
+    }
+  }
+
+  /**
+   * Get user statistics for dashboard
+   *
+   * @param res - Express response object
+   * @returns Promise<Response> - HTTP response with statistics
+   */
+  async getStatistics(res: Response): Promise<Response> {
+    try {
+      this.logger.log('Fetching user statistics');
+
+      // Get total users count
+      const total = await this.usersRepository.count();
+
+      // Get active users count
+      const active = await this.usersRepository.count({
+        where: { isActive: true },
+      });
+
+      // Get inactive users count
+      const inactive = await this.usersRepository.count({
+        where: { isActive: false },
+      });
+
+      // Get today's registrations (users created today)
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const todayRegistered = await this.usersRepository
+        .createQueryBuilder('user')
+        .where('user.createdAt >= :startOfDay', { startOfDay })
+        .getCount();
+
+      this.logger.log('User statistics fetched successfully');
+
+      return ApiResponse.success(res, {
+        statusCode: HttpStatus.OK,
+        data: {
+          total,
+          active,
+          inactive,
+          pending: 0, // Placeholder for future pending approval feature
+          todayRegistered,
+        },
+        message: 'Statistics fetched successfully',
+        meta: {
+          cached: false,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch user statistics: ${error.message}`,
+        error.stack,
+      );
+
+      return ApiResponse.error(res, {
+        statusCode: error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Failed to fetch statistics',
       });
     }
   }

@@ -7,6 +7,7 @@
 import { ThrottlerModuleOptions } from '@nestjs/throttler';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+const isRateLimitEnabled = process.env.RATE_LIMIT_ENABLED !== 'false';
 
 /**
  * Get rate limit value from environment with fallback
@@ -32,49 +33,52 @@ const getRateLimitValue = (
  * All values configurable via environment variables
  * - Fallback to generous limits in development
  * - Fallback to strict limits in production
+ * - If RATE_LIMIT_ENABLED=false, returns empty throttlers array (disabled)
  */
 export const throttlerConfig: ThrottlerModuleOptions = {
-  throttlers: [
-    {
-      name: 'default',
-      ttl: getRateLimitValue(
-        'RATE_LIMIT_DEFAULT_TTL',
-        300000, // Dev: 5 minutes
-        60000, // Prod: 1 minute
-      ),
-      limit: getRateLimitValue(
-        'RATE_LIMIT_DEFAULT_MAX',
-        2000, // Dev: 2000 requests
-        100, // Prod: 100 requests
-      ),
-    },
-    {
-      name: 'strict',
-      ttl: getRateLimitValue(
-        'RATE_LIMIT_STRICT_TTL',
-        300000, // Dev: 5 minutes
-        60000, // Prod: 1 minute
-      ),
-      limit: getRateLimitValue(
-        'RATE_LIMIT_STRICT_MAX',
-        500, // Dev: 500 requests
-        10, // Prod: 10 requests
-      ),
-    },
-    {
-      name: 'auth',
-      ttl: getRateLimitValue(
-        'RATE_LIMIT_AUTH_TTL',
-        1800000, // Dev: 30 minutes
-        900000, // Prod: 15 minutes
-      ),
-      limit: getRateLimitValue(
-        'RATE_LIMIT_AUTH_MAX',
-        100, // Dev: 100 attempts
-        5, // Prod: 5 attempts
-      ),
-    },
-  ],
+  throttlers: isRateLimitEnabled
+    ? [
+        {
+          name: 'default',
+          ttl: getRateLimitValue(
+            'RATE_LIMIT_DEFAULT_TTL',
+            300000, // Dev: 5 minutes
+            60000, // Prod: 1 minute
+          ),
+          limit: getRateLimitValue(
+            'RATE_LIMIT_DEFAULT_MAX',
+            2000, // Dev: 2000 requests
+            100, // Prod: 100 requests
+          ),
+        },
+        {
+          name: 'strict',
+          ttl: getRateLimitValue(
+            'RATE_LIMIT_STRICT_TTL',
+            300000, // Dev: 5 minutes
+            60000, // Prod: 1 minute
+          ),
+          limit: getRateLimitValue(
+            'RATE_LIMIT_STRICT_MAX',
+            500, // Dev: 500 requests
+            10, // Prod: 10 requests
+          ),
+        },
+        {
+          name: 'auth',
+          ttl: getRateLimitValue(
+            'RATE_LIMIT_AUTH_TTL',
+            1800000, // Dev: 30 minutes
+            900000, // Prod: 15 minutes
+          ),
+          limit: getRateLimitValue(
+            'RATE_LIMIT_AUTH_MAX',
+            100, // Dev: 100 attempts
+            5, // Prod: 5 attempts
+          ),
+        },
+      ]
+    : [], // Empty array when rate limiting is disabled
 
   // Skip if rate limit is disabled via env
   skipIf: () => process.env.RATE_LIMIT_ENABLED === 'false',

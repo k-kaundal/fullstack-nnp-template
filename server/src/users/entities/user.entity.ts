@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../../rbac/entities/role.entity';
 
 /**
  * User entity representing a user record in the database
@@ -90,6 +93,18 @@ export class User {
    */
   @Column({ nullable: true, select: false })
   passwordResetExpires: Date;
+
+  /**
+   * User roles for RBAC
+   * Many-to-many relationship with Role entity
+   */
+  @ManyToMany(() => Role, (role) => role.users, { eager: true })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'roleId', referencedColumnName: 'id' },
+  })
+  roles: Role[];
 
   /**
    * Timestamp when the user was created

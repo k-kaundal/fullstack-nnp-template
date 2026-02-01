@@ -104,7 +104,24 @@ export function Sidebar({ config, className = '' }: SidebarProps) {
 function SidebarMenuItem({ item, collapsed, pathname, level }: SidebarMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
-  const isActive = item.href === pathname || pathname.startsWith(item.href + '/');
+
+  // Check if any child item is active
+  const isChildActive =
+    hasChildren &&
+    item.children?.some((child: SidebarItem) => {
+      if (!child.href) return false;
+      // Compare paths without query parameters
+      const childPath = child.href.split('?')[0];
+      const currentPath = pathname.split('?')[0];
+      return childPath === currentPath || currentPath.startsWith(childPath + '/');
+    });
+
+  // Check if this item is currently active (including when a child is active)
+  // For items without children, only match exact path to avoid false positives (e.g., '/admin' matching '/admin/users')
+  const isActive = hasChildren
+    ? item.href === pathname || pathname.startsWith(item.href + '/') || isChildActive
+    : item.href === pathname;
+
   const paddingLeft = level * 12 + 12;
 
   const handleClick = (e: React.MouseEvent) => {

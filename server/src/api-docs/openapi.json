@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/v1": {
+    "/": {
       "get": {
         "operationId": "getHello",
         "parameters": [
@@ -26,7 +26,7 @@
         "tags": ["health"]
       }
     },
-    "/api/v1/favicon.ico": {
+    "/favicon.ico": {
       "get": {
         "operationId": "getFavicon",
         "parameters": [
@@ -346,809 +346,6 @@
         ],
         "summary": "Manually trigger log cleanup",
         "tags": ["Request Logs"]
-      }
-    },
-    "/api/v1/users": {
-      "post": {
-        "description": "Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires JWT authentication.",
-        "operationId": "create",
-        "parameters": [
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "User has been successfully created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 201,
-                    "message": "User created successfully",
-                    "data": {
-                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "email": "john.doe@example.com",
-                      "firstName": "John",
-                      "lastName": "Doe",
-                      "isActive": true,
-                      "createdAt": "2026-01-27T10:23:22.983Z",
-                      "updatedAt": "2026-01-27T10:23:22.983Z"
-                    },
-                    "meta": {
-                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "created_at": "2026-01-27T10:23:22.983Z"
-                    },
-                    "timestamp": "2026-01-27T10:23:22.997Z",
-                    "path": "/api/v1/users"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Validation failed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 400,
-                    "message": "Validation failed",
-                    "errors": ["Field is required", "Invalid format"],
-                    "timestamp": "2026-01-31T19:20:00.000Z",
-                    "path": "/api/v1/users"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing JWT token.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 401,
-                    "message": "Unauthorized",
-                    "timestamp": "2026-01-31T19:20:00.000Z",
-                    "path": "/api/v1/users"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Resource already exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 409,
-                    "message": "User with this email already exists",
-                    "timestamp": "2026-01-31T19:20:00.000Z",
-                    "path": "/api/v1/users"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Create a new user",
-        "tags": ["users"]
-      },
-      "get": {
-        "description": "Retrieves a paginated list of users. Use page and limit query parameters to control pagination.",
-        "operationId": "findAll",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number (default: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page (default: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Return all users with pagination.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "Users fetched successfully",
-                    "data": [
-                      {
-                        "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                        "email": "john.doe@example.com",
-                        "firstName": "John",
-                        "lastName": "Doe",
-                        "isActive": true,
-                        "createdAt": "2026-01-27T10:23:22.983Z",
-                        "updatedAt": "2026-01-27T10:23:22.983Z"
-                      }
-                    ],
-                    "meta": {
-                      "total": 25,
-                      "count": 10,
-                      "page": 2,
-                      "limit": 10,
-                      "total_pages": 3,
-                      "has_next": true,
-                      "has_previous": true,
-                      "timestamp": "2026-01-27T10:28:36.014Z"
-                    },
-                    "timestamp": "2026-01-27T10:28:36.014Z",
-                    "path": "/api/v1/users"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get all users with pagination",
-        "tags": ["users"]
-      }
-    },
-    "/api/v1/users/{id}": {
-      "get": {
-        "description": "Retrieves a single user by their UUID. Returns cached data if available.",
-        "operationId": "findOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "User UUID",
-            "schema": {
-              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Return the user.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "User fetched successfully",
-                    "data": {
-                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "email": "john.doe@example.com",
-                      "firstName": "John",
-                      "lastName": "Doe",
-                      "isActive": true,
-                      "createdAt": "2026-01-27T10:23:22.983Z",
-                      "updatedAt": "2026-01-27T10:23:22.983Z"
-                    },
-                    "meta": {
-                      "cached": true
-                    },
-                    "timestamp": "2026-01-27T10:28:36.014Z",
-                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 404,
-                    "message": "User not found",
-                    "timestamp": "2026-01-27T10:28:36.014Z",
-                    "path": "/api/v1/users/invalid-id"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Get a user by ID",
-        "tags": ["users"]
-      },
-      "patch": {
-        "description": "Updates an existing user. All fields are optional. Cache is invalidated after update.",
-        "operationId": "update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "User UUID",
-            "schema": {
-              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User has been successfully updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "User updated successfully",
-                    "data": {
-                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "email": "john.updated@example.com",
-                      "firstName": "John",
-                      "lastName": "Doe",
-                      "isActive": true,
-                      "createdAt": "2026-01-27T10:23:22.983Z",
-                      "updatedAt": "2026-01-27T10:30:00.000Z"
-                    },
-                    "meta": {
-                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "updated_at": "2026-01-27T10:30:00.000Z"
-                    },
-                    "timestamp": "2026-01-27T10:30:00.015Z",
-                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Validation failed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 400,
-                    "message": "Validation failed",
-                    "timestamp": "2026-01-27T10:30:00.015Z",
-                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 404,
-                    "message": "User not found",
-                    "timestamp": "2026-01-27T10:30:00.015Z",
-                    "path": "/api/v1/users/invalid-id"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict - Email already exists.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 409,
-                    "message": "Email already exists",
-                    "timestamp": "2026-01-27T10:30:00.015Z",
-                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Update a user",
-        "tags": ["users"]
-      },
-      "delete": {
-        "description": "Permanently deletes a user by their UUID. Cache is invalidated after deletion.",
-        "operationId": "remove",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "User UUID",
-            "schema": {
-              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-              "type": "string"
-            }
-          },
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User has been successfully deleted.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "User deleted successfully",
-                    "data": null,
-                    "meta": {
-                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                      "deleted_at": "2026-01-27T10:35:00.000Z"
-                    },
-                    "timestamp": "2026-01-27T10:35:00.015Z",
-                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "error",
-                    "statusCode": 404,
-                    "message": "User not found",
-                    "timestamp": "2026-01-27T10:35:00.015Z",
-                    "path": "/api/v1/users/invalid-id"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Delete a user",
-        "tags": ["users"]
-      }
-    },
-    "/api/v1/users/search/advanced": {
-      "get": {
-        "description": "Search users with filters (search query, active status), sorting, and pagination.",
-        "operationId": "search",
-        "parameters": [
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Search query for name or email",
-            "schema": {
-              "example": "john",
-              "type": "string"
-            }
-          },
-          {
-            "name": "isActive",
-            "required": false,
-            "in": "query",
-            "description": "Filter by active status",
-            "schema": {
-              "example": "true",
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortBy",
-            "required": false,
-            "in": "query",
-            "description": "Sort by field",
-            "schema": {
-              "enum": [
-                "email",
-                "firstName",
-                "lastName",
-                "createdAt",
-                "isActive"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "sortOrder",
-            "required": false,
-            "in": "query",
-            "description": "Sort direction",
-            "schema": {
-              "enum": ["asc", "desc"],
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Page number",
-            "schema": {
-              "minimum": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Users search results with filters and pagination.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "Users searched successfully",
-                    "data": [
-                      {
-                        "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
-                        "email": "john.doe@example.com",
-                        "firstName": "John",
-                        "lastName": "Doe",
-                        "isActive": true,
-                        "createdAt": "2026-01-27T10:23:22.983Z",
-                        "updatedAt": "2026-01-27T10:23:22.983Z"
-                      }
-                    ],
-                    "meta": {
-                      "total": 15,
-                      "count": 10,
-                      "page": 1,
-                      "limit": 10,
-                      "total_pages": 2,
-                      "has_next": true,
-                      "has_previous": false,
-                      "search_query": "john",
-                      "filters": {
-                        "isActive": "true"
-                      },
-                      "sort": {
-                        "field": "email",
-                        "order": "asc"
-                      }
-                    },
-                    "timestamp": "2026-01-27T10:40:00.000Z",
-                    "path": "/api/v1/users/search/advanced"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Advanced search for users",
-        "tags": ["users"]
-      }
-    },
-    "/api/v1/users/bulk/activate": {
-      "post": {
-        "description": "Activates multiple users by their IDs.",
-        "operationId": "bulkActivate",
-        "parameters": [
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BulkUserIdsDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Users have been successfully activated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "Successfully activated 5 user(s)",
-                    "data": {
-                      "affected": 5
-                    },
-                    "meta": {
-                      "requested": 5,
-                      "affected": 5,
-                      "operation": "activate"
-                    },
-                    "timestamp": "2026-01-27T10:45:00.000Z",
-                    "path": "/api/v1/users/bulk/activate"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Bulk activate users",
-        "tags": ["users"]
-      }
-    },
-    "/api/v1/users/bulk/deactivate": {
-      "post": {
-        "description": "Deactivates multiple users by their IDs.",
-        "operationId": "bulkDeactivate",
-        "parameters": [
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BulkUserIdsDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Users have been successfully deactivated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "Successfully deactivated 3 user(s)",
-                    "data": {
-                      "affected": 3
-                    },
-                    "meta": {
-                      "requested": 3,
-                      "affected": 3,
-                      "operation": "deactivate"
-                    },
-                    "timestamp": "2026-01-27T10:50:00.000Z",
-                    "path": "/api/v1/users/bulk/deactivate"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Bulk deactivate users",
-        "tags": ["users"]
-      }
-    },
-    "/api/v1/users/bulk": {
-      "delete": {
-        "description": "Permanently deletes multiple users by their IDs.",
-        "operationId": "bulkDelete",
-        "parameters": [
-          {
-            "name": "X-API-Version",
-            "in": "header",
-            "required": false,
-            "description": "API version for header-based versioning",
-            "schema": {
-              "type": "string",
-              "enum": ["1", "2"],
-              "default": "1"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BulkUserIdsDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Users have been successfully deleted.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "status": "success",
-                    "statusCode": 200,
-                    "message": "Successfully deleted 2 user(s)",
-                    "data": {
-                      "affected": 2
-                    },
-                    "meta": {
-                      "requested": 2,
-                      "affected": 2,
-                      "operation": "delete"
-                    },
-                    "timestamp": "2026-01-27T10:55:00.000Z",
-                    "path": "/api/v1/users/bulk"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Bulk delete users",
-        "tags": ["users"]
       }
     },
     "/api/v1/auth/register": {
@@ -2062,6 +1259,2357 @@
         "summary": "Logout from all devices",
         "tags": ["auth"]
       }
+    },
+    "/api/v1/users": {
+      "post": {
+        "description": "Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires Admin role.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 201,
+                    "message": "User created successfully",
+                    "data": {
+                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "email": "john.doe@example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "isActive": true,
+                      "createdAt": "2026-01-27T10:23:22.983Z",
+                      "updatedAt": "2026-01-27T10:23:22.983Z"
+                    },
+                    "meta": {
+                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "created_at": "2026-01-27T10:23:22.983Z"
+                    },
+                    "timestamp": "2026-01-27T10:23:22.997Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "User with this email already exists",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new user (Admin only)",
+        "tags": ["users"]
+      },
+      "get": {
+        "description": "Retrieves a paginated list of users. Use page and limit query parameters to control pagination. Requires Admin or Moderator role.",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (default: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page (default: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all users with pagination.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Users fetched successfully",
+                    "data": [
+                      {
+                        "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                        "email": "john.doe@example.com",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "isActive": true,
+                        "createdAt": "2026-01-27T10:23:22.983Z",
+                        "updatedAt": "2026-01-27T10:23:22.983Z"
+                      }
+                    ],
+                    "meta": {
+                      "total": 25,
+                      "count": 10,
+                      "page": 2,
+                      "limit": 10,
+                      "total_pages": 3,
+                      "has_next": true,
+                      "has_previous": true,
+                      "timestamp": "2026-01-27T10:28:36.014Z"
+                    },
+                    "timestamp": "2026-01-27T10:28:36.014Z",
+                    "path": "/api/v1/users"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all users with pagination (Admin/Moderator)",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/statistics": {
+      "get": {
+        "description": "Retrieves user statistics including total, active, inactive, and today registered counts. Requires Admin or Moderator role.",
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User statistics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Statistics fetched successfully",
+                    "data": {
+                      "total": 125,
+                      "active": 98,
+                      "inactive": 27,
+                      "pending": 0,
+                      "todayRegistered": 5
+                    },
+                    "meta": {
+                      "cached": false,
+                      "timestamp": "2026-01-31T10:00:00.000Z"
+                    },
+                    "timestamp": "2026-01-31T10:00:00.015Z",
+                    "path": "/api/v1/users/statistics"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/statistics"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user statistics (Admin/Moderator)",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "description": "Retrieves a single user by their UUID. Returns cached data if available.",
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User UUID",
+            "schema": {
+              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "User fetched successfully",
+                    "data": {
+                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "email": "john.doe@example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "isActive": true,
+                      "createdAt": "2026-01-27T10:23:22.983Z",
+                      "updatedAt": "2026-01-27T10:23:22.983Z"
+                    },
+                    "meta": {
+                      "cached": true
+                    },
+                    "timestamp": "2026-01-27T10:28:36.014Z",
+                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User not found",
+                    "timestamp": "2026-01-27T10:28:36.014Z",
+                    "path": "/api/v1/users/invalid-id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a user by ID",
+        "tags": ["users"]
+      },
+      "patch": {
+        "description": "Updates an existing user. All fields are optional. Cache is invalidated after update.",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User UUID",
+            "schema": {
+              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "User updated successfully",
+                    "data": {
+                      "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "email": "john.updated@example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "isActive": true,
+                      "createdAt": "2026-01-27T10:23:22.983Z",
+                      "updatedAt": "2026-01-27T10:30:00.000Z"
+                    },
+                    "meta": {
+                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "updated_at": "2026-01-27T10:30:00.000Z"
+                    },
+                    "timestamp": "2026-01-27T10:30:00.015Z",
+                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "timestamp": "2026-01-27T10:30:00.015Z",
+                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User not found",
+                    "timestamp": "2026-01-27T10:30:00.015Z",
+                    "path": "/api/v1/users/invalid-id"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Email already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "Email already exists",
+                    "timestamp": "2026-01-27T10:30:00.015Z",
+                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a user",
+        "tags": ["users"]
+      },
+      "delete": {
+        "description": "Permanently deletes a user by their UUID. Cache is invalidated after deletion.",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User UUID",
+            "schema": {
+              "example": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User has been successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "User deleted successfully",
+                    "data": null,
+                    "meta": {
+                      "user_id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                      "deleted_at": "2026-01-27T10:35:00.000Z"
+                    },
+                    "timestamp": "2026-01-27T10:35:00.015Z",
+                    "path": "/api/v1/users/6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User not found",
+                    "timestamp": "2026-01-27T10:35:00.015Z",
+                    "path": "/api/v1/users/invalid-id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a user",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/search/advanced": {
+      "get": {
+        "description": "Search users with filters (search query, active status), sorting, and pagination.",
+        "operationId": "search",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search query for name or email",
+            "schema": {
+              "example": "john",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filter by active status",
+            "schema": {
+              "example": "true",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Sort by field",
+            "schema": {
+              "enum": [
+                "email",
+                "firstName",
+                "lastName",
+                "createdAt",
+                "isActive"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort direction",
+            "schema": {
+              "enum": ["asc", "desc"],
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "minimum": 1,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users search results with filters and pagination.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Users searched successfully",
+                    "data": [
+                      {
+                        "id": "6dd9ca2a-4a9f-4155-ad34-4cf6a575eebe",
+                        "email": "john.doe@example.com",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "isActive": true,
+                        "createdAt": "2026-01-27T10:23:22.983Z",
+                        "updatedAt": "2026-01-27T10:23:22.983Z"
+                      }
+                    ],
+                    "meta": {
+                      "total": 15,
+                      "count": 10,
+                      "page": 1,
+                      "limit": 10,
+                      "total_pages": 2,
+                      "has_next": true,
+                      "has_previous": false,
+                      "search_query": "john",
+                      "filters": {
+                        "isActive": "true"
+                      },
+                      "sort": {
+                        "field": "email",
+                        "order": "asc"
+                      }
+                    },
+                    "timestamp": "2026-01-27T10:40:00.000Z",
+                    "path": "/api/v1/users/search/advanced"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Advanced search for users",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/bulk/activate": {
+      "post": {
+        "description": "Activates multiple users by their IDs.",
+        "operationId": "bulkActivate",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUserIdsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users have been successfully activated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Successfully activated 5 user(s)",
+                    "data": {
+                      "affected": 5
+                    },
+                    "meta": {
+                      "requested": 5,
+                      "affected": 5,
+                      "operation": "activate"
+                    },
+                    "timestamp": "2026-01-27T10:45:00.000Z",
+                    "path": "/api/v1/users/bulk/activate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bulk activate users",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/bulk/deactivate": {
+      "post": {
+        "description": "Deactivates multiple users by their IDs.",
+        "operationId": "bulkDeactivate",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUserIdsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users have been successfully deactivated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Successfully deactivated 3 user(s)",
+                    "data": {
+                      "affected": 3
+                    },
+                    "meta": {
+                      "requested": 3,
+                      "affected": 3,
+                      "operation": "deactivate"
+                    },
+                    "timestamp": "2026-01-27T10:50:00.000Z",
+                    "path": "/api/v1/users/bulk/deactivate"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bulk deactivate users",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/users/bulk": {
+      "delete": {
+        "description": "Permanently deletes multiple users by their IDs.",
+        "operationId": "bulkDelete",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUserIdsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users have been successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Successfully deleted 2 user(s)",
+                    "data": {
+                      "affected": 2
+                    },
+                    "meta": {
+                      "requested": 2,
+                      "affected": 2,
+                      "operation": "delete"
+                    },
+                    "timestamp": "2026-01-27T10:55:00.000Z",
+                    "path": "/api/v1/users/bulk"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bulk delete users",
+        "tags": ["users"]
+      }
+    },
+    "/api/v1/roles": {
+      "post": {
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Role created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "Role already exists",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new role (Admin only)",
+        "tags": ["RBAC - Roles"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roles fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all roles with pagination",
+        "tags": ["RBAC - Roles"]
+      }
+    },
+    "/api/v1/roles/statistics": {
+      "get": {
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role statistics fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get role statistics",
+        "tags": ["RBAC - Roles"]
+      }
+    },
+    "/api/v1/roles/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Role not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Role not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get role by ID",
+        "tags": ["RBAC - Roles"]
+      },
+      "put": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Role not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Role not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update role (Admin only)",
+        "tags": ["RBAC - Roles"]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Role not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Role not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/roles/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete role (Admin only)",
+        "tags": ["RBAC - Roles"]
+      }
+    },
+    "/api/v1/permissions": {
+      "post": {
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePermissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Permission created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "Permission already exists",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new permission (Admin only)",
+        "tags": ["RBAC - Permissions"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permissions fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all permissions",
+        "tags": ["RBAC - Permissions"]
+      }
+    },
+    "/api/v1/permissions/statistics": {
+      "get": {
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission statistics fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/permissions/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get permission statistics",
+        "tags": ["RBAC - Permissions"]
+      }
+    },
+    "/api/v1/users/{userId}/roles": {
+      "post": {
+        "operationId": "assignRoles",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roles assigned successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Assign roles to user (Admin only)",
+        "tags": ["RBAC - User Roles"]
+      },
+      "get": {
+        "operationId": "getUserRoles",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User roles fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - User not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get user roles",
+        "tags": ["RBAC - User Roles"]
+      }
+    },
+    "/api/v1/users/{userId}/roles/{roleId}": {
+      "delete": {
+        "operationId": "removeRole",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role removed successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles/:roleId"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Insufficient permissions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 403,
+                    "message": "Forbidden resource",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles/:roleId"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - User or Role not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "User or Role not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/users/:userId/roles/:roleId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove role from user (Admin only)",
+        "tags": ["RBAC - User Roles"]
+      }
+    },
+    "/api/v1/newsletter/subscribe": {
+      "post": {
+        "operationId": "subscribe",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscribeNewsletterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully subscribed to newsletter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 201,
+                    "message": "Successfully subscribed to newsletter",
+                    "data": {
+                      "id": "123e4567-e89b-12d3-a456-426614174000",
+                      "email": "user@example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "isActive": true,
+                      "subscribedAt": "2026-02-01T10:00:00.000Z"
+                    },
+                    "meta": {
+                      "subscriber_id": "123e4567-e89b-12d3-a456-426614174000",
+                      "subscribed_at": "2026-02-01T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/subscribe"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "Email already subscribed to newsletter",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/subscribe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Subscribe to newsletter (public)",
+        "tags": ["newsletter"]
+      }
+    },
+    "/api/v1/newsletter/unsubscribe/{email}": {
+      "post": {
+        "operationId": "unsubscribe",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully unsubscribed from newsletter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Successfully unsubscribed from newsletter",
+                    "meta": {
+                      "unsubscribed_at": "2026-02-01T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/unsubscribe/:email"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Email not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Email not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/unsubscribe/:email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Unsubscribe from newsletter (public)",
+        "tags": ["newsletter"]
+      }
+    },
+    "/api/v1/newsletter": {
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newsletter subscribers fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Newsletter subscribers fetched successfully",
+                    "data": [
+                      {
+                        "id": "123e4567-e89b-12d3-a456-426614174000",
+                        "email": "user@example.com",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "isActive": true,
+                        "subscribedAt": "2026-02-01T10:00:00.000Z"
+                      }
+                    ],
+                    "meta": {
+                      "total": 100,
+                      "count": 50,
+                      "page": 1,
+                      "limit": 50,
+                      "total_pages": 2,
+                      "has_next": true,
+                      "has_previous": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all newsletter subscribers (admin)",
+        "tags": ["newsletter"]
+      }
+    },
+    "/api/v1/newsletter/statistics": {
+      "get": {
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Newsletter statistics fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Newsletter statistics fetched successfully",
+                    "data": {
+                      "total": 1000,
+                      "active": 850,
+                      "inactive": 150,
+                      "todaySubscribed": 25
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get newsletter statistics (admin)",
+        "tags": ["newsletter"]
+      }
+    },
+    "/api/v1/newsletter/send": {
+      "post": {
+        "operationId": "sendNewsletter",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendNewsletterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Newsletter sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Newsletter sent successfully",
+                    "meta": {
+                      "total_subscribers": 850,
+                      "sent": 845,
+                      "failed": 5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/send"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/send"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Send newsletter to all active subscribers (admin)",
+        "tags": ["newsletter"]
+      }
+    },
+    "/api/v1/newsletter/{id}": {
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscriber deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Subscriber deleted successfully",
+                    "meta": {
+                      "deleted_id": "123e4567-e89b-12d3-a456-426614174000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Subscriber not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Subscriber not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/newsletter/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete newsletter subscriber (admin)",
+        "tags": ["newsletter"]
+      }
     }
   },
   "info": {
@@ -2135,91 +3683,6 @@
             "minimum": 1
           }
         }
-      },
-      "CreateUserDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "john.doe@example.com",
-            "description": "User email address"
-          },
-          "firstName": {
-            "type": "string",
-            "example": "John",
-            "description": "User first name",
-            "minLength": 2,
-            "maxLength": 50
-          },
-          "lastName": {
-            "type": "string",
-            "example": "Doe",
-            "description": "User last name",
-            "minLength": 2,
-            "maxLength": 50
-          },
-          "password": {
-            "type": "string",
-            "example": "SecurePass123!",
-            "description": "User password (optional - temporary password generated if not provided)",
-            "minLength": 8,
-            "maxLength": 100
-          }
-        },
-        "required": ["email", "firstName", "lastName"]
-      },
-      "UpdateUserDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "john.doe@example.com",
-            "description": "User email address"
-          },
-          "firstName": {
-            "type": "string",
-            "example": "John",
-            "description": "User first name",
-            "minLength": 2,
-            "maxLength": 50
-          },
-          "lastName": {
-            "type": "string",
-            "example": "Doe",
-            "description": "User last name",
-            "minLength": 2,
-            "maxLength": 50
-          },
-          "password": {
-            "type": "string",
-            "example": "SecurePass123!",
-            "description": "User password (optional - temporary password generated if not provided)",
-            "minLength": 8,
-            "maxLength": 100
-          },
-          "isActive": {
-            "type": "boolean",
-            "example": true,
-            "description": "User active status"
-          }
-        }
-      },
-      "BulkUserIdsDto": {
-        "type": "object",
-        "properties": {
-          "ids": {
-            "example": [
-              "550e8400-e29b-41d4-a716-446655440000",
-              "550e8400-e29b-41d4-a716-446655440001"
-            ],
-            "description": "Array of user UUIDs",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": ["ids"]
       },
       "RegisterDto": {
         "type": "object",
@@ -2340,6 +3803,227 @@
             "description": "Current session ID to keep active (optional)"
           }
         }
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john.doe@example.com",
+            "description": "User email address"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "User first name",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "User last name",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePass123!",
+            "description": "User password (optional - temporary password generated if not provided)",
+            "minLength": 8,
+            "maxLength": 100
+          }
+        },
+        "required": ["email", "firstName", "lastName"]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john.doe@example.com",
+            "description": "User email address"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "User first name",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "User last name",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "password": {
+            "type": "string",
+            "example": "SecurePass123!",
+            "description": "User password (optional - temporary password generated if not provided)",
+            "minLength": 8,
+            "maxLength": 100
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true,
+            "description": "User active status"
+          }
+        }
+      },
+      "BulkUserIdsDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "example": [
+              "550e8400-e29b-41d4-a716-446655440000",
+              "550e8400-e29b-41d4-a716-446655440001"
+            ],
+            "description": "Array of user UUIDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["ids"]
+      },
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Editor",
+            "description": "Role name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can edit content",
+            "description": "Role description"
+          },
+          "permissionIds": {
+            "example": ["perm-uuid-1", "perm-uuid-2"],
+            "description": "Permission IDs to assign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isSystemRole": {
+            "type": "boolean",
+            "example": false,
+            "description": "System role (cannot be deleted)",
+            "default": false
+          }
+        },
+        "required": ["name", "description"]
+      },
+      "UpdateRoleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Editor",
+            "description": "Role name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can edit content",
+            "description": "Role description"
+          },
+          "permissionIds": {
+            "example": ["perm-uuid-1", "perm-uuid-2"],
+            "description": "Permission IDs to assign",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isSystemRole": {
+            "type": "boolean",
+            "example": false,
+            "description": "System role (cannot be deleted)",
+            "default": false
+          }
+        }
+      },
+      "CreatePermissionDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "users:create",
+            "description": "Permission name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can create users",
+            "description": "Permission description"
+          },
+          "resource": {
+            "type": "string",
+            "example": "users",
+            "description": "Resource name"
+          },
+          "action": {
+            "type": "string",
+            "example": "create",
+            "description": "Action name"
+          }
+        },
+        "required": ["name", "description", "resource", "action"]
+      },
+      "AssignRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleIds": {
+            "example": ["role-uuid-1", "role-uuid-2"],
+            "description": "Role IDs to assign to user",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["roleIds"]
+      },
+      "SubscribeNewsletterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "john.doe@example.com",
+            "description": "Email address to subscribe"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John",
+            "description": "First name (optional)"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe",
+            "description": "Last name (optional)"
+          }
+        },
+        "required": ["email"]
+      },
+      "SendNewsletterDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "example": "Monthly Updates - January 2026",
+            "description": "Newsletter subject"
+          },
+          "content": {
+            "type": "string",
+            "example": "<h1>Hello!</h1><p>Here are our latest updates...</p>",
+            "description": "Newsletter HTML content"
+          }
+        },
+        "required": ["subject", "content"]
       }
     }
   }

@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   Min,
   Max,
+  IsOptional,
 } from 'class-validator';
 
 enum Environment {
@@ -56,6 +57,10 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   CORS_ORIGIN: string;
+
+  @IsString()
+  @IsOptional()
+  RBAC_ENABLED?: string;
 }
 
 export function validate(config: Record<string, unknown>) {

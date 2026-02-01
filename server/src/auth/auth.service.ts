@@ -83,6 +83,12 @@ export class AuthService {
 
       const savedUser = await this.userRepository.save(user);
 
+      // Reload user with roles for JWT generation
+      const userWithRoles = await this.userRepository.findOne({
+        where: { id: savedUser.id },
+        relations: ['roles'],
+      });
+
       // Send verification email
       try {
         await this.mailService.sendEmailVerification(
@@ -97,9 +103,9 @@ export class AuthService {
         // Continue registration even if email fails
       }
 
-      // Generate tokens
+      // Generate tokens with roles
       const { accessToken, refreshToken } = await this.generateTokens(
-        savedUser,
+        userWithRoles || savedUser,
         req,
       );
 
@@ -149,7 +155,7 @@ export class AuthService {
     try {
       this.logger.log(`Login attempt for user: ${loginDto.email}`);
 
-      // Find user with password
+      // Find user with password and roles for RBAC
       const user = await this.userRepository.findOne({
         where: { email: loginDto.email },
         select: [
@@ -163,6 +169,7 @@ export class AuthService {
           'createdAt',
           'updatedAt',
         ],
+        relations: ['roles'], // Load roles for JWT
       });
 
       if (!user) {
@@ -696,9 +703,12 @@ export class AuthService {
     user: User,
     req: Request,
   ): Promise<{ accessToken: string; refreshToken: string; sessionId: string }> {
+    // Include roles in JWT payload for RBAC
     const payload = {
       sub: user.id,
       email: user.email,
+      roles:
+        user.roles?.map((role) => ({ id: role.id, name: role.name })) || [],
     };
 
     // Generate access token (short-lived)

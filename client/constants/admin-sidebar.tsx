@@ -71,11 +71,6 @@ export const adminSidebarConfig: SidebarConfig = {
           badge: '12',
           badgeVariant: 'warning',
         },
-        {
-          id: 'users-roles',
-          label: 'Roles & Permissions',
-          href: '/admin/users/roles',
-        },
       ],
     },
     {
@@ -107,6 +102,40 @@ export const adminSidebarConfig: SidebarConfig = {
           id: 'content-media',
           label: 'Media Library',
           href: '/admin/content/media',
+        },
+      ],
+    },
+    {
+      id: 'rbac',
+      label: 'Access Control',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+          />
+        </svg>
+      ),
+      children: [
+        {
+          id: 'rbac-roles',
+          label: 'Roles',
+          href: '/admin/roles',
+          badge: '4',
+          badgeVariant: 'primary',
+        },
+        {
+          id: 'rbac-permissions',
+          label: 'Permissions',
+          href: '/admin/permissions',
+          badge: '20',
+        },
+        {
+          id: 'rbac-assign',
+          label: 'Assign Roles',
+          href: '/admin/users',
         },
       ],
     },

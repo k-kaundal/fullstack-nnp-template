@@ -5,3 +5,5 @@
 
 export * from './useUsers';
 export * from './useAuth';
+export * from './useUserStats';
+export * from './useRbacStats';

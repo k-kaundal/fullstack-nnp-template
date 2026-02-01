@@ -20,6 +20,7 @@ import {
   ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,21 +28,24 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUsersDto } from './dto/search-users.dto';
 import { BulkUserIdsDto } from './dto/bulk-user-ids.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../rbac/guards/roles.guard';
+import { Roles } from '../rbac/decorators/roles.decorator';
 import {
   ApiUnauthorizedResponse,
   ApiBadRequestResponse,
   ApiConflictResponse,
+  ApiForbiddenResponse,
 } from '../common/decorators';
 
 /**
  * Controller for managing user-related HTTP endpoints
  * Handles routing and delegates all business logic to UsersService
  *
- * @security JWT Authentication required for all endpoints
+ * @security JWT Authentication + Role-Based Access Control (RBAC)
  */
 @ApiTags('users')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -54,10 +58,11 @@ export class UsersController {
    * @returns Promise<Response> - HTTP response with created user
    */
   @Post()
+  @Roles('Admin') // Only Admins can create users
   @ApiOperation({
-    summary: 'Create a new user',
+    summary: 'Create a new user (Admin only)',
     description:
-      'Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires JWT authentication.',
+      'Creates a new user with email, first name, last name, and password. Password must be at least 8 characters with uppercase, lowercase, number, and special character. Requires Admin role.',
   })
   @ApiResponseDecorator({
     status: HttpStatus.CREATED,
@@ -88,6 +93,7 @@ export class UsersController {
   @ApiBadRequestResponse('/api/v1/users')
   @ApiConflictResponse('User with this email already exists', '/api/v1/users')
   @ApiUnauthorizedResponse('/api/v1/users')
+  @ApiForbiddenResponse('/api/v1/users')
   async create(
     @Body() createUserDto: CreateUserDto,
     @Res() res: Response,
@@ -104,10 +110,11 @@ export class UsersController {
    * @returns Promise<Response> - HTTP response with paginated list of users
    */
   @Get()
+  @Roles('Admin', 'Moderator') // Admins and Moderators can view users
   @ApiOperation({
-    summary: 'Get all users with pagination',
+    summary: 'Get all users with pagination (Admin/Moderator)',
     description:
-      'Retrieves a paginated list of users. Use page and limit query parameters to control pagination.',
+      'Retrieves a paginated list of users. Use page and limit query parameters to control pagination. Requires Admin or Moderator role.',
   })
   @ApiQuery({
     name: 'page',
@@ -165,6 +172,50 @@ export class UsersController {
     const pageNumber = parseInt(page, 10) || 1;
     const limitNumber = parseInt(limit, 10) || 10;
     return this.usersService.findAll(pageNumber, limitNumber, res);
+  }
+
+  /**
+   * Get user statistics for dashboard
+   *
+   * @param res - Express response object
+   * @returns Promise<Response> - HTTP response with statistics
+   */
+  @Get('statistics')
+  @SkipThrottle() // Skip rate limiting for statistics
+  @Roles('Admin', 'Moderator') // Admins and Moderators can view statistics
+  @ApiOperation({
+    summary: 'Get user statistics (Admin/Moderator)',
+    description:
+      'Retrieves user statistics including total, active, inactive, and today registered counts. Requires Admin or Moderator role.',
+  })
+  @ApiResponseDecorator({
+    status: HttpStatus.OK,
+    description: 'User statistics retrieved successfully.',
+    schema: {
+      example: {
+        status: 'success',
+        statusCode: 200,
+        message: 'Statistics fetched successfully',
+        data: {
+          total: 125,
+          active: 98,
+          inactive: 27,
+          pending: 0,
+          todayRegistered: 5,
+        },
+        meta: {
+          cached: false,
+          timestamp: '2026-01-31T10:00:00.000Z',
+        },
+        timestamp: '2026-01-31T10:00:00.015Z',
+        path: '/api/v1/users/statistics',
+      },
+    },
+  })
+  @ApiUnauthorizedResponse('/api/v1/users/statistics')
+  @ApiForbiddenResponse('/api/v1/users/statistics')
+  async getStatistics(@Res() res: Response): Promise<Response> {
+    return this.usersService.getStatistics(res);
   }
 
   /**
