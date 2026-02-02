@@ -4,6 +4,7 @@
  */
 
 export * from './user.interface';
+export * from './animations.interface';
 export * from './auth.interface';
 export * from './session.interface';
 export * from './theme.interface';
