@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -12,7 +12,10 @@ import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { RbacModule } from './rbac/rbac.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { ContactModule } from './contact/contact.module';
 import { SeederModule } from './database/seeders/seeder.module';
+import { SeederService } from './database/seeders/seeder.service';
 import { GraphqlAppModule } from './graphql/graphql.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { LoggingModule } from './common/logging.module';
@@ -133,6 +136,8 @@ const conditionalImports = [
   UsersModule,
   RbacModule,
   NewsletterModule,
+  AnalyticsModule,
+  ContactModule,
   SeederModule,
 ];
 
@@ -145,6 +150,7 @@ if (!isServerless) {
  * Root application module
  * Configures global modules: Config, Database, Cache, Auth, Mail, Scheduling, Logging, and Error Handling
  * GraphQL is conditionally loaded (disabled in serverless environments)
+ * Auto-runs seeders on startup in development/staging environments
  */
 @Module({
   imports: conditionalImports,
@@ -169,4 +175,48 @@ if (!isServerless) {
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly seederService: SeederService,
+    private readonly logger: LoggerService,
+  ) {}
+
+  /**
+   * Lifecycle hook - runs after module initialization
+   * Automatically seeds database in development/staging environments
+   */
+  async onModuleInit(): Promise<void> {
+    const nodeEnv = this.configService.get<string>('NODE_ENV', 'development');
+    const autoSeed = this.configService.get<string>('AUTO_SEED', 'false');
+
+    // Only auto-seed in development/staging or when AUTO_SEED=true
+    const shouldSeed =
+      autoSeed === 'true' || nodeEnv === 'development' || nodeEnv === 'staging';
+
+    if (shouldSeed) {
+      try {
+        this.logger.log(
+          `Auto-seeding enabled for environment: ${nodeEnv}`,
+          'AppModule',
+        );
+        await this.seederService.runAll();
+        this.logger.log('Database seeding completed successfully', 'AppModule');
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error';
+        this.logger.error(
+          `Database seeding failed: ${errorMessage}`,
+          error instanceof Error ? error.stack : undefined,
+          'AppModule',
+        );
+        // Don't throw - allow app to start even if seeding fails
+      }
+    } else {
+      this.logger.log(
+        `Auto-seeding disabled for environment: ${nodeEnv}`,
+        'AppModule',
+      );
+    }
+  }
+}

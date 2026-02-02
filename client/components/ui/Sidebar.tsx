@@ -240,7 +240,7 @@ function SidebarMenuItem({ item, collapsed, pathname, level }: SidebarMenuItemPr
 /**
  * Get badge color classes based on variant
  */
-function getBadgeClasses(variant?: 'primary' | 'success' | 'warning' | 'danger') {
+function getBadgeClasses(variant?: 'primary' | 'success' | 'warning' | 'danger' | 'info') {
   switch (variant) {
     case 'success':
       return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400';
@@ -248,6 +248,8 @@ function getBadgeClasses(variant?: 'primary' | 'success' | 'warning' | 'danger')
       return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400';
     case 'danger':
       return 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400';
+    case 'info':
+      return 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400';
     case 'primary':
     default:
       return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400';

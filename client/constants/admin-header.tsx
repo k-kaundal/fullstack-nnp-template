@@ -99,21 +99,26 @@ export function useAdminHeaderConfig(): HeaderConfig {
 
     user: {
       profile: {
-        name: user ? `${user.firstName} ${user.lastName}` : 'User',
+        name: user
+          ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email || 'User'
+          : 'User',
         email: user?.email || '',
-        role: user?.isActive ? 'Active User' : 'Inactive User',
+        role:
+          user?.roles && user.roles.length > 0 ? user.roles.map((r) => r.name).join(', ') : 'User',
         initials:
           user?.firstName && user?.lastName
             ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
-            : user?.email
-              ? user.email[0].toUpperCase()
-              : 'U',
+            : user?.firstName
+              ? user.firstName.substring(0, 2).toUpperCase()
+              : user?.email
+                ? user.email[0].toUpperCase()
+                : 'U',
       },
       menuItems: [
         {
           id: 'profile',
           label: 'Your Profile',
-          href: '/admin/profile',
+          href: '/profile',
           icon: (
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

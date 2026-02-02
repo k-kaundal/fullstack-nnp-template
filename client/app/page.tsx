@@ -111,6 +111,12 @@ export default function Home() {
                   >
                     Manage Users
                   </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-pink-600 dark:text-pink-400 bg-white dark:bg-gray-800 border-2 border-pink-600 dark:border-pink-400 rounded-full hover:bg-pink-600 hover:text-white dark:hover:bg-pink-400 dark:hover:text-gray-900 transition-all hover:scale-105 shadow-lg"
+                  >
+                    Contact Us
+                  </Link>
                 </>
               ) : (
                 <>
@@ -140,6 +146,12 @@ export default function Home() {
                     className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-2 border-gray-900 dark:border-white rounded-full hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-gray-900 transition-all hover:scale-105 shadow-lg"
                   >
                     Create Account
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-pink-600 dark:text-pink-400 bg-white dark:bg-gray-800 border-2 border-pink-600 dark:border-pink-400 rounded-full hover:bg-pink-600 hover:text-white dark:hover:bg-pink-400 dark:hover:text-gray-900 transition-all hover:scale-105 shadow-lg"
+                  >
+                    Contact Us
                   </Link>
                 </>
               )}
@@ -364,6 +376,87 @@ export default function Home() {
                 analytics
               </p>
             </div>
+
+            {/* Visitor Analytics */}
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-blue-500 dark:hover:ring-blue-400 transition-all duration-300">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 dark:bg-blue-500 mb-4 group-hover:scale-110 transition-transform">
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Visitor Analytics
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                Google Analytics-style dashboard with IP tracking, geolocation, device detection,
+                and interactive charts
+              </p>
+            </div>
+
+            {/* Request Logging */}
+            <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-teal-500 dark:hover:ring-teal-400 transition-all duration-300">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600 dark:bg-teal-500 mb-4 group-hover:scale-110 transition-transform">
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Request Logging
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                HTTP request tracking with performance metrics, filtering, search, and automated
+                cleanup management
+              </p>
+            </div>
+
+            {/* Contact Form */}
+            <Link
+              href="/contact"
+              className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-pink-500 dark:hover:ring-pink-400 transition-all duration-300 block cursor-pointer"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-600 dark:bg-pink-500 mb-4 group-hover:scale-110 transition-transform">
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Contact Form
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                Public contact form with admin dashboard, status tracking, and automated email
+                notifications to admin
+              </p>
+            </Link>
 
             {/* API Documentation */}
             <div className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300">

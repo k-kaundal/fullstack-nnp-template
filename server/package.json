@@ -77,6 +77,8 @@
     "@nestjs/typeorm": "^10.0.1",
     "@sentry/node": "^10.38.0",
     "@sentry/profiling-node": "^10.38.0",
+    "@types/ua-parser-js": "^0.7.39",
+    "axios": "^1.13.4",
     "bcrypt": "^6.0.0",
     "cache-manager": "^7.2.8",
     "class-transformer": "^0.5.1",
@@ -89,9 +91,11 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
+    "ua-parser-js": "^2.0.8",
     "uuid": "^13.0.0",
     "winston": "^3.19.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "is-ip": "^5.0.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.16",
@@ -137,6 +141,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(is-ip|ip-regex|super-regex|function-timeout|time-span|convert-hrtime|clone-regexp|is-regexp)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],

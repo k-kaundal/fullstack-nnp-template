@@ -1,4 +1,3 @@
-
 /*
  * -------------------------------------------------------
  * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
@@ -9,72 +8,75 @@
 /* eslint-disable */
 
 export class CreateUserInput {
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
 }
 
 export class UpdateUserInput {
-    email?: Nullable<string>;
-    firstName?: Nullable<string>;
-    isActive?: Nullable<boolean>;
-    lastName?: Nullable<string>;
-    password?: Nullable<string>;
+  email?: Nullable<string>;
+  firstName?: Nullable<string>;
+  isActive?: Nullable<boolean>;
+  lastName?: Nullable<string>;
+  password?: Nullable<string>;
 }
 
 export abstract class IMutation {
-    __typename?: 'IMutation';
+  __typename?: 'IMutation';
 
-    abstract createUser(input: CreateUserInput): User | Promise<User>;
+  abstract createUser(input: CreateUserInput): User | Promise<User>;
 
-    abstract deleteUser(id: string): boolean | Promise<boolean>;
+  abstract deleteUser(id: string): boolean | Promise<boolean>;
 
-    abstract toggleUserStatus(id: string): User | Promise<User>;
+  abstract toggleUserStatus(id: string): User | Promise<User>;
 
-    abstract updateUser(id: string, input: UpdateUserInput): User | Promise<User>;
+  abstract updateUser(id: string, input: UpdateUserInput): User | Promise<User>;
 }
 
 export abstract class IQuery {
-    __typename?: 'IQuery';
+  __typename?: 'IQuery';
 
-    abstract searchUsers(email: string): User[] | Promise<User[]>;
+  abstract searchUsers(email: string): User[] | Promise<User[]>;
 
-    abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
+  abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
 
-    abstract users(limit?: Nullable<number>, page?: Nullable<number>): UsersConnection | Promise<UsersConnection>;
+  abstract users(
+    limit?: Nullable<number>,
+    page?: Nullable<number>,
+  ): UsersConnection | Promise<UsersConnection>;
 }
 
 export abstract class ISubscription {
-    __typename?: 'ISubscription';
+  __typename?: 'ISubscription';
 
-    abstract userCreated(): User | Promise<User>;
+  abstract userCreated(): User | Promise<User>;
 
-    abstract userDeleted(): string | Promise<string>;
+  abstract userDeleted(): string | Promise<string>;
 
-    abstract userUpdated(): User | Promise<User>;
+  abstract userUpdated(): User | Promise<User>;
 }
 
 export class User {
-    __typename?: 'User';
-    createdAt: string;
-    email: string;
-    firstName: string;
-    id: string;
-    isActive: boolean;
-    lastName: string;
-    updatedAt: string;
+  __typename?: 'User';
+  createdAt: string;
+  email: string;
+  firstName: string;
+  id: string;
+  isActive: boolean;
+  lastName: string;
+  updatedAt: string;
 }
 
 export class UsersConnection {
-    __typename?: 'UsersConnection';
-    hasNext: boolean;
-    hasPrevious: boolean;
-    limit: number;
-    page: number;
-    total: number;
-    totalPages: number;
-    users: User[];
+  __typename?: 'UsersConnection';
+  hasNext: boolean;
+  hasPrevious: boolean;
+  limit: number;
+  page: number;
+  total: number;
+  totalPages: number;
+  users: User[];
 }
 
 type Nullable<T> = T | null;

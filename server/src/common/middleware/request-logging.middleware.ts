@@ -53,6 +53,15 @@ export class RequestLoggingMiddleware implements NestMiddleware {
     const userAgent = headers['user-agent'] || 'Unknown';
     const userId = (req.user as { sub?: string })?.sub;
 
+    // Skip analytics tracking endpoint to prevent log pollution
+    if (originalUrl.includes('/analytics/track')) {
+      next();
+      return;
+    }
+
+    // Only track POST and PATCH requests (skip GET, DELETE, etc.)
+    const shouldTrack = method === 'POST' || method === 'PATCH';
+
     // Log incoming request
     this.logger.log('Incoming request', 'RequestLogger', {
       correlationId,
@@ -62,6 +71,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       userAgent,
       userId,
       type: 'incoming_request',
+      willTrack: shouldTrack,
     });
 
     // Capture response
@@ -71,23 +81,25 @@ export class RequestLoggingMiddleware implements NestMiddleware {
       const responseTime = Date.now() - (req.startTime || Date.now());
       const { statusCode } = res;
 
-      // Log request completion
-      logger.logRequest(
-        method,
-        originalUrl,
-        statusCode,
-        responseTime,
-        correlationId,
-        {
-          ip,
-          userAgent,
-          userId,
-          responseSize:
-            typeof data === 'string'
-              ? data.length
-              : JSON.stringify(data).length,
-        },
-      );
+      // Log request completion (only POST and PATCH)
+      if (shouldTrack) {
+        logger.logRequest(
+          method,
+          originalUrl,
+          statusCode,
+          responseTime,
+          correlationId,
+          {
+            ip,
+            userAgent,
+            userId,
+            responseSize:
+              typeof data === 'string'
+                ? data.length
+                : JSON.stringify(data).length,
+          },
+        );
+      }
 
       // Log slow requests (>1000ms)
       if (responseTime > 1000) {

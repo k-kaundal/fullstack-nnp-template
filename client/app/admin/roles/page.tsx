@@ -32,7 +32,7 @@ export default function RolesPage() {
         setRoles(rolesRes.data);
       }
       if (isSuccessResponse(permsRes)) {
-        setPermissions(Array.isArray(permsRes.data) ? permsRes.data : []);
+        setPermissions(permsRes.data?.permissions || []);
       }
       setIsLoading(false);
     };
@@ -51,7 +51,7 @@ export default function RolesPage() {
       setRoles(rolesRes.data);
     }
     if (isSuccessResponse(permsRes)) {
-      setPermissions(Array.isArray(permsRes.data) ? permsRes.data : []);
+      setPermissions(permsRes.data?.permissions || []);
     }
     setIsLoading(false);
   };
