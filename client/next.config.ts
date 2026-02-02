@@ -26,7 +26,14 @@ const nextConfig: NextConfig = {
 
   // Experimental features for better performance
   experimental: {
-    optimizePackageImports: ['@/components/ui', '@/lib/utils'],
+    optimizePackageImports: [
+      '@/components/ui',
+      '@/lib/utils',
+      '@react-three/fiber',
+      '@react-three/drei',
+      'three',
+      'framer-motion',
+    ],
   },
 };
 

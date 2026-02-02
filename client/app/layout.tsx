@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ThemeProvider, AuthProvider } from '@/lib/providers';
+import { ThemeProvider, AuthProvider, SmoothScrollProvider } from '@/lib/providers';
 import { Toaster } from 'sonner';
 import { VisitorTracker } from '@/components/analytics/VisitorTracker';
 
@@ -88,9 +88,11 @@ export default function RootLayout({
       <body className="antialiased h-full font-sans">
         <ThemeProvider>
           <AuthProvider>
-            <VisitorTracker />
-            {children}
-            <Toaster position="top-right" expand={false} richColors closeButton duration={4000} />
+            <SmoothScrollProvider>
+              <VisitorTracker />
+              {children}
+              <Toaster position="top-right" expand={false} richColors closeButton duration={4000} />
+            </SmoothScrollProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

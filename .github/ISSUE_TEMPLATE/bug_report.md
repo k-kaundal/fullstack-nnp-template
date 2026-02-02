@@ -34,7 +34,7 @@ If applicable, add screenshots to help explain your problem.
 ## 💻 Environment
 
 - OS: [e.g. macOS, Ubuntu, Windows]
-- Node.js version: [e.g. 20.10.0]
+- Node.js version: [e.g. 22.12.0]
 - npm version: [e.g. 10.2.0]
 - Browser: [e.g. Chrome, Safari]
 - Which part: [Backend / Frontend / Both]

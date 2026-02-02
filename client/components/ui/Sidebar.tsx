@@ -27,7 +27,7 @@ export const Sidebar = memo(function Sidebar({ config, className = '' }: Sidebar
   return (
     <aside
       className={`
-        relative h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800
+        relative h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800
         transition-all duration-300 ease-in-out flex flex-col
         ${collapsed ? 'w-20' : 'w-64'}
         ${className}
