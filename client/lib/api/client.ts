@@ -21,6 +21,17 @@ import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/utils/s
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
+// Request deduplication cache
+const pendingRequests = new Map<string, Promise<unknown>>();
+
+// Simple in-memory cache for GET requests
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+const requestCache = new Map<string, CacheEntry<unknown>>();
+const CACHE_TTL = 60000; // 1 minute cache
+
 /**
  * Subscribe to token refresh completion
  * @param callback - Function to call when refresh completes
@@ -282,10 +293,38 @@ export class ApiClient {
     query?: QueryParams,
     config?: AxiosRequestConfig
   ): Promise<ApiSuccessResponse<T> | ApiErrorResponse> {
-    return this.client
-      .get<ApiSuccessResponse<T>>(withQueryParams(url, query), config)
-      .then((response) => response.data as ApiSuccessResponse<T>)
-      .catch((err) => this.handleError(err) as ApiErrorResponse);
+    const fullUrl = withQueryParams(url, query);
+    const cacheKey = `GET:${fullUrl}`;
+
+    // Check cache first
+    const cached = requestCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return cached.data as ApiSuccessResponse<T>;
+    }
+
+    // Check if same request is already pending (deduplication)
+    const pending = pendingRequests.get(cacheKey);
+    if (pending) {
+      return pending as Promise<ApiSuccessResponse<T> | ApiErrorResponse>;
+    }
+
+    // Make new request
+    const requestPromise = this.client
+      .get<ApiSuccessResponse<T>>(fullUrl, config)
+      .then((response) => {
+        const data = response.data as ApiSuccessResponse<T>;
+        // Cache successful responses
+        requestCache.set(cacheKey, { data, timestamp: Date.now() });
+        pendingRequests.delete(cacheKey);
+        return data;
+      })
+      .catch((err) => {
+        pendingRequests.delete(cacheKey);
+        return this.handleError(err) as ApiErrorResponse;
+      });
+
+    pendingRequests.set(cacheKey, requestPromise);
+    return requestPromise;
   }
 
   /**
@@ -314,7 +353,11 @@ export class ApiClient {
   ): Promise<ApiSuccessResponse<T> | ApiErrorResponse> {
     return this.client
       .post<ApiSuccessResponse<T>>(withQueryParams(url, query), data, config)
-      .then((response) => response.data as ApiSuccessResponse<T>)
+      .then((response) => {
+        // Clear cache for this resource after mutation
+        this.clearCache(url.split('?')[0]);
+        return response.data as ApiSuccessResponse<T>;
+      })
       .catch((err) => this.handleError(err) as ApiErrorResponse);
   }
 
@@ -335,7 +378,11 @@ export class ApiClient {
   ): Promise<ApiSuccessResponse<T> | ApiErrorResponse> {
     return this.client
       .put<ApiSuccessResponse<T>>(withQueryParams(url, query), data, config)
-      .then((response) => response.data as ApiSuccessResponse<T>)
+      .then((response) => {
+        // Clear cache for this resource after mutation
+        this.clearCache(url.split('?')[0].replace(/\/[^/]+$/, ''));
+        return response.data as ApiSuccessResponse<T>;
+      })
       .catch((err) => this.handleError(err) as ApiErrorResponse);
   }
 
@@ -363,7 +410,11 @@ export class ApiClient {
   ): Promise<ApiSuccessResponse<T> | ApiErrorResponse> {
     return this.client
       .patch<ApiSuccessResponse<T>>(withQueryParams(url, query), data, config)
-      .then((response) => response.data as ApiSuccessResponse<T>)
+      .then((response) => {
+        // Clear cache for this resource after mutation
+        this.clearCache(url.split('?')[0].replace(/\/[^/]+$/, ''));
+        return response.data as ApiSuccessResponse<T>;
+      })
       .catch((err) => this.handleError(err) as ApiErrorResponse);
   }
 
@@ -410,6 +461,25 @@ export class ApiClient {
    */
   setBaseURL(baseURL: string): void {
     this.client.defaults.baseURL = baseURL;
+  }
+
+  /**
+   * Clear request cache (useful after mutations)
+   *
+   * @param pattern - Optional URL pattern to match (clears all if not provided)
+   */
+  clearCache(pattern?: string): void {
+    if (!pattern) {
+      requestCache.clear();
+      return;
+    }
+
+    // Clear cache entries matching pattern
+    for (const key of requestCache.keys()) {
+      if (key.includes(pattern)) {
+        requestCache.delete(key);
+      }
+    }
   }
 
   /**

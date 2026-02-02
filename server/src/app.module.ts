@@ -14,6 +14,7 @@ import { RbacModule } from './rbac/rbac.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ContactModule } from './contact/contact.module';
+import { BlogModule } from './blog/blog.module';
 import { SeederModule } from './database/seeders/seeder.module';
 import { SeederService } from './database/seeders/seeder.service';
 import { GraphqlAppModule } from './graphql/graphql.module';
@@ -138,6 +139,7 @@ const conditionalImports = [
   NewsletterModule,
   AnalyticsModule,
   ContactModule,
+  BlogModule,
   SeederModule,
 ];
 

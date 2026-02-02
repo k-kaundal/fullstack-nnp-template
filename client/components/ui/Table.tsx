@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo, useCallback } from 'react';
 import { TableConfig, TableAction } from '@/interfaces';
 
 interface TableProps<T> {
@@ -18,7 +18,7 @@ interface TableProps<T> {
  * @param props - Table configuration
  * @returns JSX Element
  */
-export function Table<T>({ config }: TableProps<T>) {
+export const Table = memo(function Table<T>({ config }: TableProps<T>) {
   const {
     columns,
     data,
@@ -53,30 +53,39 @@ export function Table<T>({ config }: TableProps<T>) {
   // Use internal or controlled selection
   const currentSelectedRows = onSelectionChange ? selectedRows : internalSelectedRows;
 
-  // Handle selection change
-  const handleSelectionChange = (indices: number[]) => {
-    if (onSelectionChange) {
-      onSelectionChange(indices);
-    } else {
-      setInternalSelectedRows(indices);
-    }
-  };
+  // Handle selection change with useCallback
+  const handleSelectionChange = useCallback(
+    (indices: number[]) => {
+      if (onSelectionChange) {
+        onSelectionChange(indices);
+      } else {
+        setInternalSelectedRows(indices);
+      }
+    },
+    [onSelectionChange]
+  );
 
-  // Handle search
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (onSearch) {
-      onSearch(query);
-    }
-  };
+  // Handle search with useCallback
+  const handleSearch = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      if (onSearch) {
+        onSearch(query);
+      }
+    },
+    [onSearch]
+  );
 
-  // Handle sort
-  const handleSort = (column: string) => {
-    if (!onSortChange) return;
+  // Handle sort with useCallback
+  const handleSort = useCallback(
+    (column: string) => {
+      if (!onSortChange) return;
 
-    const newDirection = sort?.column === column && sort?.direction === 'asc' ? 'desc' : 'asc';
-    onSortChange(column, newDirection);
-  };
+      const newDirection = sort?.column === column && sort?.direction === 'asc' ? 'desc' : 'asc';
+      onSortChange(column, newDirection);
+    },
+    [onSortChange, sort]
+  );
 
   // Handle select all
   const handleSelectAll = () => {
@@ -455,7 +464,7 @@ export function Table<T>({ config }: TableProps<T>) {
       )}
     </div>
   );
-}
+});
 
 // Icon Components
 function SearchIcon({ className = 'w-5 h-5' }: { className?: string }) {

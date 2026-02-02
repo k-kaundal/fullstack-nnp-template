@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerService } from './common/logger/logger.service';
 import { setupSwagger } from './config/swagger.config';
 import { initializeSentry } from './config/sentry.config';
+import * as compression from 'compression';
 
 /**
  * Creates and configures the NestJS application
@@ -53,6 +54,20 @@ async function createApp(): Promise<INestApplication> {
       'Retry-After',
     ],
   });
+
+  // Enable gzip compression for faster response times (30-40% size reduction)
+  app.use(
+    compression({
+      filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+          return false;
+        }
+        return compression.filter(req, res);
+      },
+      level: 6, // Balance between speed and compression ratio
+      threshold: 1024, // Only compress responses larger than 1KB
+    }),
+  );
 
   // Global sanitization middleware
   const sanitizationMiddleware = new SanitizationMiddleware();

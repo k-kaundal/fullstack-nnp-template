@@ -18,7 +18,6 @@ export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // eslint-disable-next-line
   useEffect(() => setMounted(true), []);
 
   if (!mounted) {
@@ -107,7 +106,6 @@ export function CompactThemeSwitcher() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // eslint-disable-next-line
   useEffect(() => setMounted(true), []);
 
   // Return skeleton during SSR and initial client render to prevent hydration mismatch

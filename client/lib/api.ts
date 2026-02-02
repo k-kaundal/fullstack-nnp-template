@@ -98,3 +98,14 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient(API_URL);
+
+// Export all services
+export * from './api/client';
+export * from './api/auth.service';
+export * from './api/users.service';
+export * from './api/session.service';
+export * from './api/roles.service';
+export * from './api/permissions.service';
+export * from './api/newsletter.service';
+export * from './api/contact.service';
+export * from './api/blog.service';

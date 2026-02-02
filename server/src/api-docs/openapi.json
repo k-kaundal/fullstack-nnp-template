@@ -3610,6 +3610,1625 @@
         "summary": "Delete newsletter subscriber (admin)",
         "tags": ["newsletter"]
       }
+    },
+    "/api/v1/analytics/track": {
+      "post": {
+        "operationId": "trackVisitor",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackVisitorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Visitor tracked successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 201,
+                    "message": "Visitor tracked successfully",
+                    "data": {
+                      "tracked": true,
+                      "visitorId": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Track website visitor",
+        "tags": ["analytics"]
+      }
+    },
+    "/api/v1/analytics/dashboard": {
+      "get": {
+        "operationId": "getAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics data fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Analytics fetched successfully",
+                    "data": {
+                      "overview": {
+                        "totalVisitors": 1250,
+                        "uniqueVisitors": 850,
+                        "todayVisitors": 45,
+                        "weekVisitors": 320,
+                        "monthVisitors": 1150,
+                        "returningVisitors": 400,
+                        "newVisitors": 850
+                      },
+                      "topCountries": [
+                        {
+                          "country": "United States",
+                          "countryCode": "US",
+                          "count": 450
+                        },
+                        {
+                          "country": "India",
+                          "countryCode": "IN",
+                          "count": 320
+                        }
+                      ],
+                      "topCities": [
+                        {
+                          "city": "New York",
+                          "country": "United States",
+                          "count": 120
+                        }
+                      ],
+                      "topPages": [
+                        {
+                          "page": "/",
+                          "count": 500
+                        },
+                        {
+                          "page": "/about",
+                          "count": 250
+                        }
+                      ],
+                      "browserStats": [
+                        {
+                          "browser": "Chrome",
+                          "count": 800
+                        },
+                        {
+                          "browser": "Safari",
+                          "count": 300
+                        }
+                      ],
+                      "osStats": [
+                        {
+                          "os": "Windows",
+                          "count": 600
+                        },
+                        {
+                          "os": "Mac OS",
+                          "count": 400
+                        }
+                      ],
+                      "deviceStats": [
+                        {
+                          "device": "desktop",
+                          "count": 800
+                        },
+                        {
+                          "device": "mobile",
+                          "count": 400
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/analytics/dashboard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get analytics dashboard data",
+        "tags": ["analytics"]
+      }
+    },
+    "/api/v1/analytics/recent": {
+      "get": {
+        "operationId": "getRecentVisitors",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent visitors fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/analytics/recent"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get recent visitors",
+        "tags": ["analytics"]
+      }
+    },
+    "/api/v1/contact": {
+      "post": {
+        "description": "Public endpoint for contact form submissions. Sends email to admin.",
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact form submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 201,
+                    "message": "Thank you for contacting us! We will get back to you soon.",
+                    "data": {
+                      "id": "uuid",
+                      "name": "John Doe",
+                      "email": "john@example.com",
+                      "subject": "General Inquiry",
+                      "message": "I would like to know more...",
+                      "status": "new",
+                      "createdAt": "2026-02-01T10:00:00.000Z"
+                    },
+                    "meta": {
+                      "contact_id": "uuid",
+                      "created_at": "2026-02-01T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Submit contact form",
+        "tags": ["contact"]
+      },
+      "get": {
+        "description": "Admin endpoint to retrieve contact submissions with pagination and filtering",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Items per page",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by status",
+            "schema": {
+              "example": "new",
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact submissions fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Contact submissions fetched successfully",
+                    "data": [
+                      {
+                        "id": "uuid",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "phone": "+1234567890",
+                        "subject": "General Inquiry",
+                        "message": "I would like to know more...",
+                        "status": "new",
+                        "ipAddress": "192.168.1.1",
+                        "createdAt": "2026-02-01T10:00:00.000Z"
+                      }
+                    ],
+                    "meta": {
+                      "total": 50,
+                      "count": 20,
+                      "page": 1,
+                      "limit": 20,
+                      "total_pages": 3,
+                      "has_next": true,
+                      "has_previous": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all contact submissions",
+        "tags": ["contact"]
+      }
+    },
+    "/api/v1/contact/statistics": {
+      "get": {
+        "description": "Admin endpoint to get contact submission statistics",
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 200,
+                    "message": "Contact statistics fetched successfully",
+                    "data": {
+                      "total": 150,
+                      "new": 25,
+                      "read": 50,
+                      "replied": 60,
+                      "today": 5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get contact statistics",
+        "tags": ["contact"]
+      }
+    },
+    "/api/v1/contact/{id}": {
+      "get": {
+        "description": "Admin endpoint to get single contact submission. Auto-marks as read.",
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact submission fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Contact not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get contact submission by ID",
+        "tags": ["contact"]
+      },
+      "patch": {
+        "description": "Admin endpoint to update contact submission status",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact status updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Contact not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update contact status",
+        "tags": ["contact"]
+      },
+      "delete": {
+        "description": "Admin endpoint to delete contact submission",
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact submission deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Contact not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Contact not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/contact/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete contact submission",
+        "tags": ["contact"]
+      }
+    },
+    "/api/v1/blog": {
+      "post": {
+        "operationId": "create",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBlogPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Blog post created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "success",
+                    "statusCode": 201,
+                    "message": "Blog post created successfully",
+                    "data": {
+                      "id": "uuid",
+                      "title": "How to Build a Modern Web App",
+                      "slug": "how-to-build-a-modern-web-app",
+                      "content": "<h1>Introduction</h1>",
+                      "status": "draft",
+                      "readTime": 5,
+                      "createdAt": "2026-02-02T10:00:00.000Z"
+                    },
+                    "meta": {
+                      "blog_post_id": "uuid",
+                      "slug": "how-to-build-a-modern-web-app",
+                      "created_at": "2026-02-02T10:00:00.000Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new blog post",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/admin": {
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog posts fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/admin"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all blog posts (admin)",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/published": {
+      "get": {
+        "operationId": "findPublished",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published blog posts fetched successfully"
+          }
+        },
+        "summary": "Get published blog posts (public)",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/slug/{slug}": {
+      "get": {
+        "operationId": "findBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog post fetched successfully"
+          },
+          "404": {
+            "description": "Not Found - Blog post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Blog post not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/slug/:slug"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get blog post by slug (public)",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/statistics": {
+      "get": {
+        "operationId": "getStatistics",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog statistics fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/statistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get blog statistics",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/categories": {
+      "get": {
+        "operationId": "getCategories",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categories fetched successfully"
+          }
+        },
+        "summary": "Get all blog categories with post counts",
+        "tags": ["blog"]
+      },
+      "post": {
+        "operationId": "createCategory",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBlogCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Resource already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 409,
+                    "message": "Category already exists",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create new blog category with SEO fields",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/categories/{id}": {
+      "get": {
+        "operationId": "getCategoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category fetched successfully"
+          },
+          "404": {
+            "description": "Not Found - Category not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Category not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get blog category by ID",
+        "tags": ["blog"]
+      },
+      "patch": {
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBlogCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Category not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Category not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update blog category",
+        "tags": ["blog"]
+      },
+      "delete": {
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Category not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Category not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/categories/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete blog category",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/tags": {
+      "get": {
+        "operationId": "getTags",
+        "parameters": [
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tags fetched successfully"
+          }
+        },
+        "summary": "Get all blog tags",
+        "tags": ["blog"]
+      }
+    },
+    "/api/v1/blog/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog post fetched successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Blog post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Blog post not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get blog post by ID",
+        "tags": ["blog"]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBlogPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Blog post updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Validation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 400,
+                    "message": "Validation failed",
+                    "errors": ["Field is required", "Invalid format"],
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Blog post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Blog post not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update blog post",
+        "tags": ["blog"]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Version",
+            "in": "header",
+            "required": false,
+            "description": "API version for header-based versioning",
+            "schema": {
+              "type": "string",
+              "enum": ["1", "2"],
+              "default": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog post deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 401,
+                    "message": "Unauthorized",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - Blog post not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "status": "error",
+                    "statusCode": 404,
+                    "message": "Blog post not found",
+                    "timestamp": "2026-01-31T19:20:00.000Z",
+                    "path": "/api/v1/blog/:id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete blog post",
+        "tags": ["blog"]
+      }
     }
   },
   "info": {
@@ -4024,6 +5643,242 @@
           }
         },
         "required": ["subject", "content"]
+      },
+      "TrackVisitorDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "example": "/about",
+            "description": "Page URL"
+          },
+          "referrer": {
+            "type": "string",
+            "example": "https://google.com"
+          },
+          "language": {
+            "type": "string",
+            "example": "en-US"
+          },
+          "screenWidth": {
+            "type": "number",
+            "example": 1920
+          },
+          "screenHeight": {
+            "type": "number",
+            "example": 1080
+          },
+          "sessionId": {
+            "type": "string",
+            "example": "session-uuid"
+          },
+          "visitDuration": {
+            "type": "number",
+            "example": 120,
+            "description": "Visit duration in seconds"
+          }
+        },
+        "required": ["page"]
+      },
+      "CreateContactDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "+1234567890"
+          },
+          "subject": {
+            "type": "string",
+            "example": "General Inquiry"
+          },
+          "message": {
+            "type": "string",
+            "example": "I would like to know more about your services."
+          }
+        },
+        "required": ["name", "email", "subject", "message"]
+      },
+      "UpdateContactDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "read",
+            "enum": ["new", "read", "replied", "archived"]
+          }
+        }
+      },
+      "CreateBlogPostDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "How to Build a Modern Web App",
+            "minLength": 5,
+            "maxLength": 200
+          },
+          "content": {
+            "type": "string",
+            "example": "<h1>Introduction</h1><p>Content here...</p>",
+            "description": "HTML content from rich text editor"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Learn how to build modern web applications with React and Node.js",
+            "maxLength": 500
+          },
+          "featuredImage": {
+            "type": "string",
+            "example": "https://example.com/images/post.jpg"
+          },
+          "status": {
+            "type": "string",
+            "example": "draft",
+            "enum": ["draft", "published", "archived"],
+            "default": "draft"
+          },
+          "metaDescription": {
+            "type": "string",
+            "example": "Build modern web applications with the latest technologies",
+            "maxLength": 160
+          },
+          "metaKeywords": {
+            "type": "string",
+            "example": "web development, react, nodejs, tutorial"
+          },
+          "tags": {
+            "example": ["react", "nodejs", "tutorial"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "type": "string",
+            "example": "Web Development"
+          }
+        },
+        "required": ["title", "content", "status"]
+      },
+      "CreateBlogCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Technology",
+            "description": "Category name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Latest technology news and tutorials",
+            "description": "Category description"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://example.com/images/tech.jpg",
+            "description": "Category image URL"
+          },
+          "metaDescription": {
+            "type": "string",
+            "example": "Explore the latest in technology",
+            "description": "Meta description for SEO"
+          },
+          "metaKeywords": {
+            "type": "string",
+            "example": "technology, tech news, tutorials",
+            "description": "Meta keywords for SEO"
+          }
+        },
+        "required": ["name"]
+      },
+      "UpdateBlogCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Technology",
+            "description": "Category name"
+          },
+          "description": {
+            "type": "string",
+            "example": "Latest technology news and tutorials",
+            "description": "Category description"
+          },
+          "image": {
+            "type": "string",
+            "example": "https://example.com/images/tech.jpg",
+            "description": "Category image URL"
+          },
+          "metaDescription": {
+            "type": "string",
+            "example": "Explore the latest in technology",
+            "description": "Meta description for SEO"
+          },
+          "metaKeywords": {
+            "type": "string",
+            "example": "technology, tech news, tutorials",
+            "description": "Meta keywords for SEO"
+          }
+        }
+      },
+      "UpdateBlogPostDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "How to Build a Modern Web App",
+            "minLength": 5,
+            "maxLength": 200
+          },
+          "content": {
+            "type": "string",
+            "example": "<h1>Introduction</h1><p>Content here...</p>",
+            "description": "HTML content from rich text editor"
+          },
+          "excerpt": {
+            "type": "string",
+            "example": "Learn how to build modern web applications with React and Node.js",
+            "maxLength": 500
+          },
+          "featuredImage": {
+            "type": "string",
+            "example": "https://example.com/images/post.jpg"
+          },
+          "status": {
+            "type": "string",
+            "example": "draft",
+            "enum": ["draft", "published", "archived"],
+            "default": "draft"
+          },
+          "metaDescription": {
+            "type": "string",
+            "example": "Build modern web applications with the latest technologies",
+            "maxLength": 160
+          },
+          "metaKeywords": {
+            "type": "string",
+            "example": "web development, react, nodejs, tutorial"
+          },
+          "tags": {
+            "example": ["react", "nodejs", "tutorial"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "type": "string",
+            "example": "Web Development"
+          }
+        }
       }
     }
   }

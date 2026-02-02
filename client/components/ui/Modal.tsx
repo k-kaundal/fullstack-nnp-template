@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { ModalProps } from '@/interfaces';
 
 /**
@@ -14,7 +14,7 @@ import { ModalProps } from '@/interfaces';
  * @param props - Modal configuration
  * @returns JSX Element
  */
-export function Modal({
+export const Modal = memo(function Modal({
   isOpen,
   onClose,
   title,
@@ -121,13 +121,13 @@ export function Modal({
       </div>
     </div>
   );
-}
+});
 
 // Close Icon
-function CloseIcon() {
+const CloseIcon = memo(function CloseIcon() {
   return (
     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
-}
+});

@@ -8,6 +8,7 @@ import {
   BeforeUpdate,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../../rbac/entities/role.entity';
@@ -17,6 +18,9 @@ import { Role } from '../../rbac/entities/role.entity';
  * Maps to 'users' table in PostgreSQL
  */
 @Entity('users')
+@Index(['email']) // Index for faster email lookups during auth
+@Index(['isActive']) // Index for filtering active users
+@Index(['createdAt']) // Index for sorting by creation date
 export class User {
   /**
    * Unique identifier (UUID v4)

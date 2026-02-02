@@ -15,3 +15,4 @@ export * from './Confirm';
 export * from './ViewDialog';
 export * from './EditDialog';
 export * from './ToastDemo';
+export { default as RichTextEditor } from './RichTextEditor';

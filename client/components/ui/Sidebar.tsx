@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, memo, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SidebarItem, SidebarProps, SidebarMenuItemProps } from '@/interfaces';
@@ -14,15 +14,15 @@ import { SidebarItem, SidebarProps, SidebarMenuItemProps } from '@/interfaces';
  * Professional Sidebar Component
  * Features: Multi-level menus, icons, badges, collapsible, dark mode
  */
-export function Sidebar({ config, className = '' }: SidebarProps) {
+export const Sidebar = memo(function Sidebar({ config, className = '' }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(config.defaultCollapsed ?? false);
   const pathname = usePathname();
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     if (config.collapsible !== false) {
       setCollapsed(!collapsed);
     }
-  };
+  }, [collapsed, config.collapsible]);
 
   return (
     <aside
@@ -95,13 +95,18 @@ export function Sidebar({ config, className = '' }: SidebarProps) {
       )}
     </aside>
   );
-}
+});
 
 /**
  * Sidebar Menu Item Component
  * Supports nested submenus with smooth animations
  */
-function SidebarMenuItem({ item, collapsed, pathname, level }: SidebarMenuItemProps) {
+const SidebarMenuItem = memo(function SidebarMenuItem({
+  item,
+  collapsed,
+  pathname,
+  level,
+}: SidebarMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -235,7 +240,7 @@ function SidebarMenuItem({ item, collapsed, pathname, level }: SidebarMenuItemPr
       )}
     </div>
   );
-}
+});
 
 /**
  * Get badge color classes based on variant
@@ -267,18 +272,18 @@ function ChevronLeftIcon() {
   );
 }
 
-function ChevronRightIcon() {
+const ChevronRightIcon = memo(function ChevronRightIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
     </svg>
   );
-}
+});
 
-function ChevronDownIcon() {
+const ChevronDownIcon = memo(function ChevronDownIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>
   );
-}
+});
