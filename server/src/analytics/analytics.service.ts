@@ -7,6 +7,7 @@ import { TrackVisitorDto } from './dto/track-visitor.dto';
 import { VisitorLog } from './entities/visitor-log.entity';
 import { ApiResponse } from '../common/utils/api-response.util';
 import axios from 'axios';
+import isIp from 'is-ip';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const UAParser = require('ua-parser-js');
 
@@ -308,14 +309,8 @@ export class AnalyticsService {
     isp: string;
   }> {
     try {
-      // Skip geolocation for localhost/private IPs
-      if (
-        ip === '::1' ||
-        ip === '127.0.0.1' ||
-        ip.startsWith('192.168.') ||
-        ip.startsWith('10.') ||
-        ip.startsWith('172.')
-      ) {
+      // Validate and skip geolocation for localhost/private or invalid IPs
+      if (!this.isSafePublicIp(ip)) {
         return {
           country: 'Local',
           countryCode: 'LOCAL',
@@ -354,6 +349,67 @@ export class AnalyticsService {
       this.logger.warn(`Geolocation API failed: ${error.message}`);
       return this.getDefaultGeoData();
     }
+  }
+
+  /**
+   * Check if IP is a valid, non-private, non-local address safe for external lookup
+   */
+  private isSafePublicIp(ip: string): string | false {
+    if (!ip) {
+      return false;
+    }
+
+    // Basic sanitation to prevent path injection
+    if (ip.includes('/') || ip.includes('\\') || ip.includes(' ') || ip.includes('?') || ip.includes('#')) {
+      return false;
+    }
+
+    // Must be a valid IP address (IPv4 or IPv6)
+    if (!isIp(ip)) {
+      return false;
+    }
+
+    // Normalize IPv6 localhost
+    if (ip === '::1') {
+      return false;
+    }
+
+    // IPv4 loopback and private ranges
+    if (
+      ip === '127.0.0.1' ||
+      ip.startsWith('10.') ||
+      ip.startsWith('192.168.') ||
+      ip.startsWith('172.16.') ||
+      ip.startsWith('172.17.') ||
+      ip.startsWith('172.18.') ||
+      ip.startsWith('172.19.') ||
+      ip.startsWith('172.20.') ||
+      ip.startsWith('172.21.') ||
+      ip.startsWith('172.22.') ||
+      ip.startsWith('172.23.') ||
+      ip.startsWith('172.24.') ||
+      ip.startsWith('172.25.') ||
+      ip.startsWith('172.26.') ||
+      ip.startsWith('172.27.') ||
+      ip.startsWith('172.28.') ||
+      ip.startsWith('172.29.') ||
+      ip.startsWith('172.30.') ||
+      ip.startsWith('172.31.')
+    ) {
+      return false;
+    }
+
+    // Common IPv6 local/link-local/multicast prefixes
+    if (
+      ip.startsWith('fe80:') || // link-local
+      ip.startsWith('fc00:') || // unique local
+      ip.startsWith('fd00:') || // unique local
+      ip.startsWith('::')       // unspecified/other local forms
+    ) {
+      return false;
+    }
+
+    return ip;
   }
 
   /**
