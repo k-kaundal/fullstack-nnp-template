@@ -45,7 +45,7 @@ function generateVisitorTrendDataFromAnalytics(analytics: AnalyticsData) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
 
-    let visitors = avgDailyVisitors;
+    let visitors;
 
     // Use actual today's data for today
     if (i === 0) {
