@@ -7,7 +7,7 @@ import { TrackVisitorDto } from './dto/track-visitor.dto';
 import { VisitorLog } from './entities/visitor-log.entity';
 import { ApiResponse } from '../common/utils/api-response.util';
 import axios from 'axios';
-import isIp from 'is-ip';
+import { isIP } from 'is-ip';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const UAParser = require('ua-parser-js');
 
@@ -310,7 +310,8 @@ export class AnalyticsService {
   }> {
     try {
       // Validate and skip geolocation for localhost/private or invalid IPs
-      if (!this.isSafePublicIp(ip)) {
+      const validatedIp = this.isSafePublicIp(ip);
+      if (!validatedIp) {
         return {
           country: 'Local',
           countryCode: 'LOCAL',
@@ -326,7 +327,11 @@ export class AnalyticsService {
 
       // Use free IP geolocation API (ip-api.com)
       // No API key required, 45 requests/minute limit
-      const response = await axios.get(`http://ip-api.com/json/${ip}`, {
+      // URL encode the validated IP to prevent injection attacks
+      const encodedIp = encodeURIComponent(validatedIp);
+      const apiUrl = `http://ip-api.com/json/${encodedIp}`;
+
+      const response = await axios.get(apiUrl, {
         timeout: 5000,
       });
 
@@ -353,19 +358,39 @@ export class AnalyticsService {
 
   /**
    * Check if IP is a valid, non-private, non-local address safe for external lookup
+   * Validates IP to prevent Server-Side Request Forgery (SSRF) attacks
+   *
+   * @param ip - The IP address to validate
+   * @returns The validated IP if safe, false otherwise
+   *
+   * Security measures:
+   * - Rejects path traversal characters
+   * - Validates IP format using is-ip library
+   * - Rejects private IP ranges (10.x, 192.168.x, 172.16-31.x)
+   * - Rejects loopback addresses (127.0.0.1, ::1)
+   * - Rejects IPv6 link-local and unique local addresses
+   * - Prevents SSRF by ensuring only public IPs can trigger external requests
    */
   private isSafePublicIp(ip: string): string | false {
     if (!ip) {
       return false;
     }
 
-    // Basic sanitation to prevent path injection
-    if (ip.includes('/') || ip.includes('\\') || ip.includes(' ') || ip.includes('?') || ip.includes('#')) {
+    // Basic sanitation to prevent path injection and URL manipulation
+    if (
+      ip.includes('/') ||
+      ip.includes('\\') ||
+      ip.includes(' ') ||
+      ip.includes('?') ||
+      ip.includes('#') ||
+      ip.includes('@') || // Prevent user-info in URL
+      (ip.includes(':') && !isIP(ip)) // Allow : only in valid IPv6
+    ) {
       return false;
     }
 
     // Must be a valid IP address (IPv4 or IPv6)
-    if (!isIp(ip)) {
+    if (!isIP(ip)) {
       return false;
     }
 
@@ -404,7 +429,7 @@ export class AnalyticsService {
       ip.startsWith('fe80:') || // link-local
       ip.startsWith('fc00:') || // unique local
       ip.startsWith('fd00:') || // unique local
-      ip.startsWith('::')       // unspecified/other local forms
+      ip.startsWith('::') // unspecified/other local forms
     ) {
       return false;
     }
