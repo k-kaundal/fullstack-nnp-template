@@ -1,29 +1,17 @@
 'use client';
 
-import { Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { ThemeSwitcher } from '@/components/ui';
 import { NewsletterSubscription } from '@/components/newsletter';
 import { useAuthContext } from '@/lib/providers/auth-provider';
 import { fadeInUp, scaleIn, staggerContainer, useParallax } from '@/lib/utils/scroll-animations';
-
-// Lazy load 3D components with SSR disabled - AI-Themed
-// const AIHeroScene = dynamic(() => import('@/components/3d').then((mod) => mod.AIHeroScene), {
-//   ssr: false,
-// });
-
 const AI3DBackground = dynamic(() => import('@/components/3d').then((mod) => mod.AI3DBackground), {
   ssr: false,
 });
-
-const Interactive3DFeature = dynamic(
-  () => import('@/components/3d').then((mod) => mod.Interactive3DFeature),
-  { ssr: false }
-);
 
 /**
  * Enhanced home page with 3D WebGL animations and parallax scroll effects
@@ -53,43 +41,32 @@ export default function HomeClient() {
   const themeInView = useInView(themeRef, { once: true, amount: 0.3 });
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-transparent">
       {/* AI-Themed 3D Background - Fixed to viewport */}
       <Suspense fallback={null}>
         <AI3DBackground />
       </Suspense>
 
       {/* Hero Section with AI-Themed 3D Background */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-cyan-50/30 to-white dark:from-transparent dark:via-cyan-950/20 dark:to-gray-950 min-h-screen flex items-center">
-        {/* AI Hero 3D WebGL Background */}
-        {/* <div className="absolute inset-0 z-0">
-          <Suspense
-            fallback={
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-gray-900 dark:to-gray-950 animate-pulse" />
-            }
-          >
-            <AIHeroScene />
-          </Suspense>
-        </div> */}
-
+      <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-cyan-50/10 to-white/80 dark:from-transparent dark:via-cyan-950/10 dark:to-gray-950/80 min-h-screen flex items-center">
         {/* Animated Background Grid */}
-        <div className="absolute inset-0 bg-grid-gray-900/[0.04] dark:bg-grid-white/[0.02] bg-size-[30px_30px] z-10" />
+        <div className="absolute inset-0 bg-grid-gray-900/[0.04] dark:bg-grid-white/[0.02] bg-size-[30px_30px] z-[1]" />
 
         {/* Parallax Gradient Orbs */}
         <motion.div
           ref={parallaxRef1}
           style={{ y: y1 }}
-          className="absolute top-0 left-1/4 w-96 h-96 bg-linear-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/10 dark:to-purple-600/10 rounded-full blur-3xl z-10"
+          className="absolute top-0 left-1/4 w-96 h-96 bg-linear-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-600/10 dark:to-purple-600/10 rounded-full blur-3xl z-[1]"
         />
         <motion.div
           ref={parallaxRef2}
           style={{ y: y2 }}
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-linear-to-r from-purple-400/20 to-pink-400/20 dark:from-purple-600/10 dark:to-pink-600/10 rounded-full blur-3xl z-10"
+          className="absolute bottom-0 right-1/4 w-96 h-96 bg-linear-to-r from-purple-400/20 to-pink-400/20 dark:from-purple-600/10 dark:to-pink-600/10 rounded-full blur-3xl z-[1]"
         />
         <motion.div
           ref={parallaxRef3}
           style={{ y: y3 }}
-          className="absolute top-1/2 right-1/3 w-64 h-64 bg-linear-to-r from-cyan-400/15 to-blue-400/15 dark:from-cyan-600/8 dark:to-blue-600/8 rounded-full blur-3xl z-10"
+          className="absolute top-1/2 right-1/3 w-64 h-64 bg-linear-to-r from-cyan-400/15 to-blue-400/15 dark:from-cyan-600/8 dark:to-blue-600/8 rounded-full blur-3xl z-[1]"
         />
 
         {/* Hero Content */}
@@ -244,10 +221,10 @@ export default function HomeClient() {
       {/* Features Section with Scroll Animations */}
       <section
         ref={featuresRef}
-        className="relative py-24 bg-gray-50 dark:bg-gray-900/50 overflow-hidden"
+        className="relative py-24 bg-gray-50/30 dark:bg-gray-900/30 overflow-hidden"
       >
         {/* Animated 3D Background with Gradients */}
-        <div className="absolute inset-0 opacity-40 dark:opacity-25">
+        <div className="absolute inset-0 opacity-30 dark:opacity-20">
           <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500 to-cyan-500 dark:from-blue-600 dark:to-cyan-600 rounded-full blur-3xl animate-pulse" />
           <div
             className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-500 to-pink-500 dark:from-purple-600 dark:to-pink-600 rounded-full blur-3xl animate-pulse"
@@ -310,12 +287,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-blue-500 dark:hover:ring-blue-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 dark:bg-blue-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -347,12 +318,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-purple-500 dark:hover:ring-purple-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 dark:bg-purple-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -384,12 +349,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-pink-500 dark:hover:ring-pink-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-600 dark:bg-pink-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -421,12 +380,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-green-500 dark:hover:ring-green-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-600 dark:bg-green-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -458,12 +411,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-orange-500 dark:hover:ring-orange-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-600 dark:bg-orange-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -495,12 +442,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-red-500 dark:hover:ring-red-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-600 dark:bg-red-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -532,12 +473,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-cyan-500 dark:hover:ring-cyan-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-600 dark:bg-cyan-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -569,12 +504,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-purple-500 dark:hover:ring-purple-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 dark:bg-purple-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -606,12 +535,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-blue-500 dark:hover:ring-blue-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 dark:bg-blue-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -643,12 +566,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-teal-500 dark:hover:ring-teal-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600 dark:bg-teal-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -680,12 +597,6 @@ export default function HomeClient() {
               href="/contact"
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-pink-500 dark:hover:ring-pink-400 transition-all duration-300 block cursor-pointer overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-600 dark:bg-pink-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -717,12 +628,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-indigo-500 dark:hover:ring-indigo-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 dark:bg-indigo-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -754,12 +659,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-yellow-500 dark:hover:ring-yellow-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-600 dark:bg-yellow-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -791,12 +690,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-rose-500 dark:hover:ring-rose-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-600 dark:bg-rose-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -828,12 +721,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-teal-500 dark:hover:ring-teal-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600 dark:bg-teal-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -865,12 +752,6 @@ export default function HomeClient() {
               variants={fadeInUp}
               className="group relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 hover:shadow-xl hover:ring-2 hover:ring-violet-500 dark:hover:ring-violet-400 transition-all duration-300 overflow-hidden"
             >
-              {/* 3D Background */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <Suspense fallback={null}>
-                  <Interactive3DFeature />
-                </Suspense>
-              </div>
               <div className="relative z-10">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-600 dark:bg-violet-500 mb-4 group-hover:scale-110 transition-transform">
                   <svg
@@ -903,7 +784,7 @@ export default function HomeClient() {
       {/* Stats Section */}
       <section
         ref={statsRef}
-        className="relative py-16 bg-white dark:bg-gray-900 border-y border-gray-200 dark:border-gray-800 overflow-hidden"
+        className="relative py-16 bg-white/30 dark:bg-gray-900/30 border-y border-gray-200/50 dark:border-gray-800/50 overflow-hidden"
       >
         {/* 3D Depth Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20" />
@@ -937,9 +818,12 @@ export default function HomeClient() {
       </section>
 
       {/* Theme Section */}
-      <section ref={themeRef} className="relative py-20 bg-white dark:bg-gray-900 overflow-hidden">
+      <section
+        ref={themeRef}
+        className="relative py-20 bg-white/30 dark:bg-gray-900/30 overflow-hidden"
+      >
         {/* 3D Floating Elements Background */}
-        <div className="absolute inset-0 opacity-40 dark:opacity-20">
+        <div className="absolute inset-0 opacity-30 dark:opacity-15">
           <div
             className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-400 dark:from-blue-600 dark:to-cyan-600 rounded-2xl blur-2xl animate-bounce"
             style={{ animationDuration: '3s' }}
@@ -998,9 +882,9 @@ export default function HomeClient() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="relative py-24 bg-linear-to-b from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-950 overflow-hidden">
+      <section className="relative py-24 bg-linear-to-b from-gray-50/30 to-white/30 dark:from-gray-900/30 dark:to-gray-950/30 overflow-hidden">
         {/* 3D Wave Effect with Particles */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-20">
           <svg
             className="absolute bottom-0 w-full h-64"
             viewBox="0 0 1440 320"
@@ -1056,7 +940,7 @@ export default function HomeClient() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-12">
+      <footer className="bg-gray-50/30 dark:bg-gray-900/30 border-t border-gray-200/50 dark:border-gray-800/50 py-12">
         <motion.div
           className="mx-auto max-w-7xl px-6 lg:px-8"
           initial="hidden"
