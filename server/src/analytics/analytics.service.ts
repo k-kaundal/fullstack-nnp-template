@@ -7,9 +7,24 @@ import { TrackVisitorDto } from './dto/track-visitor.dto';
 import { VisitorLog } from './entities/visitor-log.entity';
 import { ApiResponse } from '../common/utils/api-response.util';
 import axios from 'axios';
-import { isIP } from 'is-ip';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const UAParser = require('ua-parser-js');
+
+/**
+ * Custom IP validation function to avoid ES module issues in production
+ * Validates both IPv4 and IPv6 addresses
+ */
+function isValidIP(ip: string): boolean {
+  // IPv4 regex pattern
+  const ipv4Pattern =
+    /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+  // IPv6 regex pattern (simplified but covers most cases)
+  const ipv6Pattern =
+    /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+
+  return ipv4Pattern.test(ip) || ipv6Pattern.test(ip);
+}
 
 /**
  * Service for tracking and analyzing website visitors
@@ -365,7 +380,7 @@ export class AnalyticsService {
    *
    * Security measures:
    * - Rejects path traversal characters
-   * - Validates IP format using is-ip library
+   * - Validates IP format using custom regex patterns (IPv4 and IPv6)
    * - Rejects private IP ranges (10.x, 192.168.x, 172.16-31.x)
    * - Rejects loopback addresses (127.0.0.1, ::1)
    * - Rejects IPv6 link-local and unique local addresses
@@ -384,13 +399,13 @@ export class AnalyticsService {
       ip.includes('?') ||
       ip.includes('#') ||
       ip.includes('@') || // Prevent user-info in URL
-      (ip.includes(':') && !isIP(ip)) // Allow : only in valid IPv6
+      (ip.includes(':') && !isValidIP(ip)) // Allow : only in valid IPv6
     ) {
       return false;
     }
 
     // Must be a valid IP address (IPv4 or IPv6)
-    if (!isIP(ip)) {
+    if (!isValidIP(ip)) {
       return false;
     }
 

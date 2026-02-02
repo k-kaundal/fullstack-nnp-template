@@ -94,8 +94,7 @@
     "ua-parser-js": "^2.0.8",
     "uuid": "^13.0.0",
     "winston": "^3.19.0",
-    "winston-daily-rotate-file": "^5.0.0",
-    "is-ip": "^5.0.1"
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.16",
@@ -141,9 +140,6 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(is-ip|ip-regex|super-regex|function-timeout|time-span|convert-hrtime|clone-regexp|is-regexp)/)"
-    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
