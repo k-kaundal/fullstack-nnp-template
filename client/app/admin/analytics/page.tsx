@@ -207,7 +207,7 @@ export default function AnalyticsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors"
           >
             <svg
-              className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`}
+              className={`w-5 h-5 ${loading && 'animate-spin'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
