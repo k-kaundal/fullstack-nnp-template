@@ -11,7 +11,7 @@ export default tseslint.config(
       'node_modules/**',
       'coverage/**',
       'src/logs/**',
-      '.eslintrc.js',
+      'eslint.config.mjs',
     ],
   },
   eslint.configs.recommended,

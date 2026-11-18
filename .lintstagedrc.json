@@ -1,9 +1,7 @@
 {
-  "*.{js,jsx,ts,tsx}": ["yarn format"],
-  "*.{json,md}": ["yarn format"],
-  "*.{css,scss}": ["yarn format"],
+  "*.{json,md,yml,yaml}": ["prettier --write"],
   "server/**/*.{ts,tsx}": [
-    "cd server && yarn lint --fix",
+    "cd server && yarn lint",
     "cd server && yarn format"
   ],
   "client/**/*.{ts,tsx}": [

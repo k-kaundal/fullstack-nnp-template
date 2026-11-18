@@ -244,9 +244,9 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 ### Start/Stop
 
 ```bash
-docker-compose up -d       # Start
-docker-compose down        # Stop
-docker-compose down -v     # Stop and remove data
+docker compose up -d       # Start
+docker compose down        # Stop
+docker compose down -v     # Stop and remove data
 ```
 
 ### Migrations
@@ -283,8 +283,8 @@ refactor(api): improve error handling
 
 ```bash
 # Restart Docker containers
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ### Port Already in Use

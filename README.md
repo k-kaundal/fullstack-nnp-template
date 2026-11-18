@@ -332,7 +332,7 @@ This template enforces **enterprise-level standards** that most templates skip.
 
 **✅ Automated Enforcement:**
 
-- 🎯 **Husky v10** - Git hooks (pre-commit, commit-msg)
+- 🎯 **Husky v9** - Git hooks (pre-commit, commit-msg)
 - 🔍 **lint-staged** - Auto-fix ESLint + Prettier on commit
 - ✅ **commitlint** - Conventional commit format enforced
 - 🧪 **Jest** - Tests run automatically
@@ -383,7 +383,7 @@ template in action before installing
 
 ### Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 22+ (see `.nvmrc`)
 - **Yarn** (recommended) or npm
 - **PostgreSQL** 14+
 - **Git**
@@ -443,7 +443,7 @@ cd ../client && yarn install
 
 ```bash
 # Start PostgreSQL via Docker
-docker-compose up -d
+docker compose up -d
 
 # Or use your local PostgreSQL and create database
 createdb your_database_name
@@ -459,7 +459,7 @@ cp .env.example .env
 
 # Client configuration
 cd ../client
-cp .env.local.example .env.local
+cp .env.local.example .env.local 2>/dev/null || cp .env.example .env.local
 # Edit .env.local with your API URL
 ```
 
@@ -920,67 +920,84 @@ All documentation is in `server/docs/` and `client/docs/`:
 ```
 fullstack-nnp-template/
 │
-├── 📁 client/                          # Next.js Frontend
+├── 📁 client/                          # Next.js 16 Frontend (App Router)
 │   ├── app/                            # App Router pages
-│   │   ├── (public)/                   # Public pages (route group)
 │   │   ├── admin/                      # Admin dashboards
-│   │   │   ├── users/                  # User management (810 lines)
-│   │   │   ├── request-logs/           # Request logging dashboard
-│   │   │   ├── newsletter/             # Newsletter management
-│   │   │   └── roles/                  # RBAC management
-│   │   ├── auth/                       # Auth pages (login, register)
+│   │   │   ├── users/                  # User management
+│   │   │   ├── roles/                  # RBAC roles (list, create, edit)
+│   │   │   ├── permissions/            # RBAC permissions
+│   │   │   ├── blog/                   # Blog CMS (posts, categories)
+│   │   │   ├── contact/                # Contact form messages
+│   │   │   ├── newsletter/             # Newsletter (subscribers, send)
+│   │   │   ├── analytics/              # Visitor analytics dashboard
+│   │   │   └── request-logs/           # Request logging dashboard
+│   │   ├── auth/                       # Auth pages
+│   │   │   ├── login/, register/       #   sign in/up
+│   │   │   ├── forgot-password/        #   password reset request
+│   │   │   ├── reset-password/         #   password reset confirm
+│   │   │   └── verify-email/           #   email verification
+│   │   ├── contact/                    # Public contact page
+│   │   ├── profile/                    # User profile page
 │   │   ├── layout.tsx                  # Root layout
 │   │   ├── page.tsx                    # Homepage
 │   │   └── globals.css                 # Global styles + theme
 │   │
 │   ├── components/                     # React components
-│   │   ├── ui/                         # Reusable UI (Modal, Table, Toast)
-│   │   ├── auth/                       # Auth components
-│   │   └── user/                       # User components
+│   │   ├── ui/                         # Reusable UI (Modal, Table, Toast, …)
+│   │   ├── auth/                       # Auth components (ProtectedRoute)
+│   │   ├── user/                       # User components
+│   │   ├── admin/                      # Admin components (AssignRolesDialog)
+│   │   ├── newsletter/                 # Newsletter subscription form
+│   │   ├── analytics/                  # Visitor tracker
+│   │   └── 3d/                         # Three.js / R3F components
 │   │
 │   ├── lib/                            # Core library
-│   │   ├── api/                        # API services
+│   │   ├── api/                        # API services (axios + interceptors)
 │   │   ├── providers/                  # React Context providers
-│   │   └── utils/                      # Utilities
+│   │   └── utils/                      # Utilities (storage, toast, rbac)
 │   │
+│   ├── hooks/                          # Custom React hooks
 │   ├── interfaces/                     # TypeScript interfaces
 │   ├── types/                          # TypeScript types
 │   ├── enums/                          # TypeScript enums
-│   ├── hooks/                          # Custom React hooks
-│   ├── constants/                      # App constants
+│   ├── constants/                      # App constants (sidebar, header)
 │   └── docs/                           # Client documentation
 │
 ├── 📁 server/                          # NestJS Backend
 │   ├── src/
-│   │   ├── common/                     # Shared code
-│   │   │   ├── decorators/             # Custom decorators
-│   │   │   ├── filters/                # Exception filters
-│   │   │   ├── guards/                 # Auth guards
-│   │   │   ├── middleware/             # Middleware
-│   │   │   ├── exceptions/             # 40+ custom exceptions
-│   │   │   ├── enums/                  # 70+ error codes
-│   │   │   └── utils/                  # Utilities
+│   │   ├── common/                     # Shared infrastructure
+│   │   │   ├── controllers/            # Request-logs controller
+│   │   │   ├── decorators/             # Custom validators & decorators
+│   │   │   ├── dto/, entities/, enums/ # Shared DTOs/entities/error codes
+│   │   │   ├── exceptions/             # Custom exception classes
+│   │   │   ├── filters/                # Global exception filter
+│   │   │   ├── guards/                 # Throttler guard
+│   │   │   ├── interceptors/           # Cache, transform, versioning
+│   │   │   ├── logger/, services/      # Winston + cache/log services
+│   │   │   └── middleware/             # Request logging middleware
 │   │   │
-│   │   ├── config/                     # Configuration
-│   │   ├── database/                   # Migrations & seeders
-│   │   ├── auth/                       # Authentication
+│   │   ├── config/                     # Config (typeorm, sentry, cache, …)
+│   │   ├── database/seeders/           # Database seeders
+│   │   ├── migrations/                 # TypeORM migrations
+│   │   ├── auth/                       # Authentication (JWT, sessions)
 │   │   ├── users/                      # Users module
-│   │   ├── roles/                      # RBAC roles
-│   │   ├── permissions/                # RBAC permissions
-│   │   ├── sessions/                   # Session management
+│   │   ├── rbac/                       # Roles & permissions
 │   │   ├── newsletter/                 # Newsletter system
-│   │   └── graphql/                    # GraphQL
+│   │   ├── blog/                       # Blog CMS
+│   │   ├── contact/                    # Contact form
+│   │   ├── analytics/                  # Visitor analytics
+│   │   ├── mail/                       # Email service
+│   │   └── graphql/                    # GraphQL (Apollo v4)
 │   │
 │   ├── test/                           # E2E tests
-│   ├── docs/                           # Backend docs (15+ guides)
-│   ├── scripts/                        # Utility scripts
-│   └── logs/                           # Winston logs
+│   └── scripts/                        # Migration helper scripts
 │
-├── 📁 docs/                            # Root documentation
+├── 📁 docs/                            # Backend documentation guides
 ├── 📁 .github/                         # GitHub config
 │   ├── copilot-instructions.md         # 1000+ lines AI guidelines
 │   └── workflows/                      # CI/CD pipelines
 │
+├── AGENTS.md                           # AI agent guide
 ├── docker-compose.yml                  # PostgreSQL + pgAdmin
 ├── setup.sh                            # One-command setup
 └── package.json                        # Root package
@@ -1169,7 +1186,7 @@ instructions pre-configured for seamless AI-assisted development.
   - Error handling patterns
   - UI component library documentation
 - ✅ **Git Workflow & Quality Gates** - Automated enforcement
-  - 🎯 **Husky v10** - Git hooks (pre-commit, commit-msg)
+  - 🎯 **Husky v9** - Git hooks (pre-commit, commit-msg)
   - 🔍 **lint-staged** - Lint only staged files (ESLint + Prettier)
   - ✅ **commitlint** - Enforces conventional commit format
   - 🚫 **Zero-tolerance**: ESLint errors block commits
@@ -1366,60 +1383,18 @@ All admin dashboards use reusable, professionally designed components:
 
 This template includes **comprehensive documentation** for every feature:
 
-### 📁 **Backend Documentation** (`server/docs/`)
+### 📁 **Backend Documentation** (`docs/`)
 
-1. **API_SECURITY_IMPLEMENTATION_COMPLETE.md** - Complete JWT authentication
-   guide
-   - Protected vs public endpoints
-   - Token flow and refresh mechanism
-   - Testing with cURL, Swagger, Postman
+1. **API_VERSIONING_AND_SWAGGER.md** - API versioning & Swagger setup
+2. **GRAPHQL_AND_RATE_LIMITING.md** - GraphQL + throttling guide
+3. **SECURITY_SCANNING.md** - Security scanning workflows
+4. **SERVER_PERFORMANCE_OPTIMIZATION.md** - Performance tuning
+5. **CI_CD_SETUP.md** - CI/CD pipeline guide
 
-2. **VALIDATION_IMPLEMENTATION_COMPLETE.md** - Comprehensive validation system
-   - Custom validators (@IsStrongPassword, @NoSqlInjection, @NoXss)
-   - DTO validation patterns
-   - Error handling for validation failures
-
-3. **API_RESPONSE_DECORATORS.md** - Reusable Swagger decorators
-   - 8 standard response decorators
-   - DRY principle for API documentation
-   - Usage patterns and examples
-
-4. **REQUEST_LOGGING.md** - Request logging system
-   - Automatic logging middleware
-   - Database schema and indexes
-   - Sensitive data sanitization
-   - Cleanup cron jobs
-
-5. **SESSION_MANAGEMENT.md** - Session and token management
-   - Multi-device session tracking
-   - Token blacklisting
-   - Refresh token rotation
-
-6. **DATABASE_FEATURES.md** - Database tooling and features
-   - Migration scripts (generate, run, rollback)
-   - Seeder system for dev/test data
-   - Query performance logging
-
-7. **CACHING_IMPLEMENTATION.md** - Caching strategy
-   - Redis-compatible cache manager
-   - TTL and max items configuration
-   - Cache invalidation patterns
-
-8. **ERROR_HANDLING_AND_LOGGING.md** - Error infrastructure
-   - 70+ standardized error codes
-   - 40+ custom exception classes
-   - Winston logging with multiple transports
-   - Correlation IDs for request tracking
-
-9. **API_ENDPOINTS_AUTH.md** - API endpoint reference
-   - All authentication endpoints documented
-   - Request/response examples
-   - Rate limiting information
-
-10. **QUICK_REFERENCE_AUTH.md** - Quick start guide
-    - Common authentication patterns
-    - Testing workflows
-    - Troubleshooting tips
+Additional backend implementation guides live at the repo root
+(`RBAC_COMPLETE_IMPLEMENTATION.md`, `API_ENDPOINTS.md`,
+`BLOG_CMS_IMPLEMENTATION.md`, `CONTACT_FEATURE_IMPLEMENTATION.md`,
+`REQUEST_TRACKING_UPDATES.md`, `ANALYTICS_IMPLEMENTATION.md`).
 
 ### 📁 **Frontend Documentation** (`client/docs/`)
 
@@ -1660,8 +1635,8 @@ Retry-After: 45
 
 ### Prerequisites
 
-- **Node.js** 20+
-- **yarn** or **yarn**
+- **Node.js** 22+ (see `.nvmrc`)
+- **Yarn** 1.22+
 - **Docker** (for PostgreSQL)
 
 ### 1. Clone the Repository
@@ -1674,7 +1649,7 @@ cd my-new-project
 ### 2. Start Database
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This starts:
@@ -1997,7 +1972,7 @@ Every commit triggers these checks via **Husky** and **lint-staged**:
 
 ### **Prerequisites**
 
-- Node.js 18+ installed on server
+- Node.js 22+ installed on server (see `.nvmrc`)
 - PostgreSQL 14+ database
 - Domain name with SSL certificate (recommended)
 - Environment variables configured
@@ -2014,7 +1989,7 @@ Every commit triggers these checks via **Husky** and **lint-staged**:
 For now, use Docker only for PostgreSQL:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 </details>

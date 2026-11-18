@@ -20,7 +20,13 @@ fi
 
 # Check if Node.js is installed
 if ! command -v node &> /dev/null; then
-    echo -e "${RED}❌ Node.js is not installed. Please install Node.js 20+ first.${NC}"
+    echo -e "${RED}❌ Node.js is not installed. Please install Node.js 22+ first.${NC}"
+    exit 1
+fi
+
+NODE_MAJOR=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$NODE_MAJOR" -lt 22 ]; then
+    echo -e "${RED}❌ Node.js 22+ is required (found v${NODE_MAJOR}). Use nvm: nvm install 22 && nvm use 22${NC}"
     exit 1
 fi
 
@@ -29,7 +35,7 @@ echo ""
 
 # Start Docker containers
 echo -e "${BLUE}📦 Starting PostgreSQL and pgAdmin with Docker...${NC}"
-docker-compose up -d
+docker compose up -d
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Database containers started successfully${NC}"
 else
@@ -115,6 +121,6 @@ echo -e "${BLUE}📚 Useful commands:${NC}"
 echo -e "  ${YELLOW}Backend tests:${NC}       cd server && yarn test"
 echo -e "  ${YELLOW}Backend lint:${NC}        cd server && yarn lint"
 echo -e "  ${YELLOW}Frontend lint:${NC}       cd client && yarn lint"
-echo -e "  ${YELLOW}Stop database:${NC}       docker-compose down"
+echo -e "  ${YELLOW}Stop database:${NC}       docker compose down"
 echo ""
 echo -e "${GREEN}Happy coding! 💻${NC}"

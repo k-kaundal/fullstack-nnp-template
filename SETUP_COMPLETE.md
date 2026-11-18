@@ -167,7 +167,7 @@ yarn dev
 
 - [ ] Dependencies installed (`yarn install` in server/)
 - [ ] Environment file created (`.env` from `.env.example`)
-- [ ] Database running (`docker-compose up -d`)
+- [ ] Database running (`docker compose up -d`)
 - [ ] Tests passing (`yarn test`)
 - [ ] Linting passing (`yarn lint`)
 - [ ] Server starts (`yarn start:dev`)
@@ -302,8 +302,8 @@ lsof -ti:3001 | xargs kill -9
 
 ```bash
 # Restart Docker
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 **Module Not Found:**
