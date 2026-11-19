@@ -18,7 +18,13 @@ ERRORS=0
 echo -e "${YELLOW}Checking Node.js...${NC}"
 if command -v node &> /dev/null; then
     NODE_VERSION=$(node -v)
+    NODE_MAJOR=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
     echo -e "${GREEN}✓ Node.js installed: ${NODE_VERSION}${NC}"
+    if [ "$NODE_MAJOR" -lt 22 ]; then
+        echo -e "${RED}✗ Node.js 22+ required (found v${NODE_MAJOR})${NC}"
+        echo -e "${YELLOW}  Run: nvm install 22 && nvm use 22${NC}"
+        ((ERRORS++))
+    fi
 else
     echo -e "${RED}✗ Node.js not found${NC}"
     ((ERRORS++))
@@ -89,14 +95,14 @@ if docker ps | grep -q fullstack-nnp-postgres; then
     echo -e "${GREEN}✓ PostgreSQL container running${NC}"
 else
     echo -e "${YELLOW}⚠ PostgreSQL container not running${NC}"
-    echo -e "${YELLOW}  Run: docker-compose up -d${NC}"
+    echo -e "${YELLOW}  Run: docker compose up -d${NC}"
 fi
 
 if docker ps | grep -q fullstack-nnp-pgadmin; then
     echo -e "${GREEN}✓ pgAdmin container running${NC}"
 else
     echo -e "${YELLOW}⚠ pgAdmin container not running${NC}"
-    echo -e "${YELLOW}  Run: docker-compose up -d${NC}"
+    echo -e "${YELLOW}  Run: docker compose up -d${NC}"
 fi
 
 # Test Backend Build

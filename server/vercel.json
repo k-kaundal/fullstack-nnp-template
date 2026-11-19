@@ -5,7 +5,7 @@
       "src": "src/main.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFile": ["dist/**"]
+        "includeFiles": ["dist/**"]
       }
     }
   ],

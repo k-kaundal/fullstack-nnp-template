@@ -1,18 +1,8 @@
+import { redirect } from 'next/navigation';
+
 /**
- * Newsletter Dashboard - Redirects to Subscribers Page
+ * Newsletter section index — redirects to the subscribers dashboard.
  */
-
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
 export default function NewsletterPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace('/admin/newsletter/subscribers');
-  }, [router]);
-
-  return null;
+  redirect('/admin/newsletter/subscribers');
 }
